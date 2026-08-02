@@ -141,8 +141,7 @@ export default function App() {
     { id: 'u12', name: 'Mostafa Samy', role: 'Systems Engineer', category: 'Software Engineer', group: 'Project Team', avatar: 'https://i.pravatar.cc/150?img=70' },
   ]);
 
-  const [notifCategory, setNotifCategory] = useState<'all' | 'bookings' | 'team' | 'announcements'>('all');
-  const [notificationsList, setNotificationsList] = useState([
+  const INITIAL_NOTIFICATIONS_DATA = [
     { 
       id: 1, 
       category: 'bookings',
@@ -207,7 +206,10 @@ export default function App() {
       actionLabel: 'Book Again',
       actionType: 'room'
     }
-  ]);
+  ];
+
+  const [notifCategory, setNotifCategory] = useState<'all' | 'bookings' | 'team' | 'announcements'>('all');
+  const [notificationsList, setNotificationsList] = useState(INITIAL_NOTIFICATIONS_DATA);
 
   const [bookings, setBookings] = useState([
     { id: 1, room: 'Meeting Room 1', date: 'May 14', time: '10:00 AM - 11:30 AM', image: getAsset('meeting_room.jpg'), status: 'Confirmed', attendees: ['Mohamed (You)', 'Ahmed Ali'] },
@@ -516,7 +518,7 @@ export default function App() {
   ];
 
   // -------------------------------------------------------------
-  // FULL SCREEN NOTIFICATIONS PAGE (DARK LIQUID GLASS AESTHETICS)
+  // FULL SCREEN NOTIFICATIONS PAGE (BUE SIGNATURE THEME & RESTORE)
   // -------------------------------------------------------------
   if (showNotifications) {
     const unreadCount = notificationsList.filter(n => n.unread).length;
@@ -542,6 +544,21 @@ export default function App() {
       setNotificationsList(prev => prev.filter(n => n.id !== id));
     };
 
+    const restoreNotifications = () => {
+      setNotificationsList(INITIAL_NOTIFICATIONS_DATA);
+      setToastMessage('Notifications restored');
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 2500);
+    };
+
+    const handleCloseNotifications = () => {
+      // If notifications were cleared, restore them for the next visit as requested
+      if (notificationsList.length === 0) {
+        setNotificationsList(INITIAL_NOTIFICATIONS_DATA);
+      }
+      setShowNotifications(false);
+    };
+
     const handleNotifAction = (notif: any) => {
       markAsRead(notif.id);
       if (notif.actionType === 'pass') {
@@ -560,29 +577,29 @@ export default function App() {
     };
 
     return (
-      <div className="flex justify-center bg-slate-950 h-screen w-screen overflow-hidden font-sans text-white">
-        <div className="w-full max-w-[430px] bg-[#0B1528] h-full relative shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-300">
+      <div className="flex justify-center bg-slate-900 h-screen w-screen overflow-hidden font-sans text-slate-900">
+        <div className="w-full max-w-[430px] bg-slate-50 h-full relative shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-300">
           
-          {/* Glass Header */}
-          <div className="p-4 pt-5 flex justify-between items-center border-b border-white/10 bg-[#0B1528]/90 backdrop-blur-2xl shadow-lg z-20 sticky top-0">
+          {/* Header */}
+          <div className="p-4 pt-5 flex justify-between items-center border-b border-slate-200 bg-white/95 backdrop-blur-md shadow-xs z-20 sticky top-0">
             <div className="flex items-center gap-3">
               <button 
-                onClick={() => setShowNotifications(false)} 
-                className="p-2.5 bg-white/10 hover:bg-white/20 border border-white/15 rounded-full text-white backdrop-blur-md active:scale-95 transition-all"
+                onClick={handleCloseNotifications} 
+                className="p-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-[#002D62] rounded-full active:scale-95 transition-all"
                 aria-label="Back to home"
               >
                 <ArrowLeft size={18} />
               </button>
               <div>
                 <div className="flex items-center gap-2">
-                  <h2 className="font-bold text-white text-lg tracking-tight">Notifications</h2>
+                  <h2 className="font-bold text-[#002D62] text-lg tracking-tight">Notifications</h2>
                   {unreadCount > 0 && (
-                    <span className="px-2 py-0.5 bg-[#DA291C] text-white text-[10px] font-black rounded-full shadow-[0_0_12px_rgba(218,41,28,0.6)] animate-pulse">
+                    <span className="px-2 py-0.5 bg-[#DA291C] text-white text-[10px] font-black rounded-full shadow-xs">
                       {unreadCount} NEW
                     </span>
                   )}
                 </div>
-                <p className="text-[11px] text-slate-400 font-medium">BUE Space Center Updates</p>
+                <p className="text-[11px] text-slate-500 font-medium">BUE Space Center Updates</p>
               </div>
             </div>
 
@@ -590,10 +607,10 @@ export default function App() {
               {unreadCount > 0 && (
                 <button 
                   onClick={markAllAsRead}
-                  className="px-3 py-1.5 bg-[#002D62] hover:bg-[#00387a] border border-white/20 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md active:scale-95 transition-all"
+                  className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-[#002D62] rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all"
                   title="Mark all as read"
                 >
-                  <CheckCheck size={14} className="text-blue-300" />
+                  <CheckCheck size={14} className="text-[#002D62]" />
                   <span className="text-[11px]">Mark Read</span>
                 </button>
               )}
@@ -601,17 +618,17 @@ export default function App() {
           </div>
 
           {/* Category Filter Chips */}
-          <div className="px-4 py-3 bg-[#0E1B33]/80 border-b border-white/5 backdrop-blur-md flex items-center gap-2 overflow-x-auto no-scrollbar z-10">
+          <div className="px-4 py-3 bg-white border-b border-slate-200 flex items-center gap-2 overflow-x-auto no-scrollbar z-10 shadow-2xs">
             <button
               onClick={() => setNotifCategory('all')}
               className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
                 notifCategory === 'all'
-                  ? 'bg-[#002D62] text-white border border-white/30 shadow-[0_2px_10px_rgba(0,45,98,0.5)]'
-                  : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'
+                  ? 'bg-[#002D62] text-white border border-[#002D62] shadow-xs'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200/80 border border-slate-200'
               }`}
             >
               All
-              <span className={`px-1.5 py-0.2 text-[10px] rounded-full ${notifCategory === 'all' ? 'bg-[#DA291C] text-white font-black' : 'bg-white/10 text-slate-400'}`}>
+              <span className={`px-1.5 py-0.2 text-[10px] rounded-full ${notifCategory === 'all' ? 'bg-[#DA291C] text-white font-black' : 'bg-slate-200 text-slate-700'}`}>
                 {notificationsList.length}
               </span>
             </button>
@@ -620,12 +637,12 @@ export default function App() {
               onClick={() => setNotifCategory('bookings')}
               className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
                 notifCategory === 'bookings'
-                  ? 'bg-[#002D62] text-white border border-white/30 shadow-[0_2px_10px_rgba(0,45,98,0.5)]'
-                  : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'
+                  ? 'bg-[#002D62] text-white border border-[#002D62] shadow-xs'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200/80 border border-slate-200'
               }`}
             >
               Bookings
-              <span className={`px-1.5 py-0.2 text-[10px] rounded-full ${notifCategory === 'bookings' ? 'bg-[#DA291C] text-white font-black' : 'bg-white/10 text-slate-400'}`}>
+              <span className={`px-1.5 py-0.2 text-[10px] rounded-full ${notifCategory === 'bookings' ? 'bg-[#DA291C] text-white font-black' : 'bg-slate-200 text-slate-700'}`}>
                 {notificationsList.filter(n => n.category === 'bookings').length}
               </span>
             </button>
@@ -634,12 +651,12 @@ export default function App() {
               onClick={() => setNotifCategory('team')}
               className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
                 notifCategory === 'team'
-                  ? 'bg-[#002D62] text-white border border-white/30 shadow-[0_2px_10px_rgba(0,45,98,0.5)]'
-                  : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'
+                  ? 'bg-[#002D62] text-white border border-[#002D62] shadow-xs'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200/80 border border-slate-200'
               }`}
             >
               Team
-              <span className={`px-1.5 py-0.2 text-[10px] rounded-full ${notifCategory === 'team' ? 'bg-[#DA291C] text-white font-black' : 'bg-white/10 text-slate-400'}`}>
+              <span className={`px-1.5 py-0.2 text-[10px] rounded-full ${notifCategory === 'team' ? 'bg-[#DA291C] text-white font-black' : 'bg-slate-200 text-slate-700'}`}>
                 {notificationsList.filter(n => n.category === 'team').length}
               </span>
             </button>
@@ -648,34 +665,35 @@ export default function App() {
               onClick={() => setNotifCategory('announcements')}
               className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
                 notifCategory === 'announcements'
-                  ? 'bg-[#002D62] text-white border border-white/30 shadow-[0_2px_10px_rgba(0,45,98,0.5)]'
-                  : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'
+                  ? 'bg-[#002D62] text-white border border-[#002D62] shadow-xs'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200/80 border border-slate-200'
               }`}
             >
               Updates
-              <span className={`px-1.5 py-0.2 text-[10px] rounded-full ${notifCategory === 'announcements' ? 'bg-[#DA291C] text-white font-black' : 'bg-white/10 text-slate-400'}`}>
+              <span className={`px-1.5 py-0.2 text-[10px] rounded-full ${notifCategory === 'announcements' ? 'bg-[#DA291C] text-white font-black' : 'bg-slate-200 text-slate-700'}`}>
                 {notificationsList.filter(n => n.category === 'announcements').length}
               </span>
             </button>
           </div>
           
           {/* Notifications Scroll Area */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-5">
+          <div className="flex-1 overflow-y-auto p-4 space-y-5 bg-slate-50">
             
             {filteredNotifs.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 px-6 text-center animate-in fade-in zoom-in-95 duration-300">
-                <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 mb-4 shadow-inner">
+                <div className="w-16 h-16 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 mb-4 shadow-sm">
                   <BellOff size={28} />
                 </div>
-                <h3 className="text-white font-bold text-base mb-1">All Caught Up!</h3>
-                <p className="text-slate-400 text-xs max-w-xs leading-relaxed mb-6">
-                  No notifications in this category. We will notify you when space reservations or team invites occur.
+                <h3 className="text-[#002D62] font-bold text-base mb-1">No Active Notifications</h3>
+                <p className="text-slate-500 text-xs max-w-xs leading-relaxed mb-6">
+                  You have cleared all items in this section. Exiting or clicking below will restore them anytime.
                 </p>
                 <button
-                  onClick={() => setShowNotifications(false)}
-                  className="px-5 py-2.5 bg-[#002D62] hover:bg-[#00387a] border border-white/20 text-white text-xs font-bold rounded-xl shadow-lg active:scale-95 transition-all"
+                  onClick={restoreNotifications}
+                  className="px-5 py-2.5 bg-[#002D62] hover:bg-[#00387a] border border-[#002D62] text-white text-xs font-bold rounded-xl shadow-sm active:scale-95 transition-all flex items-center gap-2"
                 >
-                  Explore Spaces
+                  <Sparkles size={14} />
+                  Restore Notifications
                 </button>
               </div>
             ) : (
@@ -684,38 +702,33 @@ export default function App() {
                 {todayNotifs.length > 0 && (
                   <div className="space-y-3">
                     <div className="flex items-center justify-between px-1">
-                      <span className="text-[10px] font-black tracking-widest text-slate-400 uppercase">Today</span>
-                      <span className="text-[10px] font-bold text-blue-400">{todayNotifs.length} updates</span>
+                      <span className="text-[11px] font-black tracking-widest text-[#002D62] uppercase">Today</span>
+                      <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">{todayNotifs.length} updates</span>
                     </div>
 
                     {todayNotifs.map((notif: any) => (
                       <div 
                         key={notif.id} 
                         onClick={() => markAsRead(notif.id)}
-                        className={`p-4 rounded-2xl relative overflow-hidden transition-all duration-300 cursor-pointer ${
+                        className={`p-4 rounded-2xl relative transition-all duration-300 cursor-pointer ${
                           notif.unread 
-                            ? 'bg-[#132238]/95 border border-blue-400/40 shadow-[0_8px_24px_rgba(0,45,98,0.35)]' 
-                            : 'bg-[#0E1B33]/70 border border-white/10 hover:border-white/20'
+                            ? 'bg-white border-l-4 border-l-[#DA291C] border border-blue-200/80 shadow-md ring-1 ring-blue-500/10' 
+                            : 'bg-white/90 border border-slate-200 shadow-2xs hover:border-slate-300'
                         }`}
                       >
-                        {/* Glow accent for unread */}
-                        {notif.unread && (
-                          <div className="absolute top-0 left-0 w-1.5 h-full bg-[#DA291C]" />
-                        )}
-
-                        <div className="flex items-start gap-3.5 pl-1">
+                        <div className="flex items-start gap-3.5 pl-0.5">
                           {/* Icon / Avatar */}
                           <div className="flex-shrink-0 relative mt-0.5">
                             {notif.avatar ? (
                               <div className="relative">
-                                <img src={notif.avatar} className="w-11 h-11 rounded-xl object-cover border border-white/20 shadow-md" alt="User" />
-                                {notif.unread && <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#DA291C] rounded-full border-2 border-[#0B1528] shadow-[0_0_8px_#DA291C]" />}
+                                <img src={notif.avatar} className="w-11 h-11 rounded-xl object-cover border border-slate-200 shadow-sm" alt="User" />
+                                {notif.unread && <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#DA291C] rounded-full border-2 border-white shadow-xs" />}
                               </div>
                             ) : (
-                              <div className={`w-11 h-11 rounded-xl flex items-center justify-center relative border border-white/15 shadow-md ${
+                              <div className={`w-11 h-11 rounded-xl flex items-center justify-center relative border shadow-2xs ${
                                 notif.category === 'bookings' 
-                                  ? notif.isTimer ? 'bg-gradient-to-br from-amber-500/20 to-orange-500/30 text-amber-300' : 'bg-gradient-to-br from-emerald-500/20 to-teal-500/30 text-emerald-300'
-                                  : 'bg-gradient-to-br from-blue-500/20 to-indigo-500/30 text-blue-300'
+                                  ? notif.isTimer ? 'bg-amber-50 text-amber-600 border-amber-200' : 'bg-emerald-50 text-emerald-600 border-emerald-200'
+                                  : 'bg-blue-50 text-[#002D62] border-blue-200'
                               }`}>
                                 {notif.category === 'bookings' && notif.isTimer ? (
                                   <Clock size={20} strokeWidth={2.2} />
@@ -724,7 +737,7 @@ export default function App() {
                                 ) : (
                                   <Sparkles size={20} strokeWidth={2.2} />
                                 )}
-                                {notif.unread && <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#DA291C] rounded-full border-2 border-[#0B1528] shadow-[0_0_8px_#DA291C]" />}
+                                {notif.unread && <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#DA291C] rounded-full border-2 border-white shadow-xs" />}
                               </div>
                             )}
                           </div>
@@ -733,11 +746,11 @@ export default function App() {
                           <div className="flex-1 min-w-0">
                             <div className="flex items-start justify-between gap-2">
                               <div className="flex items-center gap-1.5 flex-wrap">
-                                <h3 className={`font-bold text-sm tracking-tight ${notif.unread ? 'text-white' : 'text-slate-300'}`}>
+                                <h3 className={`font-bold text-sm tracking-tight ${notif.unread ? 'text-[#002D62]' : 'text-slate-700'}`}>
                                   {notif.title}
                                 </h3>
                                 {notif.badge && (
-                                  <span className="px-1.5 py-0.2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-[9px] font-bold rounded-md">
+                                  <span className="px-1.5 py-0.2 bg-emerald-100 border border-emerald-200 text-emerald-700 text-[9px] font-bold rounded-md">
                                     {notif.badge}
                                   </span>
                                 )}
@@ -746,15 +759,15 @@ export default function App() {
                                 <span className="text-[10px] font-bold text-slate-400 whitespace-nowrap">{notif.time}</span>
                                 <button 
                                   onClick={(e) => removeNotif(e, notif.id)}
-                                  className="p-1 text-slate-500 hover:text-red-400 rounded-md transition-colors"
+                                  className="p-1 text-slate-400 hover:text-red-500 rounded-md transition-colors"
                                   title="Dismiss"
                                 >
-                                  <X size={13} />
+                                  <X size={14} />
                                 </button>
                               </div>
                             </div>
 
-                            <p className="text-xs text-slate-300 mt-1 leading-relaxed font-normal">
+                            <p className="text-xs text-slate-600 mt-1 leading-relaxed font-medium">
                               {notif.message}
                             </p>
 
@@ -763,16 +776,16 @@ export default function App() {
                               <div className="mt-3 flex items-center gap-2">
                                 <button
                                   onClick={() => handleNotifAction(notif)}
-                                  className="px-3.5 py-1.5 bg-[#002D62] hover:bg-[#00387a] border border-white/20 rounded-xl text-white text-[11px] font-bold flex items-center gap-1.5 shadow-md active:scale-95 transition-all"
+                                  className="px-3.5 py-1.5 bg-[#002D62] hover:bg-[#00387a] text-white rounded-xl text-[11px] font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all"
                                 >
-                                  {notif.actionType === 'pass' && <QrCode size={13} className="text-blue-300" />}
-                                  {notif.actionType === 'team' && <Users size={13} className="text-blue-300" />}
-                                  {notif.actionType === 'room' && <Navigation size={13} className="text-blue-300" />}
+                                  {notif.actionType === 'pass' && <QrCode size={13} className="text-blue-200" />}
+                                  {notif.actionType === 'team' && <Users size={13} className="text-blue-200" />}
+                                  {notif.actionType === 'room' && <Navigation size={13} className="text-blue-200" />}
                                   <span>{notif.actionLabel}</span>
                                 </button>
                                 
                                 {notif.isTimer && (
-                                  <span className="text-[10px] font-mono font-bold text-amber-300 bg-amber-500/10 border border-amber-500/20 px-2 py-1 rounded-lg">
+                                  <span className="text-[10px] font-mono font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-1 rounded-lg">
                                     Starts in {getCountdownParts(countdownSeconds).m}m {getCountdownParts(countdownSeconds).s}s
                                   </span>
                                 )}
@@ -789,7 +802,7 @@ export default function App() {
                 {yesterdayNotifs.length > 0 && (
                   <div className="space-y-3 pt-2">
                     <div className="flex items-center justify-between px-1">
-                      <span className="text-[10px] font-black tracking-widest text-slate-400 uppercase">Yesterday</span>
+                      <span className="text-[11px] font-black tracking-widest text-[#002D62] uppercase">Yesterday</span>
                       <span className="text-[10px] font-bold text-slate-500">{yesterdayNotifs.length} updates</span>
                     </div>
 
@@ -797,35 +810,35 @@ export default function App() {
                       <div 
                         key={notif.id} 
                         onClick={() => markAsRead(notif.id)}
-                        className={`p-4 rounded-2xl relative overflow-hidden transition-all duration-300 cursor-pointer ${
+                        className={`p-4 rounded-2xl relative transition-all duration-300 cursor-pointer ${
                           notif.unread 
-                            ? 'bg-[#132238]/95 border border-blue-400/40 shadow-[0_8px_24px_rgba(0,45,98,0.35)]' 
-                            : 'bg-[#0E1B33]/70 border border-white/10 hover:border-white/20'
+                            ? 'bg-white border-l-4 border-l-[#DA291C] border border-blue-200 shadow-md' 
+                            : 'bg-white/90 border border-slate-200 shadow-2xs'
                         }`}
                       >
                         <div className="flex items-start gap-3.5">
-                          <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-blue-500/20 to-indigo-500/30 text-blue-300 border border-white/15 shadow-md">
+                          <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 bg-blue-50 text-[#002D62] border border-blue-100 shadow-2xs">
                             <Monitor size={20} strokeWidth={2.2} />
                           </div>
 
                           <div className="flex-1 min-w-0">
                             <div className="flex items-start justify-between gap-2">
-                              <h3 className="font-bold text-sm tracking-tight text-white">
+                              <h3 className="font-bold text-sm tracking-tight text-[#002D62]">
                                 {notif.title}
                               </h3>
                               <div className="flex items-center gap-1">
                                 <span className="text-[10px] font-bold text-slate-400 whitespace-nowrap">{notif.time}</span>
                                 <button 
                                   onClick={(e) => removeNotif(e, notif.id)}
-                                  className="p-1 text-slate-500 hover:text-red-400 rounded-md transition-colors"
+                                  className="p-1 text-slate-400 hover:text-red-500 rounded-md transition-colors"
                                   title="Dismiss"
                                 >
-                                  <X size={13} />
+                                  <X size={14} />
                                 </button>
                               </div>
                             </div>
 
-                            <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                            <p className="text-xs text-slate-600 mt-1 leading-relaxed font-medium">
                               {notif.message}
                             </p>
 
@@ -833,9 +846,9 @@ export default function App() {
                               <div className="mt-3">
                                 <button
                                   onClick={() => handleNotifAction(notif)}
-                                  className="px-3.5 py-1.5 bg-[#002D62] hover:bg-[#00387a] border border-white/20 rounded-xl text-white text-[11px] font-bold flex items-center gap-1.5 shadow-md active:scale-95 transition-all"
+                                  className="px-3.5 py-1.5 bg-[#002D62] hover:bg-[#00387a] text-white rounded-xl text-[11px] font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all"
                                 >
-                                  <Navigation size={13} className="text-blue-300" />
+                                  <Navigation size={13} className="text-blue-200" />
                                   <span>{notif.actionLabel}</span>
                                 </button>
                               </div>
@@ -851,7 +864,7 @@ export default function App() {
                 {earlierNotifs.length > 0 && (
                   <div className="space-y-3 pt-2">
                     <div className="flex items-center justify-between px-1">
-                      <span className="text-[10px] font-black tracking-widest text-slate-400 uppercase">Earlier This Week</span>
+                      <span className="text-[11px] font-black tracking-widest text-[#002D62] uppercase">Earlier This Week</span>
                       <span className="text-[10px] font-bold text-slate-500">{earlierNotifs.length} updates</span>
                     </div>
 
@@ -859,31 +872,31 @@ export default function App() {
                       <div 
                         key={notif.id} 
                         onClick={() => markAsRead(notif.id)}
-                        className="p-4 rounded-2xl bg-[#0E1B33]/60 border border-white/10 hover:border-white/20 transition-all cursor-pointer"
+                        className="p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs transition-all cursor-pointer hover:border-slate-300"
                       >
                         <div className="flex items-start gap-3.5">
-                          <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 bg-white/5 text-slate-400 border border-white/10">
+                          <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 bg-slate-100 text-slate-500 border border-slate-200">
                             <Clock size={20} />
                           </div>
 
                           <div className="flex-1 min-w-0">
                             <div className="flex items-start justify-between gap-2">
-                              <h3 className="font-bold text-sm tracking-tight text-slate-300">
+                              <h3 className="font-bold text-sm tracking-tight text-slate-800">
                                 {notif.title}
                               </h3>
                               <div className="flex items-center gap-1">
                                 <span className="text-[10px] font-bold text-slate-400">{notif.time}</span>
                                 <button 
                                   onClick={(e) => removeNotif(e, notif.id)}
-                                  className="p-1 text-slate-500 hover:text-red-400 rounded-md transition-colors"
+                                  className="p-1 text-slate-400 hover:text-red-500 rounded-md transition-colors"
                                   title="Dismiss"
                                 >
-                                  <X size={13} />
+                                  <X size={14} />
                                 </button>
                               </div>
                             </div>
 
-                            <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                            <p className="text-xs text-slate-500 mt-1 leading-relaxed">
                               {notif.message}
                             </p>
 
@@ -891,7 +904,7 @@ export default function App() {
                               <div className="mt-3">
                                 <button
                                   onClick={() => handleNotifAction(notif)}
-                                  className="px-3.5 py-1.5 bg-white/10 hover:bg-white/15 border border-white/15 rounded-xl text-white text-[11px] font-bold flex items-center gap-1.5 active:scale-95 transition-all"
+                                  className="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-[#002D62] rounded-xl text-[11px] font-bold flex items-center gap-1.5 active:scale-95 transition-all"
                                 >
                                   <span>{notif.actionLabel}</span>
                                 </button>
@@ -909,19 +922,25 @@ export default function App() {
           </div>
 
           {/* Bottom Footer Actions */}
-          <div className="p-4 border-t border-white/10 bg-[#0B1528]/95 backdrop-blur-xl flex items-center justify-between z-20">
-            <span className="text-[11px] font-medium text-slate-400">
-              {notificationsList.length} total notifications
-            </span>
+          <div className="p-4 border-t border-slate-200 bg-white/95 backdrop-blur-md flex items-center justify-between z-20">
+            <button
+              onClick={restoreNotifications}
+              className="text-xs font-bold text-[#002D62] hover:underline flex items-center gap-1 transition-colors"
+              title="Restore demo notifications"
+            >
+              <Sparkles size={13} className="text-[#DA291C]" />
+              <span>Restore Default</span>
+            </button>
+
             {notificationsList.length > 0 && (
               <button
                 onClick={() => {
                   setNotificationsList([]);
-                  setToastMessage('Notification history cleared');
+                  setToastMessage('Notification history cleared (will return on re-open)');
                   setShowToast(true);
                   setTimeout(() => setShowToast(false), 2500);
                 }}
-                className="text-xs font-bold text-slate-400 hover:text-red-400 flex items-center gap-1.5 transition-colors"
+                className="text-xs font-bold text-slate-400 hover:text-red-500 flex items-center gap-1.5 transition-colors"
               >
                 <Trash2 size={13} />
                 <span>Clear All</span>
@@ -1541,7 +1560,12 @@ export default function App() {
 
             <div className="flex items-center gap-2">
               <button 
-                onClick={() => setShowNotifications(true)} 
+                onClick={() => {
+                  if (notificationsList.length === 0) {
+                    setNotificationsList(INITIAL_NOTIFICATIONS_DATA);
+                  }
+                  setShowNotifications(true);
+                }} 
                 className="relative p-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200/80 text-[#002D62] rounded-full transition-all active:scale-95 flex items-center justify-center shadow-2xs"
                 aria-label="Notifications"
               >
