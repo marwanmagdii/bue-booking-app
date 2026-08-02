@@ -1,0 +1,18 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "type": "document",
+      "content": "This is a web project.",
+      "label": "README.md",
+      "file_type": "concept",
+      "id": "readme",
+      "community": 0,
+      "norm_label": "readme.md"
+    }
+  ],
+  "links": [],
+  "hyperedges": []
+}
