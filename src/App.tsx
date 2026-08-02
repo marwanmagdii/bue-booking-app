@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Home, Calendar, User, Clock, Users, Wifi, Bell, ArrowLeft, ChevronLeft, ChevronRight, Monitor, Check, CheckCheck, BellOff, SlidersHorizontal, PenTool, Phone, Thermometer, Share2, Search as SearchIcon, MapPin, Coffee, Link2, ExternalLink, Plus, Trash2, Heart, LayoutGrid, BookOpen, Presentation, LogOut, ChevronRight as ChevronRightIcon, Edit3, Shield, HelpCircle, Camera, VolumeX, X, QrCode, Navigation, Copy, Sparkles, Key } from 'lucide-react';
+import { Home, Calendar, User, Clock, Users, Wifi, Bell, ArrowLeft, ChevronLeft, ChevronRight, Monitor, Check, CheckCheck, BellOff, SlidersHorizontal, PenTool, Phone, Thermometer, Share2, Search as SearchIcon, MapPin, Coffee, Link2, ExternalLink, Plus, Trash2, Heart, LayoutGrid, BookOpen, Presentation, LogOut, ChevronRight as ChevronRightIcon, Edit3, Shield, HelpCircle, Camera, VolumeX, X, QrCode, Navigation, Copy, Sparkles } from 'lucide-react';
 
 const getAsset = (path: string) => {
   const base = import.meta.env.BASE_URL || '/';
@@ -41,14 +41,16 @@ export default function App() {
   const [showInviteFilters, setShowInviteFilters] = useState(false);
   const [showGroupDetailFilters, setShowGroupDetailFilters] = useState(false);
   const [groupRoleFilter, setGroupRoleFilter] = useState('All Roles');
+  const [groupSpecializations, setGroupSpecializations] = useState<string[]>([]);
+  const [capacityRange, setCapacityRange] = useState<number>(1);
 
-  // Profession / Role Filter Options
+  // Profession / Role Filter Options & Specializations
   const professionFilterOptions = [
     { id: 'All Roles', label: 'All Roles' },
-    { id: 'Software Engineer', label: '💻 Software' },
+    { id: 'Software Engineer', label: '💻 Software Engineer' },
     { id: 'Data Analyst', label: '📊 Data & AI' },
-    { id: 'Product Designer', label: '🎨 UI/UX' },
-    { id: 'Project Manager', label: '📋 Management' },
+    { id: 'Product Designer', label: '🎨 UI/UX Design' },
+    { id: 'Project Manager', label: '📋 Project Manager' },
     { id: 'Cyber Security', label: '🔒 Cyber Security' },
     { id: 'Quality Assurance', label: '⚙️ QA & Testing' },
   ];
@@ -66,6 +68,18 @@ export default function App() {
     if (filter === 'Cyber Security' && (lowerRole.includes('cyber') || lowerRole.includes('security'))) return true;
     if (filter === 'Quality Assurance' && (lowerRole.includes('qa') || lowerRole.includes('quality') || lowerRole.includes('test'))) return true;
     return false;
+  };
+
+  const matchUserSpecializations = (userRole: string, userCategory: string | undefined, specs: string[]) => {
+    if (!specs || specs.length === 0) return true;
+    return specs.some(spec => matchUserRole(userRole, userCategory, spec));
+  };
+
+  const getRoomMaxCapacity = (capacityStr: string): number => {
+    const numbers = capacityStr.match(/\d+/g);
+    if (!numbers) return 10;
+    if (numbers.length === 1) return parseInt(numbers[0], 10);
+    return parseInt(numbers[numbers.length - 1], 10);
   };
 
 
@@ -86,7 +100,7 @@ export default function App() {
     phone: '+20 123 456 7890',
     department: 'Computer Science',
     id: 'BUE-2024-192',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200&h=200'
+    avatar: getAsset('mohamed_ali.jpg')
   });
 
   // Search & Filter State
@@ -96,18 +110,18 @@ export default function App() {
   const [availableOnly, setAvailableOnly] = useState(false);
   const [filterTime, setFilterTime] = useState('Any Time');
   const [filterDay, setFilterDay] = useState('Any Day');
-  const [filterCapacity, setFilterCapacity] = useState('Any Capacity');
 
   // My Bookings State
   const [bookingTab, setBookingTab] = useState<'upcoming' | 'past'>('upcoming');
   const [viewingBooking, setViewingBooking] = useState<any>(null);
+  const [showCancelConfirmModal, setShowCancelConfirmModal] = useState(false);
   const [myBookingsDate, setMyBookingsDate] = useState(new Date());
   const [myBookingsActiveDay, setMyBookingsActiveDay] = useState(new Date().getDate());
   const [showMonthPicker, setShowMonthPicker] = useState(false);
   const [pickerYear, setPickerYear] = useState(new Date().getFullYear());
   
   // Favorites
-  const [favorites, setFavorites] = useState<string[]>([]);
+  const [favorites, setFavorites] = useState<string[]>(['Conference Room A', 'Study Room B', 'Library Pod 4']);
 
   // Booking Flow State
   const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -213,8 +227,11 @@ export default function App() {
   const [notificationsList, setNotificationsList] = useState(INITIAL_NOTIFICATIONS_DATA);
 
   const [bookings, setBookings] = useState([
-    { id: 1, room: 'Meeting Room 1', date: 'May 14', time: '10:00 AM - 11:30 AM', image: getAsset('meeting_room.jpg'), status: 'Confirmed', attendees: ['Mohamed (You)', 'Ahmed Ali'] },
-    { id: 2, room: 'Study Room B', date: 'May 15', time: '02:00 PM - 05:00 PM', image: getAsset('study_room.jpg'), status: 'In Progress', attendees: ['Mohamed (You)'] }
+    { id: 1, room: 'Meeting Room 1', date: 'Aug 3', time: '10:00 AM - 11:30 AM', image: getAsset('meeting_room.jpg'), status: 'Confirmed', attendees: ['Mohamed (You)', 'Ahmed Ali', 'Omar Hassan'] },
+    { id: 2, room: 'Study Room B', date: 'Aug 4', time: '02:00 PM - 05:00 PM', image: getAsset('study_room.jpg'), status: 'Confirmed', attendees: ['Mohamed (You)', 'Khaled Youssef'] },
+    { id: 3, room: 'Conference Room A', date: 'Aug 5', time: '11:00 AM - 01:00 PM', image: getAsset('conference_hall.jpg'), status: 'Confirmed', attendees: ['Mohamed (You)', 'Sara Hassan', 'Mohamed Tariq'] },
+    { id: 4, room: 'Library Pod 4', date: 'Aug 6', time: '09:00 AM - 12:00 PM', image: getAsset('library_pod.jpg'), status: 'Confirmed', attendees: ['Mohamed (You)'] },
+    { id: 5, room: 'Media Studio', date: 'Aug 7', time: '03:00 PM - 05:30 PM', image: getAsset('media_studio.jpg'), status: 'Confirmed', attendees: ['Mohamed (You)', 'Tarek Mahmoud'] }
   ]);
 
   const pastBookings = [
@@ -517,7 +534,8 @@ export default function App() {
     const matchesSearch = r.name.toLowerCase().includes(searchQuery.toLowerCase()) || r.type.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesType = filterType === 'All' ? true : r.type.toLowerCase() === filterType.toLowerCase();
     const matchesAvailability = availableOnly ? r.available === true : true;
-    return matchesSearch && matchesType && matchesAvailability;
+    const matchesCapacity = capacityRange <= 1 ? true : getRoomMaxCapacity(r.capacity) >= capacityRange;
+    return matchesSearch && matchesType && matchesAvailability && matchesCapacity;
   });
 
   const filteredUsers = bueUsers.filter(u => {
@@ -1046,12 +1064,12 @@ export default function App() {
                     {selectedRoom.type}
                   </span>
                   {selectedRoom.available ? (
-                    <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
+                    <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      Available Now
+                      Available
                     </span>
                   ) : (
-                    <span className="bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-black px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
+                    <span className="bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
                       In Use • Free at {selectedRoom.nextFreeTime || '2:00 PM'}
                     </span>
@@ -1614,7 +1632,6 @@ export default function App() {
           {activeTab === 'home' && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-5">
 
-
               {/* ③ Next Session Live Pass Card */}
               <div className="px-5">
                 {bookings.length > 0 ? (
@@ -1879,79 +1896,130 @@ export default function App() {
                   )}
                 </div>
 
-                {/* Available Now Toggle Pill with Pulsing Green Dot */}
-                <button
-                  onClick={() => setAvailableOnly(!availableOnly)}
-                  className={`px-3 py-2.5 rounded-xl border flex items-center gap-1.5 transition-all text-xs font-bold shrink-0 cursor-pointer active:scale-95 ${
-                    availableOnly 
-                      ? 'bg-emerald-600 text-white border-emerald-600 shadow-md ring-2 ring-emerald-500/30' 
-                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
-                  }`}
-                  title="Filter spaces available right now"
-                >
-                  <span className={`w-2 h-2 rounded-full ${availableOnly ? 'bg-white animate-pulse' : 'bg-emerald-500'}`} />
-                  <span className="text-[11px] whitespace-nowrap font-bold">Available</span>
-                </button>
-
                 {/* More Filters Toggle */}
                 <button 
                   onClick={() => setShowFilters(!showFilters)}
-                  className={`p-2.5 rounded-xl border flex items-center justify-center transition-all shrink-0 ${
-                    showFilters || filterDay !== 'Any Day' || filterTime !== 'Any Time' || filterCapacity !== 'Any Capacity'
+                  className={`p-3 rounded-xl border flex items-center justify-center gap-1.5 transition-all shrink-0 font-bold text-xs ${
+                    showFilters || availableOnly || filterDay !== 'Any Day' || filterTime !== 'Any Time' || capacityRange > 1
                       ? 'bg-[#002D62] text-white border-[#002D62] shadow-xs' 
                       : 'bg-white text-[#002D62] border-slate-200 hover:bg-slate-50'
                   }`}
                   title="Filter options"
                 >
                   <SlidersHorizontal size={16} />
+                  <span>Filter</span>
+                  {(availableOnly || filterDay !== 'Any Day' || filterTime !== 'Any Time' || capacityRange > 1) && (
+                    <span className="w-2 h-2 rounded-full bg-[#DA291C]" />
+                  )}
                 </button>
               </div>
 
               {showFilters && (
-                <div className="bg-white border border-slate-200 p-4 rounded-2xl shadow-sm animate-in fade-in slide-in-from-top-2">
-                  <p className="text-xs font-bold text-[#002D62] uppercase tracking-wider mb-2 flex items-center gap-1.5"><Calendar size={12} className="text-[#DA291C]"/> Search by Day</p>
-                  <div className="flex gap-2 mb-4 overflow-x-auto scrollbar-hide">
-                    {['Any Day', 'SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map(day => (
-                      <span 
-                        key={day}
-                        onClick={() => setFilterDay(day)}
-                        className={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-all border ${
-                          filterDay === day ? 'bg-[#002D62] text-white border-[#002D62]' : 'bg-slate-50 text-slate-500 border-slate-200'
-                        }`}
-                      >
-                        {day}
-                      </span>
-                    ))}
+                <div className="bg-white border border-slate-200 p-4 rounded-2xl shadow-md animate-in fade-in slide-in-from-top-2 space-y-4">
+                  {/* Available Now Toggle Inside Filter */}
+                  <div 
+                    onClick={() => setAvailableOnly(!availableOnly)}
+                    className={`p-3 rounded-xl border flex items-center justify-between cursor-pointer transition-all ${
+                      availableOnly 
+                        ? 'bg-emerald-50/80 border-emerald-300 ring-1 ring-emerald-400/30' 
+                        : 'bg-slate-50 border-slate-200 hover:bg-slate-100'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <span className={`w-2.5 h-2.5 rounded-full ${availableOnly ? 'bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]' : 'bg-slate-300'}`} />
+                      <div>
+                        <p className="text-xs font-bold text-[#002D62] leading-tight">Available Now</p>
+                        <p className="text-[10px] text-slate-500 font-medium">Show only spaces free right now</p>
+                      </div>
+                    </div>
+                    <div className={`w-10 h-5 rounded-full transition-colors relative flex items-center px-0.5 ${availableOnly ? 'bg-emerald-500' : 'bg-slate-300'}`}>
+                      <div className={`w-4 h-4 rounded-full bg-white shadow-sm transition-transform ${availableOnly ? 'translate-x-5' : 'translate-x-0'}`} />
+                    </div>
                   </div>
 
-                  <p className="text-xs font-bold text-[#002D62] uppercase tracking-wider mb-2 flex items-center gap-1.5"><Clock size={12} className="text-[#DA291C]"/> Search by Time</p>
-                  <div className="flex gap-2 mb-4 overflow-x-auto scrollbar-hide">
-                    {['Any Time', '09:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '01:00 PM'].map(time => (
-                      <span 
-                        key={time}
-                        onClick={() => setFilterTime(time)}
-                        className={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-all border ${
-                          filterTime === time ? 'bg-[#002D62] text-white border-[#002D62]' : 'bg-slate-50 text-slate-500 border-slate-200'
-                        }`}
-                      >
-                        {time}
-                      </span>
-                    ))}
+                  <div>
+                    <p className="text-xs font-bold text-[#002D62] uppercase tracking-wider mb-2 flex items-center gap-1.5"><Calendar size={12} className="text-[#DA291C]"/> Search by Day</p>
+                    <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+                      {['Any Day', 'SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map(day => (
+                        <span 
+                          key={day}
+                          onClick={() => setFilterDay(day)}
+                          className={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-all border ${
+                            filterDay === day ? 'bg-[#002D62] text-white border-[#002D62]' : 'bg-slate-50 text-slate-500 border-slate-200'
+                          }`}
+                        >
+                          {day}
+                        </span>
+                      ))}
+                    </div>
                   </div>
 
-                  <p className="text-xs font-bold text-[#002D62] uppercase tracking-wider mb-2 flex items-center gap-1.5"><Users size={12} className="text-[#DA291C]"/> Search by Capacity</p>
-                  <div className="flex gap-2 mb-4 overflow-x-auto scrollbar-hide">
-                    {['Any Capacity', '1-2 People', '3-6 People', '6-10 People', '10+ People'].map(cap => (
-                      <span 
-                        key={cap}
-                        onClick={() => setFilterCapacity(cap)}
-                        className={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-all border ${
-                          filterCapacity === cap ? 'bg-[#002D62] text-white border-[#002D62]' : 'bg-slate-50 text-slate-500 border-slate-200'
-                        }`}
-                      >
-                        {cap}
+                  <div>
+                    <p className="text-xs font-bold text-[#002D62] uppercase tracking-wider mb-2 flex items-center gap-1.5"><Clock size={12} className="text-[#DA291C]"/> Search by Time</p>
+                    <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+                      {['Any Time', '09:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '01:00 PM'].map(time => (
+                        <span 
+                          key={time}
+                          onClick={() => setFilterTime(time)}
+                          className={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-all border ${
+                            filterTime === time ? 'bg-[#002D62] text-white border-[#002D62]' : 'bg-slate-50 text-slate-500 border-slate-200'
+                          }`}
+                        >
+                          {time}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="pt-1">
+                    <div className="flex justify-between items-center mb-2">
+                      <p className="text-xs font-bold text-[#002D62] uppercase tracking-wider flex items-center gap-1.5">
+                        <Users size={12} className="text-[#DA291C]"/> Capacity Filter (Seats)
+                      </p>
+                      <span className="text-xs font-black text-[#002D62] bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-full">
+                        {capacityRange <= 1 ? 'Any Size (1–50+)' : `Min ${capacityRange} Seats`}
                       </span>
-                    ))}
+                    </div>
+
+                    <div className="px-1">
+                      <input 
+                        type="range"
+                        min="1"
+                        max="50"
+                        value={capacityRange}
+                        onChange={(e) => setCapacityRange(Number(e.target.value))}
+                        className="w-full accent-[#002D62] cursor-pointer h-2 bg-slate-200 rounded-lg appearance-none"
+                      />
+                      <div className="flex justify-between text-[10px] font-bold text-slate-400 mt-1">
+                        <span>1 Seat</span>
+                        <span>10</span>
+                        <span>25</span>
+                        <span>50+ Seats</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Save and Reset Action Buttons */}
+                  <div className="flex gap-2 pt-2 border-t border-slate-100">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setFilterDay('Any Day');
+                        setFilterTime('Any Time');
+                        setCapacityRange(1);
+                        setAvailableOnly(false);
+                      }}
+                      className="flex-1 py-2.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-50 transition-colors"
+                    >
+                      Reset
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowFilters(false)}
+                      className="flex-1 py-2.5 rounded-xl bg-[#002D62] text-white font-bold text-xs hover:bg-[#002D62]/90 shadow-xs transition-all active:scale-[0.98]"
+                    >
+                      Save Filters
+                    </button>
                   </div>
                 </div>
               )}
@@ -2116,8 +2184,8 @@ export default function App() {
                       </button>
                       {viewingBooking.status !== 'Completed' && (
                         <button 
-                          onClick={() => cancelBooking(viewingBooking.id)} 
-                          className="p-2 text-[#DA291C] bg-red-50 hover:bg-red-100 border border-red-100 rounded-full transition-all active:scale-95 shadow-2xs flex items-center justify-center"
+                          onClick={() => setShowCancelConfirmModal(true)} 
+                          className="p-2 text-[#DA291C] bg-red-50 hover:bg-red-100 border border-red-100 rounded-full transition-all active:scale-95 shadow-2xs flex items-center justify-center cursor-pointer"
                           title="Cancel Reservation"
                         >
                           <Trash2 size={17} />
@@ -2136,23 +2204,23 @@ export default function App() {
                       <div className="absolute -bottom-12 -left-12 w-40 h-40 bg-blue-400/10 rounded-full blur-2xl pointer-events-none" />
                       
                       {/* Ticket Top Header */}
-                      <div className="flex items-center justify-between mb-4 relative z-10 border-b border-white/10 pb-3">
+                      <div className="flex items-center justify-between mb-2.5 relative z-10 border-b border-white/10 pb-2">
                         <div className="flex items-center gap-2">
                           <div className="w-6 h-6 rounded-lg bg-[#DA291C] flex items-center justify-center font-black text-white text-[11px] shadow-sm">
                             B
                           </div>
-                          <div>
-                            <span className="text-[10px] font-extrabold text-blue-200 tracking-wider block leading-none">THE BRITISH UNIVERSITY</span>
-                            <span className="text-[8px] font-bold text-slate-300 tracking-widest uppercase">Smart Campus Pass</span>
+                          <div className="flex flex-col justify-center">
+                            <span className="text-[10px] font-extrabold text-blue-200 tracking-wider block leading-tight">THE BRITISH UNIVERSITY</span>
+                            <span className="text-[8px] font-bold text-slate-300 tracking-widest uppercase block leading-none mt-0.5">Smart Campus Pass</span>
                           </div>
                         </div>
 
                         {viewingBooking.status === 'Completed' ? (
-                          <span className="bg-white/15 text-slate-200 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider border border-white/10">
+                          <span className="bg-white/15 text-slate-200 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider border border-white/10">
                             Completed
                           </span>
                         ) : (
-                          <span className="flex items-center gap-1.5 bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
+                          <span className="flex items-center gap-1.5 bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
                             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                             Confirmed Pass
                           </span>
@@ -2160,7 +2228,7 @@ export default function App() {
                       </div>
 
                       {/* Hero Image with Rounded Frame */}
-                      <div className="relative rounded-2xl overflow-hidden mb-4 shadow-md group">
+                      <div className="relative rounded-2xl overflow-hidden mb-3 shadow-md group">
                         <img 
                           src={viewingBooking.image} 
                           className="w-full h-44 object-cover group-hover:scale-105 transition-transform duration-500" 
@@ -2208,24 +2276,26 @@ export default function App() {
                       </div>
 
                       {/* Ticket Divider Notch */}
-                      <div className="relative py-2 my-1">
+                      <div className="relative py-2 my-0.5">
                         <div className="border-t-2 border-dashed border-white/20" />
                         <div className="absolute -left-8 top-1/2 -translate-y-1/2 w-6 h-6 bg-slate-100 rounded-full" />
                         <div className="absolute -right-8 top-1/2 -translate-y-1/2 w-6 h-6 bg-slate-100 rounded-full" />
                       </div>
 
                       {/* Pass Quick Details Matrix */}
-                      <div className="grid grid-cols-2 gap-3 pt-1">
-                        <div className="bg-white/10 backdrop-blur-sm p-2.5 rounded-xl border border-white/10">
-                          <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest block mb-0.5">Reserved Date</span>
-                          <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                            <Calendar size={13} className="text-[#DA291C]" /> {viewingBooking.date}
+                      <div className="grid grid-cols-2 gap-2 pt-0.5">
+                        <div className="bg-white/10 backdrop-blur-sm px-3 py-2 rounded-xl border border-white/10 flex flex-col justify-center">
+                          <span className="text-[9px] font-bold text-slate-300 uppercase tracking-wider block mb-0.5">Reserved Date</span>
+                          <span className="text-xs font-bold text-white flex items-center gap-1.5 whitespace-nowrap">
+                            <Calendar size={12} className="text-[#DA291C] shrink-0" /> 
+                            <span>{viewingBooking.date}</span>
                           </span>
                         </div>
-                        <div className="bg-white/10 backdrop-blur-sm p-2.5 rounded-xl border border-white/10">
-                          <span className="text-[9px] font-bold text-slate-300 uppercase tracking-widest block mb-0.5">Reserved Slot</span>
-                          <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                            <Clock size={13} className="text-emerald-400" /> {viewingBooking.time}
+                        <div className="bg-white/10 backdrop-blur-sm px-3 py-2 rounded-xl border border-white/10 flex flex-col justify-center min-w-0">
+                          <span className="text-[9px] font-bold text-slate-300 uppercase tracking-wider block mb-0.5 whitespace-nowrap">Reserved Slot</span>
+                          <span className="text-[11px] font-bold text-white flex items-center gap-1 whitespace-nowrap tracking-tight">
+                            <Clock size={12} className="text-emerald-400 shrink-0" /> 
+                            <span className="whitespace-nowrap">{viewingBooking.time}</span>
                           </span>
                         </div>
                       </div>
@@ -2233,8 +2303,8 @@ export default function App() {
 
                     {/* Live Real-time Countdown Banner */}
                     {viewingBooking.status !== 'Completed' ? (
-                      <div className="bg-gradient-to-r from-slate-900 to-[#002D62] text-white p-4 rounded-2xl shadow-md border border-slate-700/60 relative overflow-hidden">
-                        <div className="flex items-center justify-between mb-2.5">
+                      <div className="bg-gradient-to-r from-slate-900 to-[#002D62] text-white p-3.5 rounded-2xl shadow-md border border-slate-700/60 relative overflow-hidden">
+                        <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-2">
                             <div className="w-2 h-2 rounded-full bg-[#DA291C] animate-ping" />
                             <span className="text-[11px] font-extrabold uppercase tracking-widest text-slate-200 flex items-center gap-1.5">
@@ -2268,9 +2338,9 @@ export default function App() {
                           </div>
                         </div>
                         
-                        <p className="text-[10px] text-slate-300 text-center font-medium mt-2 flex items-center justify-center gap-1">
-                          <Sparkles size={10} className="text-amber-400" />
-                          Door lock & Turnstiles will auto-unlock 15 minutes before slot time
+                        <p className="text-[9.5px] text-slate-300 text-center font-medium mt-2 flex items-center justify-center gap-1 whitespace-nowrap px-1">
+                          <Sparkles size={11} className="text-amber-400 shrink-0" />
+                          <span className="whitespace-nowrap">Turnstiles & Campus Access auto-unlock 15 minutes before slot time</span>
                         </p>
                       </div>
                     ) : (
@@ -2291,62 +2361,29 @@ export default function App() {
                       </div>
                     )}
 
-                    {/* Digital Door Access & Smart Pass Widget */}
-                    <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="p-2 bg-blue-50 text-[#002D62] rounded-xl">
-                            <Key size={16} />
-                          </div>
-                          <div>
-                            <h3 className="text-xs font-bold text-[#002D62]">Smart Access & Connectivity</h3>
-                            <p className="text-[10px] font-medium text-slate-400">Digital Key Pass & Campus Wi-Fi</p>
-                          </div>
+                    {/* Campus Wi-Fi Quick Access Card */}
+                    <button 
+                      onClick={() => {
+                        setToastMessage(`Wi-Fi passcode copied: BUE2026Secure`);
+                        setShowToast(true);
+                        setTimeout(() => setShowToast(false), 3000);
+                      }}
+                      className="w-full bg-white hover:bg-slate-50 border border-slate-200/80 p-3.5 rounded-2xl flex items-center justify-between text-left shadow-xs transition-all active:scale-[0.99] cursor-pointer"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-xl bg-blue-50 text-[#002D62] flex items-center justify-center font-bold">
+                          <Wifi size={17} />
                         </div>
-                        <button 
-                          onClick={() => setShowQrAccessModal(true)}
-                          className="text-[11px] font-bold text-[#DA291C] hover:underline flex items-center gap-1"
-                        >
-                          <QrCode size={13} /> Show QR Pass
-                        </button>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-2 pt-1">
-                        {/* Door Unlock Button */}
-                        <button 
-                          onClick={() => {
-                            setToastMessage(`🚪 Door Unlocked! Welcome to ${viewingBooking.room}.`);
-                            setShowToast(true);
-                            setTimeout(() => setShowToast(false), 3000);
-                          }}
-                          className="bg-slate-50 hover:bg-slate-100 border border-slate-200 p-2.5 rounded-xl text-left transition-all active:scale-95 group"
-                        >
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Door Lock</span>
-                            <span className="w-2 h-2 rounded-full bg-emerald-500 group-hover:animate-ping" />
-                          </div>
-                          <span className="text-xs font-bold text-[#002D62] block">Tap to Unlock</span>
-                          <span className="text-[9px] font-medium text-slate-400">Digital Campus Key</span>
-                        </button>
-
-                        {/* Fast Wi-Fi Access */}
-                        <button 
-                          onClick={() => {
-                            setToastMessage(`Wi-Fi passcode copied: BUE2026Secure`);
-                            setShowToast(true);
-                            setTimeout(() => setShowToast(false), 3000);
-                          }}
-                          className="bg-slate-50 hover:bg-slate-100 border border-slate-200 p-2.5 rounded-xl text-left transition-all active:scale-95"
-                        >
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Wi-Fi Network</span>
-                            <Copy size={11} className="text-slate-400" />
-                          </div>
+                        <div>
+                          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Campus Wi-Fi Network</span>
                           <span className="text-xs font-bold text-[#002D62] block">BUE-Campus-5G</span>
-                          <span className="text-[9px] font-medium text-emerald-600">Copy Passcode</span>
-                        </button>
+                        </div>
                       </div>
-                    </div>
+                      <div className="flex items-center gap-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-xl text-[11px] font-bold text-emerald-700">
+                        <Copy size={12} />
+                        <span>Copy Passcode</span>
+                      </div>
+                    </button>
 
                     {/* Room Included Amenities */}
                     <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs">
@@ -2738,6 +2775,60 @@ export default function App() {
                         >
                           Add to Digital Wallet
                         </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Cancel Booking Confirmation Modal */}
+                  {showCancelConfirmModal && (
+                    <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200">
+                      <div className="bg-white rounded-3xl p-6 max-w-[340px] w-full shadow-2xl border border-slate-100 text-center space-y-4 animate-in zoom-in-95 duration-200 relative">
+                        <button 
+                          onClick={() => setShowCancelConfirmModal(false)}
+                          className="absolute right-4 top-4 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full text-slate-600 transition-colors"
+                        >
+                          <X size={16} />
+                        </button>
+
+                        <div className="w-14 h-14 rounded-2xl bg-red-50 text-[#DA291C] flex items-center justify-center mx-auto shadow-inner border border-red-100/80">
+                          <Trash2 size={24} strokeWidth={2.2} />
+                        </div>
+
+                        <div>
+                          <h3 className="text-lg font-black text-[#002D62] tracking-tight">Cancel Reservation?</h3>
+                        </div>
+
+                        {/* High Readability Reservation Summary Card */}
+                        <div className="bg-slate-50/90 rounded-2xl p-3.5 border border-slate-200/90 text-left space-y-2 shadow-2xs">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-xs font-black text-[#002D62] truncate">{viewingBooking.room}</span>
+                            <span className="text-[10px] font-extrabold text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-md border border-emerald-200/80 shrink-0">
+                              {viewingBooking.date}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1.5 text-slate-700 text-xs font-semibold">
+                            <Clock size={13} className="text-[#DA291C] shrink-0" strokeWidth={2.5} />
+                            <span>{viewingBooking.time}</span>
+                          </div>
+                        </div>
+
+                        <div className="flex gap-2.5 pt-1">
+                          <button 
+                            onClick={() => setShowCancelConfirmModal(false)}
+                            className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 rounded-xl text-xs transition-all active:scale-95 cursor-pointer shadow-2xs"
+                          >
+                            Keep
+                          </button>
+                          <button 
+                            onClick={() => {
+                              setShowCancelConfirmModal(false);
+                              cancelBooking(viewingBooking.id);
+                            }}
+                            className="flex-1 bg-[#DA291C] hover:bg-red-700 text-white font-bold py-3 rounded-xl text-xs shadow-md shadow-red-500/25 transition-all active:scale-95 cursor-pointer"
+                          >
+                            Cancel
+                          </button>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -3360,18 +3451,43 @@ export default function App() {
                       <button
                         onClick={() => setShowGroupDetailFilters(!showGroupDetailFilters)}
                         className={`px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shrink-0 border ${
-                          showGroupDetailFilters || groupRoleFilter !== 'All Roles'
+                          showGroupDetailFilters || groupSpecializations.length > 0 || groupRoleFilter !== 'All Roles'
                             ? 'bg-[#002D62] text-white border-[#002D62] shadow-xs'
                             : 'bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200'
                         }`}
                       >
                         <SlidersHorizontal size={13} />
                         <span>Filter</span>
-                        {groupRoleFilter !== 'All Roles' && (
-                          <span className="w-2 h-2 rounded-full bg-[#DA291C]" />
+                        {(groupSpecializations.length > 0 || groupRoleFilter !== 'All Roles') && (
+                          <span className="min-w-[16px] h-4 px-1 rounded-full bg-[#DA291C] text-white text-[9px] font-black flex items-center justify-center">
+                            {groupSpecializations.length > 0 ? groupSpecializations.length : 1}
+                          </span>
                         )}
                       </button>
                     </div>
+
+                    {/* Active Specialization Badges */}
+                    {groupSpecializations.length > 0 && (
+                      <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
+                        <span className="text-[10px] font-bold text-slate-400">Specializations:</span>
+                        {groupSpecializations.map((spec) => (
+                          <button
+                            key={spec}
+                            onClick={() => setGroupSpecializations(prev => prev.filter(s => s !== spec))}
+                            className="bg-blue-50 border border-blue-200 text-[#002D62] text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors"
+                          >
+                            <span>{professionFilterOptions.find(p => p.id === spec)?.label.replace(/^[^\s]+\s/, '') || spec}</span>
+                            <X size={10} />
+                          </button>
+                        ))}
+                        <button
+                          onClick={() => setGroupSpecializations([])}
+                          className="text-[10px] text-[#DA291C] font-bold underline ml-1"
+                        >
+                          Clear
+                        </button>
+                      </div>
+                    )}
 
                     {/* Filter Tabs (All / In Group / Available) */}
                     <div className="flex gap-2">
@@ -3394,29 +3510,48 @@ export default function App() {
                       ))}
                     </div>
 
-                    {/* Collapsible Profession / Role Filters */}
+                    {/* Collapsible Multi-Select Specialization / Role Dropdown Panel */}
                     {showGroupDetailFilters && (
-                      <div className="bg-slate-50 rounded-2xl p-3 border border-slate-200 space-y-1.5 animate-in fade-in slide-in-from-top-1 duration-200">
+                      <div className="bg-slate-50 rounded-2xl p-3 border border-slate-200 space-y-2 animate-in fade-in slide-in-from-top-1 duration-200">
                         <div className="flex justify-between items-center px-0.5">
-                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Filter by Profession / Role</span>
-                          {groupRoleFilter !== 'All Roles' && (
-                            <button onClick={() => setGroupRoleFilter('All Roles')} className="text-[10px] text-[#DA291C] font-bold">Reset</button>
+                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Filter by Specialization (Multi-Select)</span>
+                          {(groupSpecializations.length > 0 || groupRoleFilter !== 'All Roles') && (
+                            <button 
+                              onClick={() => { setGroupSpecializations([]); setGroupRoleFilter('All Roles'); }} 
+                              className="text-[10px] text-[#DA291C] font-bold hover:underline"
+                            >
+                              Reset All
+                            </button>
                           )}
                         </div>
-                        <div className="flex gap-1.5 overflow-x-auto scrollbar-hide pb-1">
-                          {professionFilterOptions.map((opt) => (
-                            <button
-                              key={opt.id}
-                              onClick={() => setGroupRoleFilter(opt.id)}
-                              className={`px-2.5 py-1 rounded-full text-[11px] font-bold shrink-0 transition-all ${
-                                groupRoleFilter === opt.id
-                                  ? 'bg-[#DA291C] text-white shadow-xs scale-[1.02]'
-                                  : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
-                              }`}
-                            >
-                              {opt.label}
-                            </button>
-                          ))}
+                        <div className="grid grid-cols-2 gap-1.5">
+                          {professionFilterOptions.filter(opt => opt.id !== 'All Roles').map((opt) => {
+                            const isSelected = groupSpecializations.includes(opt.id);
+                            return (
+                              <button
+                                key={opt.id}
+                                onClick={() => {
+                                  setGroupSpecializations(prev => 
+                                    prev.includes(opt.id) 
+                                      ? prev.filter(s => s !== opt.id) 
+                                      : [...prev, opt.id]
+                                  );
+                                }}
+                                className={`px-2.5 py-1.5 rounded-xl text-[11px] font-bold text-left flex items-center justify-between border transition-all ${
+                                  isSelected
+                                    ? 'bg-[#002D62] text-white border-[#002D62] shadow-xs'
+                                    : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
+                                }`}
+                              >
+                                <span className="truncate">{opt.label}</span>
+                                {isSelected ? (
+                                  <Check size={12} className="text-emerald-400 shrink-0 ml-1" />
+                                ) : (
+                                  <Plus size={12} className="text-slate-400 shrink-0 ml-1" />
+                                )}
+                              </button>
+                            );
+                          })}
                         </div>
                       </div>
                     )}
@@ -3427,7 +3562,9 @@ export default function App() {
                     {bueUsers
                       .filter(u => {
                         const matchesSearch = u.name.toLowerCase().includes(groupPeopleSearch.toLowerCase()) || u.role.toLowerCase().includes(groupPeopleSearch.toLowerCase());
-                        const matchesRole = matchUserRole(u.role, (u as any).category, groupRoleFilter);
+                        const matchesRole = groupSpecializations.length > 0 
+                          ? matchUserSpecializations(u.role, (u as any).category, groupSpecializations)
+                          : matchUserRole(u.role, (u as any).category, groupRoleFilter);
                         const isMember = u.group === editingGroupName;
                         if (groupPeopleFilter === 'members') return matchesSearch && matchesRole && isMember;
                         if (groupPeopleFilter === 'available') return matchesSearch && matchesRole && !isMember;
