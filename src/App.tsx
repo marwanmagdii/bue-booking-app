@@ -1881,13 +1881,7 @@ export default function App() {
 
                 {/* Available Now Toggle Pill with Pulsing Green Dot */}
                 <button
-                  onClick={() => {
-                    const next = !availableOnly;
-                    setAvailableOnly(next);
-                    setToastMessage(next ? 'Filtered: Showing available spaces only' : 'Showing all spaces');
-                    setShowToast(true);
-                    setTimeout(() => setShowToast(false), 2000);
-                  }}
+                  onClick={() => setAvailableOnly(!availableOnly)}
                   className={`px-3 py-2.5 rounded-xl border flex items-center gap-1.5 transition-all text-xs font-bold shrink-0 cursor-pointer active:scale-95 ${
                     availableOnly 
                       ? 'bg-emerald-600 text-white border-emerald-600 shadow-md ring-2 ring-emerald-500/30' 
