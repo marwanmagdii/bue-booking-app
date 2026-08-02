@@ -143,88 +143,88 @@ export default function App() {
   ];
 
   const [bookings, setBookings] = useState([
-    { id: 1, room: 'Meeting Room 1', date: 'May 14', time: '10:00 AM - 11:30 AM', image: '/meeting_room.jpg', status: 'Confirmed', attendees: ['Mohamed (You)', 'Ahmed Ali'] },
-    { id: 2, room: 'Study Room B', date: 'May 15', time: '02:00 PM - 05:00 PM', image: '/study_room.jpg', status: 'In Progress', attendees: ['Mohamed (You)'] }
+    { id: 1, room: 'Meeting Room 1', date: 'May 14', time: '10:00 AM - 11:30 AM', image: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&q=80&w=800&h=500', status: 'Confirmed', attendees: ['Mohamed (You)', 'Ahmed Ali'] },
+    { id: 2, room: 'Study Room B', date: 'May 15', time: '02:00 PM - 05:00 PM', image: 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&q=80&w=800&h=500', status: 'In Progress', attendees: ['Mohamed (You)'] }
   ]);
 
   const pastBookings = [
-    { id: 101, room: 'Study Room B', date: 'Oct 15', time: '09:00 AM - 11:00 AM', image: '/study_room.jpg', status: 'Completed', attendees: ['Sara Hassan', 'Mohamed Tariq'] },
-    { id: 102, room: 'Conference Room A', date: 'Sep 28', time: '01:00 PM - 04:00 PM', image: '/conference_hall.jpg', status: 'Completed', attendees: [] },
+    { id: 101, room: 'Study Room B', date: 'Oct 15', time: '09:00 AM - 11:00 AM', image: 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&q=80&w=800&h=500', status: 'Completed', attendees: ['Sara Hassan', 'Mohamed Tariq'] },
+    { id: 102, room: 'Conference Room A', date: 'Sep 28', time: '01:00 PM - 04:00 PM', image: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&q=80&w=800&h=500', status: 'Completed', attendees: [] },
   ];
 
   const rooms = [
     { 
-      name: 'Conference Room A', location: 'Building G, Floor 3', images: ['/conference_hall.jpg'], type: 'Theater', capacity: '8-12 People',
+      name: 'Conference Room A', location: 'Building G, Floor 3', images: ['https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&q=80&w=800&h=500'], type: 'Theater', capacity: '8-12 People',
       description: 'A modern, acoustically treated conference room ideal for high-stakes presentations.',
       amenities: [{ icon: Monitor, label: 'Smart TV' }, { icon: PenTool, label: 'Whiteboard' }, { icon: Thermometer, label: 'Climate Control' }], available: true 
     },
     { 
-      name: 'Auditorium B', location: 'Building A, Floor 1', images: ['/theater_2.jpg'], type: 'Theater', capacity: '50-100 People',
+      name: 'Auditorium B', location: 'Building A, Floor 1', images: ['https://images.unsplash.com/photo-1544531586-fde5298cdd40?auto=format&fit=crop&q=80&w=800&h=500'], type: 'Theater', capacity: '50-100 People',
       description: 'Large auditorium for guest speakers and major events.',
       amenities: [{ icon: Monitor, label: 'Projector' }, { icon: VolumeX, label: 'Sound System' }, { icon: Thermometer, label: 'Climate Control' }], available: true 
     },
     { 
-      name: 'Lecture Hall', location: 'Building C, Floor 1', images: ['/theater_3.jpg'], type: 'Theater', capacity: '30-50 People',
+      name: 'Lecture Hall', location: 'Building C, Floor 1', images: ['https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&q=80&w=800&h=500'], type: 'Theater', capacity: '30-50 People',
       description: 'Standard lecture hall with multiple whiteboards.',
       amenities: [{ icon: PenTool, label: 'Whiteboards' }, { icon: Thermometer, label: 'Climate Control' }], available: true 
     },
     { 
-      name: 'Study Room B', location: 'Main Library, Floor 1', images: ['/study_room.jpg'], type: 'Study', capacity: '1-2 People',
+      name: 'Study Room B', location: 'Main Library, Floor 1', images: ['https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&q=80&w=800&h=500'], type: 'Study', capacity: '1-2 People',
       description: 'A dedicated quiet space for deep work and focused study.',
       amenities: [{ icon: Wifi, label: 'Fast WiFi' }, { icon: PenTool, label: 'Whiteboard' }, { icon: Coffee, label: 'Coffee Nearby' }], available: true 
     },
     { 
-      name: 'Library Pod 4', location: 'Main Library, Basement', images: ['/library_pod.jpg'], type: 'Study', capacity: '1 Person',
+      name: 'Library Pod 4', location: 'Main Library, Basement', images: ['https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&q=80&w=800&h=500'], type: 'Study', capacity: '1 Person',
       description: 'Acoustically treated personal pod.',
       amenities: [{ icon: VolumeX, label: 'Soundproof' }, { icon: Thermometer, label: 'A/C' }], available: true 
     },
     { 
-      name: 'Quiet Zone', location: 'Main Library, Floor 2', images: ['/study_room_alt.jpg'], type: 'Study', capacity: '1-4 People',
+      name: 'Quiet Zone', location: 'Main Library, Floor 2', images: ['https://images.unsplash.com/photo-1568667256549-094345857637?auto=format&fit=crop&q=80&w=800&h=500'], type: 'Study', capacity: '1-4 People',
       description: 'Open quiet area for group study.',
       amenities: [{ icon: Wifi, label: 'Fast WiFi' }, { icon: Thermometer, label: 'A/C' }], available: true 
     },
     { 
-      name: 'Meeting Room 1', location: 'Building B, Floor 2', images: ['/meeting_room.jpg'], type: 'Meeting', capacity: '4-8 People',
+      name: 'Meeting Room 1', location: 'Building B, Floor 2', images: ['https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&q=80&w=800&h=500'], type: 'Meeting', capacity: '4-8 People',
       description: 'Premium meeting room designed for group collaboration.',
       amenities: [{ icon: Monitor, label: 'Smart TV' }, { icon: Wifi, label: 'WiFi' }, { icon: PenTool, label: 'Whiteboard' }], available: true 
     },
     { 
-      name: 'Executive Boardroom', location: 'Building G, Floor 5', images: ['/meeting_3.jpg'], type: 'Meeting', capacity: '10-15 People',
+      name: 'Executive Boardroom', location: 'Building G, Floor 5', images: ['https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&q=80&w=800&h=500'], type: 'Meeting', capacity: '10-15 People',
       description: 'Luxurious boardroom with city views.',
       amenities: [{ icon: Monitor, label: 'Smart TV' }, { icon: Coffee, label: 'Coffee Machine' }, { icon: Phone, label: 'Polycom' }], available: true 
     },
     { 
-      name: 'Collab Space', location: 'Building B, Floor 1', images: ['/meeting_room_alt.jpg'], type: 'Meeting', capacity: '4-6 People',
+      name: 'Collab Space', location: 'Building B, Floor 1', images: ['https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=800&h=500'], type: 'Meeting', capacity: '4-6 People',
       description: 'Casual collaboration space with standing desks.',
       amenities: [{ icon: PenTool, label: 'Whiteboards' }, { icon: Wifi, label: 'WiFi' }], available: true 
     },
     { 
-      name: 'Computer Lab 3', location: 'Building C, Floor 2', images: ['/computer_lab.jpg'], type: 'Lab', capacity: '20-30 People',
+      name: 'Computer Lab 3', location: 'Building C, Floor 2', images: ['https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&q=80&w=800&h=500'], type: 'Lab', capacity: '20-30 People',
       description: 'Fully equipped computer lab with high-end workstations.',
       amenities: [{ icon: Monitor, label: 'Workstations' }, { icon: Wifi, label: 'Gigabit LAN' }], available: true 
     },
     { 
-      name: 'Hardware Lab', location: 'Building E, Basement', images: ['/conference_hall_alt.jpg'], type: 'Lab', capacity: '10-20 People',
+      name: 'Hardware Lab', location: 'Building E, Basement', images: ['https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&q=80&w=800&h=500'], type: 'Lab', capacity: '10-20 People',
       description: 'Electronics and hardware testing lab.',
       amenities: [{ icon: Monitor, label: 'Oscilloscopes' }, { icon: Shield, label: 'Safety Gear' }], available: true 
     },
     { 
-      name: 'AI Research Lab', location: 'Building E, Floor 3', images: ['/library_pod_alt.jpg'], type: 'Lab', capacity: '10-15 People',
+      name: 'AI Research Lab', location: 'Building E, Floor 3', images: ['https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800&h=500'], type: 'Lab', capacity: '10-15 People',
       description: 'Advanced AI research lab with server access.',
       amenities: [{ icon: Monitor, label: 'GPU Servers' }, { icon: Wifi, label: '10G LAN' }], available: true 
     },
     { 
-      name: 'Media Studio A', location: 'Building F, Basement', images: ['/media_studio.jpg'], type: 'Studio', capacity: '2-5 People',
+      name: 'Media Studio A', location: 'Building F, Basement', images: ['https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&q=80&w=800&h=500'], type: 'Studio', capacity: '2-5 People',
       description: 'Soundproof media recording studio with professional lighting.',
       amenities: [{ icon: Camera, label: 'Lighting' }, { icon: VolumeX, label: 'Soundproof' }], available: true 
     },
     { 
-      name: 'Photography Studio', location: 'Building F, Floor 1', images: ['/media_studio.jpg'], type: 'Studio', capacity: '3-6 People',
+      name: 'Photography Studio', location: 'Building F, Floor 1', images: ['https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=800&h=500'], type: 'Studio', capacity: '3-6 People',
       description: 'Spacious studio with backdrops.',
       amenities: [{ icon: Camera, label: 'Backdrops' }, { icon: Monitor, label: 'Editing Mac' }], available: true 
     },
     { 
-      name: 'Podcast Room', location: 'Building F, Floor 2', images: ['/media_studio.jpg'], type: 'Studio', capacity: '1-3 People',
+      name: 'Podcast Room', location: 'Building F, Floor 2', images: ['https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&q=80&w=800&h=500'], type: 'Studio', capacity: '1-3 People',
       description: 'Intimate podcast recording space.',
       amenities: [{ icon: Camera, label: 'Microphones' }, { icon: VolumeX, label: 'Soundproof' }], available: true 
     },
@@ -1006,11 +1006,11 @@ export default function App() {
     if (hash % 10 < 3) return []; // 30% chance of no bookings
 
     const roomsList = [
-      { room: 'Meeting Room 1', image: '/meeting_room.jpg' },
-      { room: 'Study Room B', image: '/study_room.jpg' },
-      { room: 'Conference Room A', image: '/conference_hall.jpg' },
-      { room: 'Library Pod 4', image: '/library_pod.jpg' },
-      { room: 'Media Studio', image: '/media_studio.jpg' }
+      { room: 'Meeting Room 1', image: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&q=80&w=800&h=500' },
+      { room: 'Study Room B', image: 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&q=80&w=800&h=500' },
+      { room: 'Conference Room A', image: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&q=80&w=800&h=500' },
+      { room: 'Library Pod 4', image: 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&q=80&w=800&h=500' },
+      { room: 'Media Studio', image: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&q=80&w=800&h=500' }
     ];
     
     const count = Math.floor(hash % 3) + 1; // 1 to 3 bookings
@@ -1191,7 +1191,7 @@ export default function App() {
                 
                 {/* Hero Announcement */}
                 <div className="relative w-full rounded-2xl overflow-hidden mb-3 h-[160px] cursor-pointer active:scale-[0.99] transition-transform">
-                  <img src="/announcement_1.jpg" alt="Library Extended" className="absolute inset-0 w-full h-full object-cover" />
+                  <img src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&q=80&w=800&h=400" alt="Library Extended" className="absolute inset-0 w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#002D62]/95 via-[#002D62]/40 to-transparent" />
                   <div className="absolute bottom-0 left-0 p-4 w-full z-10">
                     <span className="bg-white/20 backdrop-blur-md border border-white/25 text-white text-[9px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full inline-block mb-2">📢 Update</span>
@@ -1203,7 +1203,7 @@ export default function App() {
                 {/* 2 Compact Announcements */}
                 <div className="grid grid-cols-2 gap-2.5">
                   {[
-                    { title: 'New VR Tech Lab', desc: 'Book our newest VR-capable lab spaces.', tag: '🆕 New', image: '/announcement_2.jpg' },
+                    { title: 'New VR Tech Lab', desc: 'Book our newest VR-capable lab spaces.', tag: '🆕 New', image: 'https://images.unsplash.com/photo-1593508512255-86ab42a8e620?auto=format&fit=crop&q=80&w=600&h=350' },
                     { title: 'Study Hack Event', desc: 'Join the focus group at Room A.', tag: '🎉 Event', image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=300&h=150' },
                   ].map((ann, i) => (
                     <div key={i} className="relative rounded-2xl overflow-hidden h-[110px] cursor-pointer active:scale-[0.98] transition-transform">
