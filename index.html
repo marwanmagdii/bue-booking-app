@@ -8,9 +8,31 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+    <script>
+      (function() {
+        if (window.location.hostname.includes('github.io') || window.location.protocol === 'file:') {
+          var basePath = window.location.pathname.replace(/\/[^/]*$/, '/');
+          var css = document.createElement('link');
+          css.rel = 'stylesheet';
+          css.crossOrigin = 'anonymous';
+          css.href = basePath + 'assets/index-BiSqaG04.css';
+          document.head.appendChild(css);
+
+          var js = document.createElement('script');
+          js.type = 'module';
+          js.crossOrigin = 'anonymous';
+          js.src = basePath + 'assets/index-A5cx1w-l.js';
+          document.head.appendChild(js);
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module">
+      if (!window.location.hostname.includes('github.io')) {
+        import('/src/main.tsx');
+      }
+    </script>
   </body>
 </html>
