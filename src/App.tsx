@@ -145,61 +145,61 @@ export default function App() {
     { 
       id: 1, 
       category: 'bookings',
-      title: 'Booking Confirmed', 
-      message: 'Your reservation for Meeting Room 1 is confirmed for 10:00 AM today.', 
+      title: 'Meeting Room 1', 
+      message: 'Today, 10:00 AM – 11:30 AM • Confirmed', 
       time: '2m ago', 
       group: 'today',
       unread: true,
       roomName: 'Meeting Room 1',
       actionLabel: 'View Pass',
       actionType: 'pass',
-      badge: 'Active Pass'
+      badge: 'Active Now'
     },
     { 
       id: 4, 
       category: 'team',
-      title: 'New Member Joined', 
-      message: 'Mohamed Ali joined your reservation slot at Study Room B.', 
+      title: 'Kareem Adel', 
+      message: 'Joined your reservation at Study Room B', 
       time: '15m ago', 
       group: 'today',
       unread: true, 
-      avatar: getAsset('meeting_room.jpg'),
-      userName: 'Mohamed Ali',
-      userRole: 'Full Stack Engineer',
+      avatar: 'https://i.pravatar.cc/150?img=11',
+      userName: 'Kareem Adel',
+      userRole: 'Software Engineer',
       actionLabel: 'View Team',
       actionType: 'team'
     },
     { 
       id: 2, 
       category: 'bookings',
-      title: 'Upcoming Session in 30 Min', 
-      message: 'Study Room B (Main Library Floor 1) is ready. Please check in with your QR pass.', 
-      time: '1h ago', 
+      title: 'Study Room B', 
+      message: 'Starts in 20 min • Building C, Floor 1', 
+      time: '45m ago', 
       group: 'today',
       unread: false,
       roomName: 'Study Room B',
-      actionLabel: 'Fast Check-In',
+      actionLabel: 'Directions',
       actionType: 'pass',
       isTimer: true
     },
     { 
       id: 3, 
       category: 'announcements',
-      title: 'New AI Research Lab & Pods', 
-      message: 'Check out 5 newly added high-performance labs and acoustic soundproof pods.', 
+      title: 'AI Lab Floor 3', 
+      message: '5 soundproof acoustic pods now open for booking', 
       time: 'Yesterday', 
       group: 'yesterday',
       unread: false,
       roomName: 'AI Research Lab',
-      actionLabel: 'Explore Space',
+      actionLabel: 'View Lab',
       actionType: 'room'
     },
     {
       id: 5,
       category: 'bookings',
-      title: 'Completed Session Summary',
-      message: 'Your session at Conference Room A ended smoothly. Rate your space experience.',
-      time: '3d ago',
+      title: 'Conference Room A',
+      message: 'Session completed • 2.0 hrs reserved',
+      time: '2d ago',
       group: 'earlier',
       unread: false,
       roomName: 'Conference Room A',
@@ -577,8 +577,8 @@ export default function App() {
     };
 
     return (
-      <div className="flex justify-center bg-slate-900 h-screen w-screen overflow-hidden font-sans text-slate-900">
-        <div className="w-full max-w-[430px] bg-slate-50 h-full relative shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-300">
+      <div className="flex justify-center bg-slate-900 min-h-screen sm:h-screen w-full sm:w-screen overflow-hidden font-sans text-slate-900">
+        <div className="w-full max-w-[430px] bg-slate-50 h-[100dvh] relative shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-300">
           
           {/* Header */}
           <div className="p-4 pt-5 flex justify-between items-center border-b border-slate-200 bg-white/95 backdrop-blur-md shadow-xs z-20 sticky top-0">
@@ -700,97 +700,87 @@ export default function App() {
               <>
                 {/* TODAY SECTION */}
                 {todayNotifs.length > 0 && (
-                  <div className="space-y-3">
+                  <div className="space-y-2.5">
                     <div className="flex items-center justify-between px-1">
                       <span className="text-[11px] font-black tracking-widest text-[#002D62] uppercase">Today</span>
-                      <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">{todayNotifs.length} updates</span>
+                      <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">{todayNotifs.length} new</span>
                     </div>
 
                     {todayNotifs.map((notif: any) => (
                       <div 
                         key={notif.id} 
-                        onClick={() => markAsRead(notif.id)}
-                        className={`p-4 rounded-2xl relative transition-all duration-300 cursor-pointer ${
+                        onClick={() => handleNotifAction(notif)}
+                        className={`p-3.5 rounded-2xl relative transition-all duration-200 cursor-pointer ${
                           notif.unread 
-                            ? 'bg-white border-l-4 border-l-[#DA291C] border border-blue-200/80 shadow-md ring-1 ring-blue-500/10' 
-                            : 'bg-white/90 border border-slate-200 shadow-2xs hover:border-slate-300'
+                            ? 'bg-white border-l-4 border-l-[#DA291C] border border-slate-200 shadow-sm' 
+                            : 'bg-white/95 border border-slate-200/80 shadow-2xs hover:border-slate-300'
                         }`}
                       >
-                        <div className="flex items-start gap-3.5 pl-0.5">
+                        <div className="flex items-center gap-3">
                           {/* Icon / Avatar */}
-                          <div className="flex-shrink-0 relative mt-0.5">
+                          <div className="flex-shrink-0 relative">
                             {notif.avatar ? (
                               <div className="relative">
-                                <img src={notif.avatar} className="w-11 h-11 rounded-xl object-cover border border-slate-200 shadow-sm" alt="User" />
-                                {notif.unread && <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#DA291C] rounded-full border-2 border-white shadow-xs" />}
+                                <img src={notif.avatar} className="w-10 h-10 rounded-full object-cover border border-slate-200" alt="User" />
+                                {notif.unread && <span className="absolute 0 top-0 right-0 w-2.5 h-2.5 bg-[#DA291C] rounded-full border-2 border-white shadow-xs" />}
                               </div>
                             ) : (
-                              <div className={`w-11 h-11 rounded-xl flex items-center justify-center relative border shadow-2xs ${
+                              <div className={`w-10 h-10 rounded-xl flex items-center justify-center relative border ${
                                 notif.category === 'bookings' 
                                   ? notif.isTimer ? 'bg-amber-50 text-amber-600 border-amber-200' : 'bg-emerald-50 text-emerald-600 border-emerald-200'
                                   : 'bg-blue-50 text-[#002D62] border-blue-200'
                               }`}>
                                 {notif.category === 'bookings' && notif.isTimer ? (
-                                  <Clock size={20} strokeWidth={2.2} />
+                                  <Clock size={18} strokeWidth={2.2} />
                                 ) : notif.category === 'bookings' ? (
-                                  <Check size={20} strokeWidth={2.5} />
+                                  <Check size={18} strokeWidth={2.5} />
                                 ) : (
-                                  <Sparkles size={20} strokeWidth={2.2} />
+                                  <Sparkles size={18} strokeWidth={2.2} />
                                 )}
-                                {notif.unread && <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#DA291C] rounded-full border-2 border-white shadow-xs" />}
+                                {notif.unread && <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[#DA291C] rounded-full border-2 border-white shadow-xs" />}
                               </div>
                             )}
                           </div>
 
                           {/* Content */}
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-start justify-between gap-2">
-                              <div className="flex items-center gap-1.5 flex-wrap">
-                                <h3 className={`font-bold text-sm tracking-tight ${notif.unread ? 'text-[#002D62]' : 'text-slate-700'}`}>
+                            <div className="flex items-center justify-between gap-1">
+                              <div className="flex items-center gap-1.5 min-w-0">
+                                <h3 className={`font-bold text-xs truncate ${notif.unread ? 'text-[#002D62]' : 'text-slate-700'}`}>
                                   {notif.title}
                                 </h3>
                                 {notif.badge && (
-                                  <span className="px-1.5 py-0.2 bg-emerald-100 border border-emerald-200 text-emerald-700 text-[9px] font-bold rounded-md">
+                                  <span className="px-1.5 py-0.2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-[9px] font-bold rounded-md shrink-0">
                                     {notif.badge}
                                   </span>
                                 )}
                               </div>
-                              <div className="flex items-center gap-1">
-                                <span className="text-[10px] font-bold text-slate-400 whitespace-nowrap">{notif.time}</span>
-                                <button 
-                                  onClick={(e) => removeNotif(e, notif.id)}
-                                  className="p-1 text-slate-400 hover:text-red-500 rounded-md transition-colors"
-                                  title="Dismiss"
-                                >
-                                  <X size={14} />
-                                </button>
-                              </div>
+                              <span className="text-[10px] font-semibold text-slate-400 shrink-0">{notif.time}</span>
                             </div>
 
-                            <p className="text-xs text-slate-600 mt-1 leading-relaxed font-medium">
+                            <p className="text-[11px] text-slate-500 font-medium truncate mt-0.5">
                               {notif.message}
                             </p>
+                          </div>
 
-                            {/* Quick Action Button */}
-                            {notif.actionLabel && (
-                              <div className="mt-3 flex items-center gap-2">
-                                <button
-                                  onClick={() => handleNotifAction(notif)}
-                                  className="px-3.5 py-1.5 bg-[#002D62] hover:bg-[#00387a] text-white rounded-xl text-[11px] font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all"
-                                >
-                                  {notif.actionType === 'pass' && <QrCode size={13} className="text-blue-200" />}
-                                  {notif.actionType === 'team' && <Users size={13} className="text-blue-200" />}
-                                  {notif.actionType === 'room' && <Navigation size={13} className="text-blue-200" />}
-                                  <span>{notif.actionLabel}</span>
-                                </button>
-                                
-                                {notif.isTimer && (
-                                  <span className="text-[10px] font-mono font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-1 rounded-lg">
-                                    Starts in {getCountdownParts(countdownSeconds).m}m {getCountdownParts(countdownSeconds).s}s
-                                  </span>
-                                )}
-                              </div>
-                            )}
+                          {/* Action Icon / Dismiss */}
+                          <div className="flex items-center gap-1 shrink-0">
+                            <button 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleNotifAction(notif);
+                              }}
+                              className="px-2.5 py-1 bg-slate-100 hover:bg-[#002D62] hover:text-white text-[#002D62] text-[10px] font-bold rounded-lg transition-all"
+                            >
+                              {notif.actionLabel || 'View'}
+                            </button>
+                            <button 
+                              onClick={(e) => removeNotif(e, notif.id)}
+                              className="p-1 text-slate-300 hover:text-slate-500 rounded-md transition-colors"
+                              title="Dismiss"
+                            >
+                              <X size={13} />
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -800,59 +790,57 @@ export default function App() {
 
                 {/* YESTERDAY SECTION */}
                 {yesterdayNotifs.length > 0 && (
-                  <div className="space-y-3 pt-2">
+                  <div className="space-y-2.5 pt-2">
                     <div className="flex items-center justify-between px-1">
                       <span className="text-[11px] font-black tracking-widest text-[#002D62] uppercase">Yesterday</span>
-                      <span className="text-[10px] font-bold text-slate-500">{yesterdayNotifs.length} updates</span>
+                      <span className="text-[10px] font-bold text-slate-400">{yesterdayNotifs.length} updates</span>
                     </div>
 
                     {yesterdayNotifs.map((notif: any) => (
                       <div 
                         key={notif.id} 
-                        onClick={() => markAsRead(notif.id)}
-                        className={`p-4 rounded-2xl relative transition-all duration-300 cursor-pointer ${
+                        onClick={() => handleNotifAction(notif)}
+                        className={`p-3.5 rounded-2xl relative transition-all duration-200 cursor-pointer ${
                           notif.unread 
-                            ? 'bg-white border-l-4 border-l-[#DA291C] border border-blue-200 shadow-md' 
-                            : 'bg-white/90 border border-slate-200 shadow-2xs'
+                            ? 'bg-white border-l-4 border-l-[#DA291C] border border-slate-200 shadow-sm' 
+                            : 'bg-white/95 border border-slate-200/80 shadow-2xs hover:border-slate-300'
                         }`}
                       >
-                        <div className="flex items-start gap-3.5">
-                          <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 bg-blue-50 text-[#002D62] border border-blue-100 shadow-2xs">
-                            <Monitor size={20} strokeWidth={2.2} />
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-blue-50 text-[#002D62] border border-blue-100">
+                            <Monitor size={18} strokeWidth={2.2} />
                           </div>
 
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-start justify-between gap-2">
-                              <h3 className="font-bold text-sm tracking-tight text-[#002D62]">
+                            <div className="flex items-center justify-between gap-1">
+                              <h3 className="font-bold text-xs text-[#002D62] truncate">
                                 {notif.title}
                               </h3>
-                              <div className="flex items-center gap-1">
-                                <span className="text-[10px] font-bold text-slate-400 whitespace-nowrap">{notif.time}</span>
-                                <button 
-                                  onClick={(e) => removeNotif(e, notif.id)}
-                                  className="p-1 text-slate-400 hover:text-red-500 rounded-md transition-colors"
-                                  title="Dismiss"
-                                >
-                                  <X size={14} />
-                                </button>
-                              </div>
+                              <span className="text-[10px] font-semibold text-slate-400 shrink-0">{notif.time}</span>
                             </div>
 
-                            <p className="text-xs text-slate-600 mt-1 leading-relaxed font-medium">
+                            <p className="text-[11px] text-slate-500 font-medium truncate mt-0.5">
                               {notif.message}
                             </p>
+                          </div>
 
-                            {notif.actionLabel && (
-                              <div className="mt-3">
-                                <button
-                                  onClick={() => handleNotifAction(notif)}
-                                  className="px-3.5 py-1.5 bg-[#002D62] hover:bg-[#00387a] text-white rounded-xl text-[11px] font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all"
-                                >
-                                  <Navigation size={13} className="text-blue-200" />
-                                  <span>{notif.actionLabel}</span>
-                                </button>
-                              </div>
-                            )}
+                          <div className="flex items-center gap-1 shrink-0">
+                            <button 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleNotifAction(notif);
+                              }}
+                              className="px-2.5 py-1 bg-slate-100 hover:bg-[#002D62] hover:text-white text-[#002D62] text-[10px] font-bold rounded-lg transition-all"
+                            >
+                              {notif.actionLabel || 'View'}
+                            </button>
+                            <button 
+                              onClick={(e) => removeNotif(e, notif.id)}
+                              className="p-1 text-slate-300 hover:text-slate-500 rounded-md transition-colors"
+                              title="Dismiss"
+                            >
+                              <X size={13} />
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -862,54 +850,53 @@ export default function App() {
 
                 {/* EARLIER SECTION */}
                 {earlierNotifs.length > 0 && (
-                  <div className="space-y-3 pt-2">
+                  <div className="space-y-2.5 pt-2">
                     <div className="flex items-center justify-between px-1">
-                      <span className="text-[11px] font-black tracking-widest text-[#002D62] uppercase">Earlier This Week</span>
-                      <span className="text-[10px] font-bold text-slate-500">{earlierNotifs.length} updates</span>
+                      <span className="text-[11px] font-black tracking-widest text-[#002D62] uppercase">Earlier</span>
+                      <span className="text-[10px] font-bold text-slate-400">{earlierNotifs.length} updates</span>
                     </div>
 
                     {earlierNotifs.map((notif: any) => (
                       <div 
                         key={notif.id} 
-                        onClick={() => markAsRead(notif.id)}
-                        className="p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs transition-all cursor-pointer hover:border-slate-300"
+                        onClick={() => handleNotifAction(notif)}
+                        className="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-2xs transition-all cursor-pointer hover:border-slate-300"
                       >
-                        <div className="flex items-start gap-3.5">
-                          <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 bg-slate-100 text-slate-500 border border-slate-200">
-                            <Clock size={20} />
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-slate-100 text-slate-500 border border-slate-200">
+                            <Clock size={18} />
                           </div>
 
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-start justify-between gap-2">
-                              <h3 className="font-bold text-sm tracking-tight text-slate-800">
+                            <div className="flex items-center justify-between gap-1">
+                              <h3 className="font-bold text-xs text-slate-800 truncate">
                                 {notif.title}
                               </h3>
-                              <div className="flex items-center gap-1">
-                                <span className="text-[10px] font-bold text-slate-400">{notif.time}</span>
-                                <button 
-                                  onClick={(e) => removeNotif(e, notif.id)}
-                                  className="p-1 text-slate-400 hover:text-red-500 rounded-md transition-colors"
-                                  title="Dismiss"
-                                >
-                                  <X size={14} />
-                                </button>
-                              </div>
+                              <span className="text-[10px] font-semibold text-slate-400 shrink-0">{notif.time}</span>
                             </div>
 
-                            <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                            <p className="text-[11px] text-slate-500 font-medium truncate mt-0.5">
                               {notif.message}
                             </p>
+                          </div>
 
-                            {notif.actionLabel && (
-                              <div className="mt-3">
-                                <button
-                                  onClick={() => handleNotifAction(notif)}
-                                  className="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-[#002D62] rounded-xl text-[11px] font-bold flex items-center gap-1.5 active:scale-95 transition-all"
-                                >
-                                  <span>{notif.actionLabel}</span>
-                                </button>
-                              </div>
-                            )}
+                          <div className="flex items-center gap-1 shrink-0">
+                            <button 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleNotifAction(notif);
+                              }}
+                              className="px-2.5 py-1 bg-slate-100 hover:bg-[#002D62] hover:text-white text-[#002D62] text-[10px] font-bold rounded-lg transition-all"
+                            >
+                              {notif.actionLabel || 'View'}
+                            </button>
+                            <button 
+                              onClick={(e) => removeNotif(e, notif.id)}
+                              className="p-1 text-slate-300 hover:text-slate-500 rounded-md transition-colors"
+                              title="Dismiss"
+                            >
+                              <X size={13} />
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -958,8 +945,8 @@ export default function App() {
   // -------------------------------------------------------------
   if (selectedRoom && !viewingBooking) {
     return (
-      <div className="flex justify-center bg-slate-900 h-screen w-screen overflow-hidden font-sans text-slate-900">
-        <div className="w-full max-w-[430px] bg-slate-50 h-full relative shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-300">
+      <div className="flex justify-center bg-slate-900 min-h-screen sm:h-screen w-full sm:w-screen overflow-hidden font-sans text-slate-900">
+        <div className="w-full max-w-[430px] bg-slate-50 h-[100dvh] relative shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-300">
           
           {/* Global Header for Booking Flow */}
           {selectedRoom !== null && bookingStep !== 'success' && (
@@ -1532,8 +1519,8 @@ export default function App() {
   // MAIN APP VIEW (DASHBOARD, SEARCH, BOOKINGS, PROFILE)
   // -------------------------------------------------------------
   return (
-    <div className="flex justify-center bg-slate-900 h-screen w-screen overflow-hidden font-sans text-slate-900">
-      <div className="w-full max-w-[430px] bg-slate-100 h-full relative shadow-2xl flex flex-col overflow-hidden">
+    <div className="flex justify-center bg-slate-900 min-h-screen sm:h-screen w-full sm:w-screen overflow-hidden font-sans text-slate-900">
+      <div className="w-full max-w-[430px] bg-slate-100 h-[100dvh] relative shadow-2xl flex flex-col overflow-hidden">
         
         {/* Modern iOS Glassmorphic Top Header - Home */}
         {activeTab === 'home' && (
@@ -2624,7 +2611,7 @@ export default function App() {
                         {/* High Quality Digital QR Code Box */}
                         <div className="bg-slate-50 border-2 border-dashed border-[#002D62]/30 p-4 rounded-2xl flex flex-col items-center justify-center">
                           <div className="w-44 h-44 bg-white p-3 rounded-xl shadow-inner flex flex-col items-center justify-center relative overflow-hidden border border-slate-200">
-                            {/* Simulated High-Res QR code graphic */}
+                            {/* Clean Digital QR code graphic */}
                             <div className="grid grid-cols-7 gap-1 w-full h-full p-1 opacity-90">
                               {Array.from({ length: 49 }).map((_, i) => (
                                 <div 
@@ -2639,8 +2626,6 @@ export default function App() {
                                 />
                               ))}
                             </div>
-                            {/* Animated Scanner Laser */}
-                            <div className="absolute left-0 right-0 h-0.5 bg-[#DA291C] shadow-[0_0_8px_#DA291C] animate-pulse" style={{ top: '48%' }} />
                           </div>
                           <span className="text-[10px] font-mono font-bold text-[#002D62] mt-3 tracking-widest">
                             #BUE-PASS-{viewingBooking.id}984-X
@@ -3422,7 +3407,7 @@ export default function App() {
         </main>
 
         {/* Bottom Navigation */}
-        <div className="absolute bottom-0 w-full z-20 bg-[#002D62] rounded-t-2xl pb-1 shadow-[0_-10px_40px_rgba(0,45,98,0.2)]">
+        <div className="shrink-0 w-full z-30 bg-[#002D62] rounded-t-2xl pb-1 shadow-[0_-10px_40px_rgba(0,45,98,0.2)]">
           <nav className="flex justify-between items-center px-6 pt-3 pb-2">
             {[
               { id: 'home', icon: Home, label: 'Home' },

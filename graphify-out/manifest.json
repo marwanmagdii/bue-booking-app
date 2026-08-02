@@ -1,0 +1,437 @@
+{
+  ".oxlintrc.json": {
+    "mtime": 1785282419.6595714,
+    "ast_hash": "029f4905006c1fffd96bc863e2d98d3e",
+    "semantic_hash": "029f4905006c1fffd96bc863e2d98d3e"
+  },
+  "assets/index-A5cx1w-l.js": {
+    "mtime": 1785690307.7925427,
+    "ast_hash": "773d3b269d2d5dbfcd161a5a1daec491",
+    "semantic_hash": "773d3b269d2d5dbfcd161a5a1daec491"
+  },
+  "components.json": {
+    "mtime": 1785282561.333375,
+    "ast_hash": "0bccc9919c1836ad683bf1aa2bca8914",
+    "semantic_hash": "0bccc9919c1836ad683bf1aa2bca8914"
+  },
+  "docs/assets/index-A5cx1w-l.js": {
+    "mtime": 1785690307.7925427,
+    "ast_hash": "773d3b269d2d5dbfcd161a5a1daec491",
+    "semantic_hash": "773d3b269d2d5dbfcd161a5a1daec491"
+  },
+  "mcp_temp.json": {
+    "mtime": 1785273273.2824285,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "package.json": {
+    "mtime": 1785689254.0997534,
+    "ast_hash": "1f53ef0fffc8479ccfe68b389e1d6e13",
+    "semantic_hash": "1f53ef0fffc8479ccfe68b389e1d6e13"
+  },
+  "postcss.config.js": {
+    "mtime": 1785282521.847267,
+    "ast_hash": "ef3ba2a81ba19f8ea5ddf625521e96f0",
+    "semantic_hash": "ef3ba2a81ba19f8ea5ddf625521e96f0"
+  },
+  "src/App.tsx": {
+    "mtime": 1785692247.0262148,
+    "ast_hash": "7edbf527f1e343ce842145ce5c6aa434",
+    "semantic_hash": "7edbf527f1e343ce842145ce5c6aa434"
+  },
+  "src/main.tsx": {
+    "mtime": 1785282419.880154,
+    "ast_hash": "787e5a07efeb2bf6209d5937195f2f68",
+    "semantic_hash": "787e5a07efeb2bf6209d5937195f2f68"
+  },
+  "tailwind.config.js": {
+    "mtime": 1785330090.4436893,
+    "ast_hash": "ce7eead5486029d4b949d53f72da8fea",
+    "semantic_hash": "ce7eead5486029d4b949d53f72da8fea"
+  },
+  "tsconfig.app.json": {
+    "mtime": 1785282735.7857504,
+    "ast_hash": "5dbfa58638d2a192c945a5ab42a1a9e7",
+    "semantic_hash": "5dbfa58638d2a192c945a5ab42a1a9e7"
+  },
+  "tsconfig.json": {
+    "mtime": 1785282419.697874,
+    "ast_hash": "a3d39fa780ebff65444de257f291ce6c",
+    "semantic_hash": "a3d39fa780ebff65444de257f291ce6c"
+  },
+  "tsconfig.node.json": {
+    "mtime": 1785282419.7043836,
+    "ast_hash": "f9cb81ddcea69ffdab672fc8c48dca66",
+    "semantic_hash": "f9cb81ddcea69ffdab672fc8c48dca66"
+  },
+  "vite.config.ts": {
+    "mtime": 1785689250.7388258,
+    "ast_hash": "ce08e9b17a824ffe923339d559d3caaa",
+    "semantic_hash": "ce08e9b17a824ffe923339d559d3caaa"
+  },
+  ".agents/skills/web-design-guidelines/SKILL.md": {
+    "mtime": 1785280306.3031235,
+    "ast_hash": "98087aedd18375666dbb093c859b2949",
+    "semantic_hash": "98087aedd18375666dbb093c859b2949"
+  },
+  ".github/workflows/deploy.yml": {
+    "mtime": 1785689133.3278513,
+    "ast_hash": "6aa01fd3d852f141ea8b3687702c239a",
+    "semantic_hash": "6aa01fd3d852f141ea8b3687702c239a"
+  },
+  "README.md": {
+    "mtime": 1785282419.720555,
+    "ast_hash": "10495bfcc6c568eca4dab6dd5df795d3",
+    "semantic_hash": "10495bfcc6c568eca4dab6dd5df795d3"
+  },
+  "docs/index.html": {
+    "mtime": 1785690307.79454,
+    "ast_hash": "fa0c4721d71268a97422f64d8702b8ae",
+    "semantic_hash": "fa0c4721d71268a97422f64d8702b8ae"
+  },
+  "index.html": {
+    "mtime": 1785692170.2656684,
+    "ast_hash": "487a4aa1a5809a1dfabae4a5628e4195",
+    "semantic_hash": "487a4aa1a5809a1dfabae4a5628e4195"
+  },
+  "ai_research_lab.jpg": {
+    "mtime": 1785690938.4973052,
+    "ast_hash": "d6e8fab0738269112fdc8dfc94699b1f",
+    "semantic_hash": "d6e8fab0738269112fdc8dfc94699b1f"
+  },
+  "announcement_1.jpg": {
+    "mtime": 1785334915.3699696,
+    "ast_hash": "40924f7d4af5cf2e9247676ac3d9b45f",
+    "semantic_hash": "40924f7d4af5cf2e9247676ac3d9b45f"
+  },
+  "announcement_2.jpg": {
+    "mtime": 1785334928.5936623,
+    "ast_hash": "cbd2cfeb83a500fceb85204341f0fbc4",
+    "semantic_hash": "cbd2cfeb83a500fceb85204341f0fbc4"
+  },
+  "audio_booth.jpg": {
+    "mtime": 1785691003.2854826,
+    "ast_hash": "e00fd8d02e921fd4ee0e1799a9457b47",
+    "semantic_hash": "e00fd8d02e921fd4ee0e1799a9457b47"
+  },
+  "boardroom_interior.jpg": {
+    "mtime": 1785691034.6635854,
+    "ast_hash": "cc47e0603a4f445aaa338c2e1098b0ca",
+    "semantic_hash": "cc47e0603a4f445aaa338c2e1098b0ca"
+  },
+  "coding_lab.jpg": {
+    "mtime": 1785690987.2724986,
+    "ast_hash": "df4c61eb53847850d4611e16c0a4347d",
+    "semantic_hash": "df4c61eb53847850d4611e16c0a4347d"
+  },
+  "computer_lab.jpg": {
+    "mtime": 1785292199.7669077,
+    "ast_hash": "99c3a532b16ad3336d430e0169489148",
+    "semantic_hash": "99c3a532b16ad3336d430e0169489148"
+  },
+  "conference_hall.jpg": {
+    "mtime": 1785282956.5007102,
+    "ast_hash": "13e0b62288773e1a7b2b61303a64f41b",
+    "semantic_hash": "13e0b62288773e1a7b2b61303a64f41b"
+  },
+  "conference_hall_alt.jpg": {
+    "mtime": 1785283509.9540057,
+    "ast_hash": "7f2e8ec61f6fa517c23cb5e3c1062573",
+    "semantic_hash": "7f2e8ec61f6fa517c23cb5e3c1062573"
+  },
+  "docs/announcement_1.jpg": {
+    "mtime": 1785334915.3699696,
+    "ast_hash": "40924f7d4af5cf2e9247676ac3d9b45f",
+    "semantic_hash": "40924f7d4af5cf2e9247676ac3d9b45f"
+  },
+  "docs/announcement_2.jpg": {
+    "mtime": 1785334928.5936623,
+    "ast_hash": "cbd2cfeb83a500fceb85204341f0fbc4",
+    "semantic_hash": "cbd2cfeb83a500fceb85204341f0fbc4"
+  },
+  "docs/computer_lab.jpg": {
+    "mtime": 1785292199.7669077,
+    "ast_hash": "99c3a532b16ad3336d430e0169489148",
+    "semantic_hash": "99c3a532b16ad3336d430e0169489148"
+  },
+  "docs/conference_hall.jpg": {
+    "mtime": 1785282956.5007102,
+    "ast_hash": "13e0b62288773e1a7b2b61303a64f41b",
+    "semantic_hash": "13e0b62288773e1a7b2b61303a64f41b"
+  },
+  "docs/conference_hall_alt.jpg": {
+    "mtime": 1785283509.9540057,
+    "ast_hash": "7f2e8ec61f6fa517c23cb5e3c1062573",
+    "semantic_hash": "7f2e8ec61f6fa517c23cb5e3c1062573"
+  },
+  "docs/favicon.svg": {
+    "mtime": 1785282419.7813332,
+    "ast_hash": "7e840862161341271697daa99a40d76b",
+    "semantic_hash": "7e840862161341271697daa99a40d76b"
+  },
+  "docs/icons.svg": {
+    "mtime": 1785282419.8063478,
+    "ast_hash": "3b4fcfcf393eca4d264dca4a4663bc37",
+    "semantic_hash": "3b4fcfcf393eca4d264dca4a4663bc37"
+  },
+  "docs/library_pod.jpg": {
+    "mtime": 1785282948.3726711,
+    "ast_hash": "4abe22173cf60c38bfb41b55a2b19196",
+    "semantic_hash": "4abe22173cf60c38bfb41b55a2b19196"
+  },
+  "docs/library_pod_alt.jpg": {
+    "mtime": 1785283502.9413779,
+    "ast_hash": "16e70bc1c69e9670d9c294f23e133432",
+    "semantic_hash": "16e70bc1c69e9670d9c294f23e133432"
+  },
+  "docs/media_studio.jpg": {
+    "mtime": 1785292208.6951303,
+    "ast_hash": "986419d74a00d2b263c682561bbd47f4",
+    "semantic_hash": "986419d74a00d2b263c682561bbd47f4"
+  },
+  "docs/meeting_3.jpg": {
+    "mtime": 1785292555.2032483,
+    "ast_hash": "b51dbbb4561913dfd9aa807711bda062",
+    "semantic_hash": "b51dbbb4561913dfd9aa807711bda062"
+  },
+  "docs/meeting_room.jpg": {
+    "mtime": 1785282940.8222961,
+    "ast_hash": "8e6c3d9c245d29007c7884d4effa6890",
+    "semantic_hash": "8e6c3d9c245d29007c7884d4effa6890"
+  },
+  "docs/meeting_room_alt.jpg": {
+    "mtime": 1785283494.5157754,
+    "ast_hash": "d7440dbc0bdfcbc9c849db79958b0524",
+    "semantic_hash": "d7440dbc0bdfcbc9c849db79958b0524"
+  },
+  "docs/study_room.jpg": {
+    "mtime": 1785282930.7639804,
+    "ast_hash": "6cf64fc134af3113daca906e55e2a6fe",
+    "semantic_hash": "6cf64fc134af3113daca906e55e2a6fe"
+  },
+  "docs/study_room_alt.jpg": {
+    "mtime": 1785283486.9164665,
+    "ast_hash": "091659dc4001d881c7e52646bbea070f",
+    "semantic_hash": "091659dc4001d881c7e52646bbea070f"
+  },
+  "docs/theater_2.jpg": {
+    "mtime": 1785292535.508769,
+    "ast_hash": "3439975fdc368d059254ad73b72cd5fb",
+    "semantic_hash": "3439975fdc368d059254ad73b72cd5fb"
+  },
+  "docs/theater_3.jpg": {
+    "mtime": 1785292545.9512086,
+    "ast_hash": "c16c1d79fc502a7e09bb290209c82727",
+    "semantic_hash": "c16c1d79fc502a7e09bb290209c82727"
+  },
+  "hardware_lab.jpg": {
+    "mtime": 1785690923.0874686,
+    "ast_hash": "cb646c20948972c930b7783eeff19135",
+    "semantic_hash": "cb646c20948972c930b7783eeff19135"
+  },
+  "library_pod.jpg": {
+    "mtime": 1785282948.3726711,
+    "ast_hash": "4abe22173cf60c38bfb41b55a2b19196",
+    "semantic_hash": "4abe22173cf60c38bfb41b55a2b19196"
+  },
+  "library_pod_alt.jpg": {
+    "mtime": 1785283502.9413779,
+    "ast_hash": "16e70bc1c69e9670d9c294f23e133432",
+    "semantic_hash": "16e70bc1c69e9670d9c294f23e133432"
+  },
+  "media_studio.jpg": {
+    "mtime": 1785292208.6951303,
+    "ast_hash": "986419d74a00d2b263c682561bbd47f4",
+    "semantic_hash": "986419d74a00d2b263c682561bbd47f4"
+  },
+  "meeting_3.jpg": {
+    "mtime": 1785292555.2032483,
+    "ast_hash": "b51dbbb4561913dfd9aa807711bda062",
+    "semantic_hash": "b51dbbb4561913dfd9aa807711bda062"
+  },
+  "meeting_room.jpg": {
+    "mtime": 1785282940.8222961,
+    "ast_hash": "8e6c3d9c245d29007c7884d4effa6890",
+    "semantic_hash": "8e6c3d9c245d29007c7884d4effa6890"
+  },
+  "meeting_room_alt.jpg": {
+    "mtime": 1785283494.5157754,
+    "ast_hash": "d7440dbc0bdfcbc9c849db79958b0524",
+    "semantic_hash": "d7440dbc0bdfcbc9c849db79958b0524"
+  },
+  "photography_studio.jpg": {
+    "mtime": 1785690954.848882,
+    "ast_hash": "ed6e2747437594fa68f8153cabe79bd8",
+    "semantic_hash": "ed6e2747437594fa68f8153cabe79bd8"
+  },
+  "pod_interior.jpg": {
+    "mtime": 1785691020.3621833,
+    "ast_hash": "2a2540d4f5fd005b67271f1eb20db5b2",
+    "semantic_hash": "2a2540d4f5fd005b67271f1eb20db5b2"
+  },
+  "podcast_room.jpg": {
+    "mtime": 1785690970.1811173,
+    "ast_hash": "3500fb7710810330d0eefc8599376fa9",
+    "semantic_hash": "3500fb7710810330d0eefc8599376fa9"
+  },
+  "public/ai_research_lab.jpg": {
+    "mtime": 1785690938.4973052,
+    "ast_hash": "d6e8fab0738269112fdc8dfc94699b1f",
+    "semantic_hash": "d6e8fab0738269112fdc8dfc94699b1f"
+  },
+  "public/announcement_1.jpg": {
+    "mtime": 1785334915.3699696,
+    "ast_hash": "40924f7d4af5cf2e9247676ac3d9b45f",
+    "semantic_hash": "40924f7d4af5cf2e9247676ac3d9b45f"
+  },
+  "public/announcement_2.jpg": {
+    "mtime": 1785334928.5936623,
+    "ast_hash": "cbd2cfeb83a500fceb85204341f0fbc4",
+    "semantic_hash": "cbd2cfeb83a500fceb85204341f0fbc4"
+  },
+  "public/audio_booth.jpg": {
+    "mtime": 1785691003.2854826,
+    "ast_hash": "e00fd8d02e921fd4ee0e1799a9457b47",
+    "semantic_hash": "e00fd8d02e921fd4ee0e1799a9457b47"
+  },
+  "public/boardroom_interior.jpg": {
+    "mtime": 1785691034.6635854,
+    "ast_hash": "cc47e0603a4f445aaa338c2e1098b0ca",
+    "semantic_hash": "cc47e0603a4f445aaa338c2e1098b0ca"
+  },
+  "public/coding_lab.jpg": {
+    "mtime": 1785690987.2724986,
+    "ast_hash": "df4c61eb53847850d4611e16c0a4347d",
+    "semantic_hash": "df4c61eb53847850d4611e16c0a4347d"
+  },
+  "public/computer_lab.jpg": {
+    "mtime": 1785292199.7669077,
+    "ast_hash": "99c3a532b16ad3336d430e0169489148",
+    "semantic_hash": "99c3a532b16ad3336d430e0169489148"
+  },
+  "public/conference_hall.jpg": {
+    "mtime": 1785282956.5007102,
+    "ast_hash": "13e0b62288773e1a7b2b61303a64f41b",
+    "semantic_hash": "13e0b62288773e1a7b2b61303a64f41b"
+  },
+  "public/conference_hall_alt.jpg": {
+    "mtime": 1785283509.9540057,
+    "ast_hash": "7f2e8ec61f6fa517c23cb5e3c1062573",
+    "semantic_hash": "7f2e8ec61f6fa517c23cb5e3c1062573"
+  },
+  "public/favicon.svg": {
+    "mtime": 1785282419.7813332,
+    "ast_hash": "7e840862161341271697daa99a40d76b",
+    "semantic_hash": "7e840862161341271697daa99a40d76b"
+  },
+  "public/hardware_lab.jpg": {
+    "mtime": 1785690923.0874686,
+    "ast_hash": "cb646c20948972c930b7783eeff19135",
+    "semantic_hash": "cb646c20948972c930b7783eeff19135"
+  },
+  "public/icons.svg": {
+    "mtime": 1785282419.8063478,
+    "ast_hash": "3b4fcfcf393eca4d264dca4a4663bc37",
+    "semantic_hash": "3b4fcfcf393eca4d264dca4a4663bc37"
+  },
+  "public/library_pod.jpg": {
+    "mtime": 1785282948.3726711,
+    "ast_hash": "4abe22173cf60c38bfb41b55a2b19196",
+    "semantic_hash": "4abe22173cf60c38bfb41b55a2b19196"
+  },
+  "public/library_pod_alt.jpg": {
+    "mtime": 1785283502.9413779,
+    "ast_hash": "16e70bc1c69e9670d9c294f23e133432",
+    "semantic_hash": "16e70bc1c69e9670d9c294f23e133432"
+  },
+  "public/media_studio.jpg": {
+    "mtime": 1785292208.6951303,
+    "ast_hash": "986419d74a00d2b263c682561bbd47f4",
+    "semantic_hash": "986419d74a00d2b263c682561bbd47f4"
+  },
+  "public/meeting_3.jpg": {
+    "mtime": 1785292555.2032483,
+    "ast_hash": "b51dbbb4561913dfd9aa807711bda062",
+    "semantic_hash": "b51dbbb4561913dfd9aa807711bda062"
+  },
+  "public/meeting_room.jpg": {
+    "mtime": 1785282940.8222961,
+    "ast_hash": "8e6c3d9c245d29007c7884d4effa6890",
+    "semantic_hash": "8e6c3d9c245d29007c7884d4effa6890"
+  },
+  "public/meeting_room_alt.jpg": {
+    "mtime": 1785283494.5157754,
+    "ast_hash": "d7440dbc0bdfcbc9c849db79958b0524",
+    "semantic_hash": "d7440dbc0bdfcbc9c849db79958b0524"
+  },
+  "public/photography_studio.jpg": {
+    "mtime": 1785690954.848882,
+    "ast_hash": "ed6e2747437594fa68f8153cabe79bd8",
+    "semantic_hash": "ed6e2747437594fa68f8153cabe79bd8"
+  },
+  "public/pod_interior.jpg": {
+    "mtime": 1785691020.3621833,
+    "ast_hash": "2a2540d4f5fd005b67271f1eb20db5b2",
+    "semantic_hash": "2a2540d4f5fd005b67271f1eb20db5b2"
+  },
+  "public/podcast_room.jpg": {
+    "mtime": 1785690970.1811173,
+    "ast_hash": "3500fb7710810330d0eefc8599376fa9",
+    "semantic_hash": "3500fb7710810330d0eefc8599376fa9"
+  },
+  "public/study_room.jpg": {
+    "mtime": 1785282930.7639804,
+    "ast_hash": "6cf64fc134af3113daca906e55e2a6fe",
+    "semantic_hash": "6cf64fc134af3113daca906e55e2a6fe"
+  },
+  "public/study_room_alt.jpg": {
+    "mtime": 1785283486.9164665,
+    "ast_hash": "091659dc4001d881c7e52646bbea070f",
+    "semantic_hash": "091659dc4001d881c7e52646bbea070f"
+  },
+  "public/theater_2.jpg": {
+    "mtime": 1785292535.508769,
+    "ast_hash": "3439975fdc368d059254ad73b72cd5fb",
+    "semantic_hash": "3439975fdc368d059254ad73b72cd5fb"
+  },
+  "public/theater_3.jpg": {
+    "mtime": 1785292545.9512086,
+    "ast_hash": "c16c1d79fc502a7e09bb290209c82727",
+    "semantic_hash": "c16c1d79fc502a7e09bb290209c82727"
+  },
+  "src/assets/hero.png": {
+    "mtime": 1785282419.7451584,
+    "ast_hash": "aead493361b27e7510691c5d7072dfc1",
+    "semantic_hash": "aead493361b27e7510691c5d7072dfc1"
+  },
+  "src/assets/react.svg": {
+    "mtime": 1785282419.8293567,
+    "ast_hash": "f0402b67b6ce880f65666bb49e841696",
+    "semantic_hash": "f0402b67b6ce880f65666bb49e841696"
+  },
+  "src/assets/vite.svg": {
+    "mtime": 1785282419.8472002,
+    "ast_hash": "9960a24288958394ac50e57ff638b036",
+    "semantic_hash": "9960a24288958394ac50e57ff638b036"
+  },
+  "study_room.jpg": {
+    "mtime": 1785282930.7639804,
+    "ast_hash": "6cf64fc134af3113daca906e55e2a6fe",
+    "semantic_hash": "6cf64fc134af3113daca906e55e2a6fe"
+  },
+  "study_room_alt.jpg": {
+    "mtime": 1785283486.9164665,
+    "ast_hash": "091659dc4001d881c7e52646bbea070f",
+    "semantic_hash": "091659dc4001d881c7e52646bbea070f"
+  },
+  "theater_2.jpg": {
+    "mtime": 1785292535.508769,
+    "ast_hash": "3439975fdc368d059254ad73b72cd5fb",
+    "semantic_hash": "3439975fdc368d059254ad73b72cd5fb"
+  },
+  "theater_3.jpg": {
+    "mtime": 1785292545.9512086,
+    "ast_hash": "c16c1d79fc502a7e09bb290209c82727",
+    "semantic_hash": "c16c1d79fc502a7e09bb290209c82727"
+  }
+}
