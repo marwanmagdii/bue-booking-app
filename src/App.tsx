@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Home, Calendar, User, Clock, Users, Wifi, Bell, ArrowLeft, ChevronLeft, ChevronRight, Monitor, Check, SlidersHorizontal, PenTool, Phone, Thermometer, Share2, Search as SearchIcon, MapPin, Coffee, Link2, ExternalLink, Plus, Trash2, Heart, LayoutGrid, BookOpen, Presentation, LogOut, ChevronRight as ChevronRightIcon, Edit3, Shield, HelpCircle, Camera, VolumeX, Activity, X, QrCode, Navigation, Copy, Sparkles, Key } from 'lucide-react';
+import { Home, Calendar, User, Clock, Users, Wifi, Bell, ArrowLeft, ChevronLeft, ChevronRight, Monitor, Check, CheckCheck, BellOff, SlidersHorizontal, PenTool, Phone, Thermometer, Share2, Search as SearchIcon, MapPin, Coffee, Link2, ExternalLink, Plus, Trash2, Heart, LayoutGrid, BookOpen, Presentation, LogOut, ChevronRight as ChevronRightIcon, Edit3, Shield, HelpCircle, Camera, VolumeX, Activity, X, QrCode, Navigation, Copy, Sparkles, Key } from 'lucide-react';
 
 const getAsset = (path: string) => {
   const base = import.meta.env.BASE_URL || '/';
@@ -141,12 +141,73 @@ export default function App() {
     { id: 'u12', name: 'Mostafa Samy', role: 'Systems Engineer', category: 'Software Engineer', group: 'Project Team', avatar: 'https://i.pravatar.cc/150?img=70' },
   ]);
 
-  const notificationsList = [
-    { id: 1, title: 'Booking Confirmed', message: 'Your reservation for Meeting Room 1 is confirmed for 10:00 AM.', time: '2m ago', unread: true },
-    { id: 4, title: 'New Member Joined', message: 'Mohamed Ali has joined your slot at Study Room B.', time: '15m ago', unread: true, avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&q=80&w=150&h=150' },
-    { id: 2, title: 'Upcoming Reminder', message: 'You have a booking in Study Room B in 30 minutes.', time: '1h ago', unread: false },
-    { id: 3, title: 'New Facility Added', message: 'Check out the new Library Pods available for booking!', time: '1d ago', unread: false },
-  ];
+  const [notifCategory, setNotifCategory] = useState<'all' | 'bookings' | 'team' | 'announcements'>('all');
+  const [notificationsList, setNotificationsList] = useState([
+    { 
+      id: 1, 
+      category: 'bookings',
+      title: 'Booking Confirmed', 
+      message: 'Your reservation for Meeting Room 1 is confirmed for 10:00 AM today.', 
+      time: '2m ago', 
+      group: 'today',
+      unread: true,
+      roomName: 'Meeting Room 1',
+      actionLabel: 'View Pass',
+      actionType: 'pass',
+      badge: 'Active Pass'
+    },
+    { 
+      id: 4, 
+      category: 'team',
+      title: 'New Member Joined', 
+      message: 'Mohamed Ali joined your reservation slot at Study Room B.', 
+      time: '15m ago', 
+      group: 'today',
+      unread: true, 
+      avatar: getAsset('meeting_room.jpg'),
+      userName: 'Mohamed Ali',
+      userRole: 'Full Stack Engineer',
+      actionLabel: 'View Team',
+      actionType: 'team'
+    },
+    { 
+      id: 2, 
+      category: 'bookings',
+      title: 'Upcoming Session in 30 Min', 
+      message: 'Study Room B (Main Library Floor 1) is ready. Please check in with your QR pass.', 
+      time: '1h ago', 
+      group: 'today',
+      unread: false,
+      roomName: 'Study Room B',
+      actionLabel: 'Fast Check-In',
+      actionType: 'pass',
+      isTimer: true
+    },
+    { 
+      id: 3, 
+      category: 'announcements',
+      title: 'New AI Research Lab & Pods', 
+      message: 'Check out 5 newly added high-performance labs and acoustic soundproof pods.', 
+      time: 'Yesterday', 
+      group: 'yesterday',
+      unread: false,
+      roomName: 'AI Research Lab',
+      actionLabel: 'Explore Space',
+      actionType: 'room'
+    },
+    {
+      id: 5,
+      category: 'bookings',
+      title: 'Completed Session Summary',
+      message: 'Your session at Conference Room A ended smoothly. Rate your space experience.',
+      time: '3d ago',
+      group: 'earlier',
+      unread: false,
+      roomName: 'Conference Room A',
+      actionLabel: 'Book Again',
+      actionType: 'room'
+    }
+  ]);
 
   const [bookings, setBookings] = useState([
     { id: 1, room: 'Meeting Room 1', date: 'May 14', time: '10:00 AM - 11:30 AM', image: getAsset('meeting_room.jpg'), status: 'Confirmed', attendees: ['Mohamed (You)', 'Ahmed Ali'] },
@@ -160,78 +221,108 @@ export default function App() {
 
   const rooms = [
     { 
-      name: 'Conference Room A', location: 'Building G, Floor 3', images: [getAsset('conference_hall.jpg')], type: 'Theater', capacity: '8-12 People',
-      description: 'A modern, acoustically treated conference room ideal for high-stakes presentations.',
+      name: 'Conference Room A', location: 'Building G, Floor 3', 
+      images: [getAsset('conference_hall.jpg'), getAsset('conference_hall_alt.jpg'), getAsset('boardroom_interior.jpg')], 
+      type: 'Theater', capacity: '8-12 People',
+      description: 'A modern, acoustically treated conference room ideal for high-stakes presentations and lectures.',
       amenities: [{ icon: Monitor, label: 'Smart TV' }, { icon: PenTool, label: 'Whiteboard' }, { icon: Thermometer, label: 'Climate Control' }], available: true 
     },
     { 
-      name: 'Auditorium B', location: 'Building A, Floor 1', images: [getAsset('theater_2.jpg')], type: 'Theater', capacity: '50-100 People',
-      description: 'Large auditorium for guest speakers and major events.',
+      name: 'Auditorium B', location: 'Building A, Floor 1', 
+      images: [getAsset('theater_2.jpg'), getAsset('theater_3.jpg'), getAsset('conference_hall.jpg')], 
+      type: 'Theater', capacity: '50-100 People',
+      description: 'Large auditorium for guest speakers, symposiums, and major university events.',
       amenities: [{ icon: Monitor, label: 'Projector' }, { icon: VolumeX, label: 'Sound System' }, { icon: Thermometer, label: 'Climate Control' }], available: true 
     },
     { 
-      name: 'Lecture Hall', location: 'Building C, Floor 1', images: [getAsset('theater_3.jpg')], type: 'Theater', capacity: '30-50 People',
-      description: 'Standard lecture hall with multiple whiteboards.',
+      name: 'Lecture Hall', location: 'Building C, Floor 1', 
+      images: [getAsset('theater_3.jpg'), getAsset('theater_2.jpg'), getAsset('conference_hall_alt.jpg')], 
+      type: 'Theater', capacity: '30-50 People',
+      description: 'Standard tiered lecture hall with multi-display projection and acoustic panels.',
       amenities: [{ icon: PenTool, label: 'Whiteboards' }, { icon: Thermometer, label: 'Climate Control' }], available: true 
     },
     { 
-      name: 'Study Room B', location: 'Main Library, Floor 1', images: [getAsset('study_room.jpg')], type: 'Study', capacity: '1-2 People',
-      description: 'A dedicated quiet space for deep work and focused study.',
+      name: 'Study Room B', location: 'Main Library, Floor 1', 
+      images: [getAsset('study_room.jpg'), getAsset('study_room_alt.jpg'), getAsset('pod_interior.jpg')], 
+      type: 'Study', capacity: '1-2 People',
+      description: 'A dedicated quiet space for deep work, research papers, and focused study.',
       amenities: [{ icon: Wifi, label: 'Fast WiFi' }, { icon: PenTool, label: 'Whiteboard' }, { icon: Coffee, label: 'Coffee Nearby' }], available: true 
     },
     { 
-      name: 'Library Pod 4', location: 'Main Library, Basement', images: [getAsset('library_pod.jpg')], type: 'Study', capacity: '1 Person',
-      description: 'Acoustically treated personal pod.',
+      name: 'Library Pod 4', location: 'Main Library, Basement', 
+      images: [getAsset('library_pod.jpg'), getAsset('pod_interior.jpg'), getAsset('library_pod_alt.jpg')], 
+      type: 'Study', capacity: '1 Person',
+      description: 'Acoustically isolated personal focus pod with USB-C charging and LED task lamp.',
       amenities: [{ icon: VolumeX, label: 'Soundproof' }, { icon: Thermometer, label: 'A/C' }], available: true 
     },
     { 
-      name: 'Quiet Zone', location: 'Main Library, Floor 2', images: [getAsset('study_room_alt.jpg')], type: 'Study', capacity: '1-4 People',
-      description: 'Open quiet area for group study.',
+      name: 'Quiet Zone', location: 'Main Library, Floor 2', 
+      images: [getAsset('study_room_alt.jpg'), getAsset('study_room.jpg'), getAsset('library_pod.jpg')], 
+      type: 'Study', capacity: '1-4 People',
+      description: 'Open collaborative quiet area with natural lighting for group study sessions.',
       amenities: [{ icon: Wifi, label: 'Fast WiFi' }, { icon: Thermometer, label: 'A/C' }], available: true 
     },
     { 
-      name: 'Meeting Room 1', location: 'Building B, Floor 2', images: [getAsset('meeting_room.jpg')], type: 'Meeting', capacity: '4-8 People',
-      description: 'Premium meeting room designed for group collaboration.',
+      name: 'Meeting Room 1', location: 'Building B, Floor 2', 
+      images: [getAsset('meeting_room.jpg'), getAsset('meeting_room_alt.jpg'), getAsset('boardroom_interior.jpg')], 
+      type: 'Meeting', capacity: '4-8 People',
+      description: 'Premium meeting room designed for team collaboration and hybrid video meetings.',
       amenities: [{ icon: Monitor, label: 'Smart TV' }, { icon: Wifi, label: 'WiFi' }, { icon: PenTool, label: 'Whiteboard' }], available: true 
     },
     { 
-      name: 'Executive Boardroom', location: 'Building G, Floor 5', images: [getAsset('meeting_3.jpg')], type: 'Meeting', capacity: '10-15 People',
-      description: 'Luxurious boardroom with city views.',
+      name: 'Executive Boardroom', location: 'Building G, Floor 5', 
+      images: [getAsset('meeting_3.jpg'), getAsset('boardroom_interior.jpg'), getAsset('meeting_room.jpg')], 
+      type: 'Meeting', capacity: '10-15 People',
+      description: 'Luxurious boardroom with panoramic campus views and executive conference facilities.',
       amenities: [{ icon: Monitor, label: 'Smart TV' }, { icon: Coffee, label: 'Coffee Machine' }, { icon: Phone, label: 'Polycom' }], available: true 
     },
     { 
-      name: 'Collab Space', location: 'Building B, Floor 1', images: [getAsset('meeting_room_alt.jpg')], type: 'Meeting', capacity: '4-6 People',
-      description: 'Casual collaboration space with standing desks.',
+      name: 'Collab Space', location: 'Building B, Floor 1', 
+      images: [getAsset('meeting_room_alt.jpg'), getAsset('meeting_room.jpg'), getAsset('study_room.jpg')], 
+      type: 'Meeting', capacity: '4-6 People',
+      description: 'Casual collaboration space with standing desks and interactive digital whiteboards.',
       amenities: [{ icon: PenTool, label: 'Whiteboards' }, { icon: Wifi, label: 'WiFi' }], available: true 
     },
     { 
-      name: 'Computer Lab 3', location: 'Building C, Floor 2', images: [getAsset('computer_lab.jpg')], type: 'Lab', capacity: '20-30 People',
-      description: 'Fully equipped computer lab with high-end workstations.',
+      name: 'Computer Lab 3', location: 'Building C, Floor 2', 
+      images: [getAsset('computer_lab.jpg'), getAsset('coding_lab.jpg'), getAsset('ai_research_lab.jpg')], 
+      type: 'Lab', capacity: '20-30 People',
+      description: 'Fully equipped computer lab with high-end workstations and Gigabit connectivity.',
       amenities: [{ icon: Monitor, label: 'Workstations' }, { icon: Wifi, label: 'Gigabit LAN' }], available: true 
     },
     { 
-      name: 'Hardware Lab', location: 'Building E, Basement', images: [getAsset('conference_hall_alt.jpg')], type: 'Lab', capacity: '10-20 People',
-      description: 'Electronics and hardware testing lab.',
+      name: 'Hardware Lab', location: 'Building E, Basement', 
+      images: [getAsset('hardware_lab.jpg'), getAsset('computer_lab.jpg'), getAsset('coding_lab.jpg')], 
+      type: 'Lab', capacity: '10-20 People',
+      description: 'Electronics and hardware testing lab with digital oscilloscopes and soldering stations.',
       amenities: [{ icon: Monitor, label: 'Oscilloscopes' }, { icon: Shield, label: 'Safety Gear' }], available: true 
     },
     { 
-      name: 'AI Research Lab', location: 'Building E, Floor 3', images: [getAsset('library_pod_alt.jpg')], type: 'Lab', capacity: '10-15 People',
-      description: 'Advanced AI research lab with server access.',
+      name: 'AI Research Lab', location: 'Building E, Floor 3', 
+      images: [getAsset('ai_research_lab.jpg'), getAsset('coding_lab.jpg'), getAsset('computer_lab.jpg')], 
+      type: 'Lab', capacity: '10-15 People',
+      description: 'Advanced AI research lab with high-performance GPU server access and multi-monitor setups.',
       amenities: [{ icon: Monitor, label: 'GPU Servers' }, { icon: Wifi, label: '10G LAN' }], available: true 
     },
     { 
-      name: 'Media Studio A', location: 'Building F, Basement', images: [getAsset('media_studio.jpg')], type: 'Studio', capacity: '2-5 People',
-      description: 'Soundproof media recording studio with professional lighting.',
+      name: 'Media Studio A', location: 'Building F, Basement', 
+      images: [getAsset('media_studio.jpg'), getAsset('photography_studio.jpg'), getAsset('audio_booth.jpg')], 
+      type: 'Studio', capacity: '2-5 People',
+      description: 'Soundproof media recording studio with professional 3-point lighting and boom mics.',
       amenities: [{ icon: Camera, label: 'Lighting' }, { icon: VolumeX, label: 'Soundproof' }], available: true 
     },
     { 
-      name: 'Photography Studio', location: 'Building F, Floor 1', images: [getAsset('media_studio.jpg')], type: 'Studio', capacity: '3-6 People',
-      description: 'Spacious studio with backdrops.',
+      name: 'Photography Studio', location: 'Building F, Floor 1', 
+      images: [getAsset('photography_studio.jpg'), getAsset('media_studio.jpg'), getAsset('podcast_room.jpg')], 
+      type: 'Studio', capacity: '3-6 People',
+      description: 'Spacious studio with infinity cove cyclorama backdrop and professional strobe lighting.',
       amenities: [{ icon: Camera, label: 'Backdrops' }, { icon: Monitor, label: 'Editing Mac' }], available: true 
     },
     { 
-      name: 'Podcast Room', location: 'Building F, Floor 2', images: [getAsset('media_studio.jpg')], type: 'Studio', capacity: '1-3 People',
-      description: 'Intimate podcast recording space.',
+      name: 'Podcast Room', location: 'Building F, Floor 2', 
+      images: [getAsset('podcast_room.jpg'), getAsset('audio_booth.jpg'), getAsset('media_studio.jpg')], 
+      type: 'Studio', capacity: '1-3 People',
+      description: 'Acoustically soundproof podcast recording booth with broadcast-grade Shure mics.',
       amenities: [{ icon: Camera, label: 'Microphones' }, { icon: VolumeX, label: 'Soundproof' }], available: true 
     },
   ];
@@ -425,48 +516,419 @@ export default function App() {
   ];
 
   // -------------------------------------------------------------
-  // FULL SCREEN NOTIFICATIONS PAGE
+  // FULL SCREEN NOTIFICATIONS PAGE (DARK LIQUID GLASS AESTHETICS)
   // -------------------------------------------------------------
   if (showNotifications) {
+    const unreadCount = notificationsList.filter(n => n.unread).length;
+    const filteredNotifs = notificationsList.filter(n => notifCategory === 'all' ? true : n.category === notifCategory);
+    
+    const todayNotifs = filteredNotifs.filter(n => n.group === 'today');
+    const yesterdayNotifs = filteredNotifs.filter(n => n.group === 'yesterday');
+    const earlierNotifs = filteredNotifs.filter(n => n.group === 'earlier');
+
+    const markAllAsRead = () => {
+      setNotificationsList(prev => prev.map(n => ({ ...n, unread: false })));
+      setToastMessage('All notifications marked as read');
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 2500);
+    };
+
+    const markAsRead = (id: number) => {
+      setNotificationsList(prev => prev.map(n => n.id === id ? { ...n, unread: false } : n));
+    };
+
+    const removeNotif = (e: React.MouseEvent, id: number) => {
+      e.stopPropagation();
+      setNotificationsList(prev => prev.filter(n => n.id !== id));
+    };
+
+    const handleNotifAction = (notif: any) => {
+      markAsRead(notif.id);
+      if (notif.actionType === 'pass') {
+        setShowNotifications(false);
+        setShowQrAccessModal(true);
+      } else if (notif.actionType === 'room') {
+        setShowNotifications(false);
+        const targetRoom = rooms.find(r => r.name === notif.roomName) || rooms[0];
+        setSelectedRoom(targetRoom);
+        setBookingStep('details');
+      } else if (notif.actionType === 'team') {
+        setShowNotifications(false);
+        setActiveTab('profile');
+        setProfileView('groups');
+      }
+    };
+
     return (
-      <div className="flex justify-center bg-slate-900 h-screen w-screen overflow-hidden font-sans text-slate-900">
-        <div className="w-full max-w-[430px] bg-slate-50 h-full relative shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-300">
-          <div className="p-4 flex justify-between items-center border-b border-slate-200 bg-white shadow-sm z-10">
-            <button onClick={() => setShowNotifications(false)} className="p-2 bg-slate-50 rounded-full text-[#002D62] hover:bg-slate-100 transition-colors">
-              <ArrowLeft size={20} />
-            </button>
-            <h2 className="font-bold text-[#002D62] text-lg">Notifications</h2>
-            <div className="w-10"></div>
-          </div>
+      <div className="flex justify-center bg-slate-950 h-screen w-screen overflow-hidden font-sans text-white">
+        <div className="w-full max-w-[430px] bg-[#0B1528] h-full relative shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-300">
           
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50">
-            {notificationsList.map((notif: any) => (
-              <div key={notif.id} className={`p-4 rounded-2xl flex gap-4 transition-all ${notif.unread ? 'bg-white shadow-md border border-blue-100/50' : 'bg-white/60 shadow-sm border border-slate-100'}`}>
-                <div className="flex-shrink-0 relative">
-                  {notif.avatar ? (
-                     <div className="relative">
-                       <img src={notif.avatar} className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm" alt="User" />
-                       {notif.unread && <div className="absolute top-0 -right-1 w-3.5 h-3.5 bg-[#DA291C] rounded-full border-2 border-white"></div>}
-                     </div>
-                  ) : (
-                     <div className={`w-10 h-10 rounded-full flex items-center justify-center relative ${notif.id === 1 ? 'bg-green-100 text-green-600' : notif.id === 2 ? 'bg-amber-100 text-amber-600' : 'bg-blue-100 text-blue-600'}`}>
-                        {notif.id === 1 && <Check size={20} strokeWidth={2.5} />}
-                        {notif.id === 2 && <Clock size={20} strokeWidth={2.5} />}
-                        {notif.id === 3 && <Monitor size={20} strokeWidth={2.5} />}
-                        {notif.unread && <div className="absolute top-0 -right-1 w-3.5 h-3.5 bg-[#DA291C] rounded-full border-2 border-white"></div>}
-                     </div>
+          {/* Glass Header */}
+          <div className="p-4 pt-5 flex justify-between items-center border-b border-white/10 bg-[#0B1528]/90 backdrop-blur-2xl shadow-lg z-20 sticky top-0">
+            <div className="flex items-center gap-3">
+              <button 
+                onClick={() => setShowNotifications(false)} 
+                className="p-2.5 bg-white/10 hover:bg-white/20 border border-white/15 rounded-full text-white backdrop-blur-md active:scale-95 transition-all"
+                aria-label="Back to home"
+              >
+                <ArrowLeft size={18} />
+              </button>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h2 className="font-bold text-white text-lg tracking-tight">Notifications</h2>
+                  {unreadCount > 0 && (
+                    <span className="px-2 py-0.5 bg-[#DA291C] text-white text-[10px] font-black rounded-full shadow-[0_0_12px_rgba(218,41,28,0.6)] animate-pulse">
+                      {unreadCount} NEW
+                    </span>
                   )}
                 </div>
-                <div className="flex-1">
-                  <div className="flex justify-between items-start">
-                    <h3 className={`font-bold text-[14px] ${notif.unread ? 'text-[#002D62]' : 'text-slate-600'}`}>{notif.title}</h3>
-                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-0.5">{notif.time}</span>
-                  </div>
-                  <p className={`text-xs mt-1 leading-relaxed ${notif.unread ? 'text-slate-700 font-medium' : 'text-slate-500'}`}>{notif.message}</p>
-                </div>
+                <p className="text-[11px] text-slate-400 font-medium">BUE Space Center Updates</p>
               </div>
-            ))}
+            </div>
+
+            <div className="flex items-center gap-2">
+              {unreadCount > 0 && (
+                <button 
+                  onClick={markAllAsRead}
+                  className="px-3 py-1.5 bg-[#002D62] hover:bg-[#00387a] border border-white/20 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md active:scale-95 transition-all"
+                  title="Mark all as read"
+                >
+                  <CheckCheck size={14} className="text-blue-300" />
+                  <span className="text-[11px]">Mark Read</span>
+                </button>
+              )}
+            </div>
           </div>
+
+          {/* Category Filter Chips */}
+          <div className="px-4 py-3 bg-[#0E1B33]/80 border-b border-white/5 backdrop-blur-md flex items-center gap-2 overflow-x-auto no-scrollbar z-10">
+            <button
+              onClick={() => setNotifCategory('all')}
+              className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                notifCategory === 'all'
+                  ? 'bg-[#002D62] text-white border border-white/30 shadow-[0_2px_10px_rgba(0,45,98,0.5)]'
+                  : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'
+              }`}
+            >
+              All
+              <span className={`px-1.5 py-0.2 text-[10px] rounded-full ${notifCategory === 'all' ? 'bg-[#DA291C] text-white font-black' : 'bg-white/10 text-slate-400'}`}>
+                {notificationsList.length}
+              </span>
+            </button>
+
+            <button
+              onClick={() => setNotifCategory('bookings')}
+              className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                notifCategory === 'bookings'
+                  ? 'bg-[#002D62] text-white border border-white/30 shadow-[0_2px_10px_rgba(0,45,98,0.5)]'
+                  : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'
+              }`}
+            >
+              Bookings
+              <span className={`px-1.5 py-0.2 text-[10px] rounded-full ${notifCategory === 'bookings' ? 'bg-[#DA291C] text-white font-black' : 'bg-white/10 text-slate-400'}`}>
+                {notificationsList.filter(n => n.category === 'bookings').length}
+              </span>
+            </button>
+
+            <button
+              onClick={() => setNotifCategory('team')}
+              className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                notifCategory === 'team'
+                  ? 'bg-[#002D62] text-white border border-white/30 shadow-[0_2px_10px_rgba(0,45,98,0.5)]'
+                  : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'
+              }`}
+            >
+              Team
+              <span className={`px-1.5 py-0.2 text-[10px] rounded-full ${notifCategory === 'team' ? 'bg-[#DA291C] text-white font-black' : 'bg-white/10 text-slate-400'}`}>
+                {notificationsList.filter(n => n.category === 'team').length}
+              </span>
+            </button>
+
+            <button
+              onClick={() => setNotifCategory('announcements')}
+              className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                notifCategory === 'announcements'
+                  ? 'bg-[#002D62] text-white border border-white/30 shadow-[0_2px_10px_rgba(0,45,98,0.5)]'
+                  : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/10'
+              }`}
+            >
+              Updates
+              <span className={`px-1.5 py-0.2 text-[10px] rounded-full ${notifCategory === 'announcements' ? 'bg-[#DA291C] text-white font-black' : 'bg-white/10 text-slate-400'}`}>
+                {notificationsList.filter(n => n.category === 'announcements').length}
+              </span>
+            </button>
+          </div>
+          
+          {/* Notifications Scroll Area */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-5">
+            
+            {filteredNotifs.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-20 px-6 text-center animate-in fade-in zoom-in-95 duration-300">
+                <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 mb-4 shadow-inner">
+                  <BellOff size={28} />
+                </div>
+                <h3 className="text-white font-bold text-base mb-1">All Caught Up!</h3>
+                <p className="text-slate-400 text-xs max-w-xs leading-relaxed mb-6">
+                  No notifications in this category. We will notify you when space reservations or team invites occur.
+                </p>
+                <button
+                  onClick={() => setShowNotifications(false)}
+                  className="px-5 py-2.5 bg-[#002D62] hover:bg-[#00387a] border border-white/20 text-white text-xs font-bold rounded-xl shadow-lg active:scale-95 transition-all"
+                >
+                  Explore Spaces
+                </button>
+              </div>
+            ) : (
+              <>
+                {/* TODAY SECTION */}
+                {todayNotifs.length > 0 && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between px-1">
+                      <span className="text-[10px] font-black tracking-widest text-slate-400 uppercase">Today</span>
+                      <span className="text-[10px] font-bold text-blue-400">{todayNotifs.length} updates</span>
+                    </div>
+
+                    {todayNotifs.map((notif: any) => (
+                      <div 
+                        key={notif.id} 
+                        onClick={() => markAsRead(notif.id)}
+                        className={`p-4 rounded-2xl relative overflow-hidden transition-all duration-300 cursor-pointer ${
+                          notif.unread 
+                            ? 'bg-[#132238]/95 border border-blue-400/40 shadow-[0_8px_24px_rgba(0,45,98,0.35)]' 
+                            : 'bg-[#0E1B33]/70 border border-white/10 hover:border-white/20'
+                        }`}
+                      >
+                        {/* Glow accent for unread */}
+                        {notif.unread && (
+                          <div className="absolute top-0 left-0 w-1.5 h-full bg-[#DA291C]" />
+                        )}
+
+                        <div className="flex items-start gap-3.5 pl-1">
+                          {/* Icon / Avatar */}
+                          <div className="flex-shrink-0 relative mt-0.5">
+                            {notif.avatar ? (
+                              <div className="relative">
+                                <img src={notif.avatar} className="w-11 h-11 rounded-xl object-cover border border-white/20 shadow-md" alt="User" />
+                                {notif.unread && <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#DA291C] rounded-full border-2 border-[#0B1528] shadow-[0_0_8px_#DA291C]" />}
+                              </div>
+                            ) : (
+                              <div className={`w-11 h-11 rounded-xl flex items-center justify-center relative border border-white/15 shadow-md ${
+                                notif.category === 'bookings' 
+                                  ? notif.isTimer ? 'bg-gradient-to-br from-amber-500/20 to-orange-500/30 text-amber-300' : 'bg-gradient-to-br from-emerald-500/20 to-teal-500/30 text-emerald-300'
+                                  : 'bg-gradient-to-br from-blue-500/20 to-indigo-500/30 text-blue-300'
+                              }`}>
+                                {notif.category === 'bookings' && notif.isTimer ? (
+                                  <Clock size={20} strokeWidth={2.2} />
+                                ) : notif.category === 'bookings' ? (
+                                  <Check size={20} strokeWidth={2.5} />
+                                ) : (
+                                  <Sparkles size={20} strokeWidth={2.2} />
+                                )}
+                                {notif.unread && <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#DA291C] rounded-full border-2 border-[#0B1528] shadow-[0_0_8px_#DA291C]" />}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Content */}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex items-center gap-1.5 flex-wrap">
+                                <h3 className={`font-bold text-sm tracking-tight ${notif.unread ? 'text-white' : 'text-slate-300'}`}>
+                                  {notif.title}
+                                </h3>
+                                {notif.badge && (
+                                  <span className="px-1.5 py-0.2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 text-[9px] font-bold rounded-md">
+                                    {notif.badge}
+                                  </span>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <span className="text-[10px] font-bold text-slate-400 whitespace-nowrap">{notif.time}</span>
+                                <button 
+                                  onClick={(e) => removeNotif(e, notif.id)}
+                                  className="p-1 text-slate-500 hover:text-red-400 rounded-md transition-colors"
+                                  title="Dismiss"
+                                >
+                                  <X size={13} />
+                                </button>
+                              </div>
+                            </div>
+
+                            <p className="text-xs text-slate-300 mt-1 leading-relaxed font-normal">
+                              {notif.message}
+                            </p>
+
+                            {/* Quick Action Button */}
+                            {notif.actionLabel && (
+                              <div className="mt-3 flex items-center gap-2">
+                                <button
+                                  onClick={() => handleNotifAction(notif)}
+                                  className="px-3.5 py-1.5 bg-[#002D62] hover:bg-[#00387a] border border-white/20 rounded-xl text-white text-[11px] font-bold flex items-center gap-1.5 shadow-md active:scale-95 transition-all"
+                                >
+                                  {notif.actionType === 'pass' && <QrCode size={13} className="text-blue-300" />}
+                                  {notif.actionType === 'team' && <Users size={13} className="text-blue-300" />}
+                                  {notif.actionType === 'room' && <Navigation size={13} className="text-blue-300" />}
+                                  <span>{notif.actionLabel}</span>
+                                </button>
+                                
+                                {notif.isTimer && (
+                                  <span className="text-[10px] font-mono font-bold text-amber-300 bg-amber-500/10 border border-amber-500/20 px-2 py-1 rounded-lg">
+                                    Starts in {getCountdownParts(countdownSeconds).m}m {getCountdownParts(countdownSeconds).s}s
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* YESTERDAY SECTION */}
+                {yesterdayNotifs.length > 0 && (
+                  <div className="space-y-3 pt-2">
+                    <div className="flex items-center justify-between px-1">
+                      <span className="text-[10px] font-black tracking-widest text-slate-400 uppercase">Yesterday</span>
+                      <span className="text-[10px] font-bold text-slate-500">{yesterdayNotifs.length} updates</span>
+                    </div>
+
+                    {yesterdayNotifs.map((notif: any) => (
+                      <div 
+                        key={notif.id} 
+                        onClick={() => markAsRead(notif.id)}
+                        className={`p-4 rounded-2xl relative overflow-hidden transition-all duration-300 cursor-pointer ${
+                          notif.unread 
+                            ? 'bg-[#132238]/95 border border-blue-400/40 shadow-[0_8px_24px_rgba(0,45,98,0.35)]' 
+                            : 'bg-[#0E1B33]/70 border border-white/10 hover:border-white/20'
+                        }`}
+                      >
+                        <div className="flex items-start gap-3.5">
+                          <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-blue-500/20 to-indigo-500/30 text-blue-300 border border-white/15 shadow-md">
+                            <Monitor size={20} strokeWidth={2.2} />
+                          </div>
+
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between gap-2">
+                              <h3 className="font-bold text-sm tracking-tight text-white">
+                                {notif.title}
+                              </h3>
+                              <div className="flex items-center gap-1">
+                                <span className="text-[10px] font-bold text-slate-400 whitespace-nowrap">{notif.time}</span>
+                                <button 
+                                  onClick={(e) => removeNotif(e, notif.id)}
+                                  className="p-1 text-slate-500 hover:text-red-400 rounded-md transition-colors"
+                                  title="Dismiss"
+                                >
+                                  <X size={13} />
+                                </button>
+                              </div>
+                            </div>
+
+                            <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                              {notif.message}
+                            </p>
+
+                            {notif.actionLabel && (
+                              <div className="mt-3">
+                                <button
+                                  onClick={() => handleNotifAction(notif)}
+                                  className="px-3.5 py-1.5 bg-[#002D62] hover:bg-[#00387a] border border-white/20 rounded-xl text-white text-[11px] font-bold flex items-center gap-1.5 shadow-md active:scale-95 transition-all"
+                                >
+                                  <Navigation size={13} className="text-blue-300" />
+                                  <span>{notif.actionLabel}</span>
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* EARLIER SECTION */}
+                {earlierNotifs.length > 0 && (
+                  <div className="space-y-3 pt-2">
+                    <div className="flex items-center justify-between px-1">
+                      <span className="text-[10px] font-black tracking-widest text-slate-400 uppercase">Earlier This Week</span>
+                      <span className="text-[10px] font-bold text-slate-500">{earlierNotifs.length} updates</span>
+                    </div>
+
+                    {earlierNotifs.map((notif: any) => (
+                      <div 
+                        key={notif.id} 
+                        onClick={() => markAsRead(notif.id)}
+                        className="p-4 rounded-2xl bg-[#0E1B33]/60 border border-white/10 hover:border-white/20 transition-all cursor-pointer"
+                      >
+                        <div className="flex items-start gap-3.5">
+                          <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 bg-white/5 text-slate-400 border border-white/10">
+                            <Clock size={20} />
+                          </div>
+
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between gap-2">
+                              <h3 className="font-bold text-sm tracking-tight text-slate-300">
+                                {notif.title}
+                              </h3>
+                              <div className="flex items-center gap-1">
+                                <span className="text-[10px] font-bold text-slate-400">{notif.time}</span>
+                                <button 
+                                  onClick={(e) => removeNotif(e, notif.id)}
+                                  className="p-1 text-slate-500 hover:text-red-400 rounded-md transition-colors"
+                                  title="Dismiss"
+                                >
+                                  <X size={13} />
+                                </button>
+                              </div>
+                            </div>
+
+                            <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                              {notif.message}
+                            </p>
+
+                            {notif.actionLabel && (
+                              <div className="mt-3">
+                                <button
+                                  onClick={() => handleNotifAction(notif)}
+                                  className="px-3.5 py-1.5 bg-white/10 hover:bg-white/15 border border-white/15 rounded-xl text-white text-[11px] font-bold flex items-center gap-1.5 active:scale-95 transition-all"
+                                >
+                                  <span>{notif.actionLabel}</span>
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
+            )}
+
+          </div>
+
+          {/* Bottom Footer Actions */}
+          <div className="p-4 border-t border-white/10 bg-[#0B1528]/95 backdrop-blur-xl flex items-center justify-between z-20">
+            <span className="text-[11px] font-medium text-slate-400">
+              {notificationsList.length} total notifications
+            </span>
+            {notificationsList.length > 0 && (
+              <button
+                onClick={() => {
+                  setNotificationsList([]);
+                  setToastMessage('Notification history cleared');
+                  setShowToast(true);
+                  setTimeout(() => setShowToast(false), 2500);
+                }}
+                className="text-xs font-bold text-slate-400 hover:text-red-400 flex items-center gap-1.5 transition-colors"
+              >
+                <Trash2 size={13} />
+                <span>Clear All</span>
+              </button>
+            )}
+          </div>
+
         </div>
       </div>
     );
