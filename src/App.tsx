@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Home, Calendar, User, Clock, Users, Wifi, Bell, ArrowLeft, ChevronLeft, ChevronRight, Monitor, Check, CheckCheck, BellOff, SlidersHorizontal, PenTool, Phone, Thermometer, Share2, Search as SearchIcon, MapPin, Coffee, Link2, ExternalLink, Plus, Trash2, Heart, LayoutGrid, BookOpen, Presentation, LogOut, ChevronRight as ChevronRightIcon, Edit3, Shield, HelpCircle, Camera, VolumeX, Activity, X, QrCode, Navigation, Copy, Sparkles, Key } from 'lucide-react';
+import { Home, Calendar, User, Clock, Users, Wifi, Bell, ArrowLeft, ChevronLeft, ChevronRight, Monitor, Check, CheckCheck, BellOff, SlidersHorizontal, PenTool, Phone, Thermometer, Share2, Search as SearchIcon, MapPin, Coffee, Link2, ExternalLink, Plus, Trash2, Heart, LayoutGrid, BookOpen, Presentation, LogOut, ChevronRight as ChevronRightIcon, Edit3, Shield, HelpCircle, Camera, VolumeX, X, QrCode, Navigation, Copy, Sparkles, Key } from 'lucide-react';
 
 const getAsset = (path: string) => {
   const base = import.meta.env.BASE_URL || '/';
@@ -93,6 +93,7 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [filterType, setFilterType] = useState('All');
+  const [availableOnly, setAvailableOnly] = useState(false);
   const [filterTime, setFilterTime] = useState('Any Time');
   const [filterDay, setFilterDay] = useState('Any Day');
   const [filterCapacity, setFilterCapacity] = useState('Any Capacity');
@@ -494,9 +495,8 @@ export default function App() {
 
   const filteredRooms = rooms.filter(r => {
     const matchesSearch = r.name.toLowerCase().includes(searchQuery.toLowerCase()) || r.type.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesType = (filterType === 'All' || filterType === 'Available Now') ? true : r.type === filterType;
-    // Hide 'In Use' or unavailable rooms entirely from search
-    const matchesAvailability = r.available === true;
+    const matchesType = filterType === 'All' ? true : r.type.toLowerCase() === filterType.toLowerCase();
+    const matchesAvailability = availableOnly ? r.available === true : true;
     return matchesSearch && matchesType && matchesAvailability;
   });
 
@@ -509,7 +509,6 @@ export default function App() {
 
   const dashboardCategories = [
     { id: 'All', icon: LayoutGrid, label: 'All Spaces' },
-    { id: 'Available Now', icon: Activity, label: 'Available Now' },
     { id: 'Study', icon: BookOpen, label: 'Study' },
     { id: 'Meeting', icon: Users, label: 'Meeting' },
     { id: 'Theater', icon: Presentation, label: 'Theater' },
@@ -577,8 +576,8 @@ export default function App() {
     };
 
     return (
-      <div className="flex justify-center bg-slate-900 min-h-screen sm:h-screen w-full sm:w-screen overflow-hidden font-sans text-slate-900">
-        <div className="w-full max-w-[430px] bg-slate-50 h-[100dvh] relative shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-300">
+      <div className="flex justify-center bg-slate-900 fixed inset-0 sm:static sm:min-h-screen w-full sm:w-screen overflow-hidden font-sans text-slate-900">
+        <div className="w-full max-w-[430px] bg-slate-50 h-full sm:h-[100dvh] relative shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-300">
           
           {/* Header */}
           <div className="p-4 pt-5 flex justify-between items-center border-b border-slate-200 bg-white/95 backdrop-blur-md shadow-xs z-20 sticky top-0">
@@ -945,8 +944,8 @@ export default function App() {
   // -------------------------------------------------------------
   if (selectedRoom && !viewingBooking) {
     return (
-      <div className="flex justify-center bg-slate-900 min-h-screen sm:h-screen w-full sm:w-screen overflow-hidden font-sans text-slate-900">
-        <div className="w-full max-w-[430px] bg-slate-50 h-[100dvh] relative shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-300">
+      <div className="flex justify-center bg-slate-900 fixed inset-0 sm:static sm:min-h-screen w-full sm:w-screen overflow-hidden font-sans text-slate-900">
+        <div className="w-full max-w-[430px] bg-slate-50 h-full sm:h-[100dvh] relative shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-right duration-300">
           
           {/* Global Header for Booking Flow */}
           {selectedRoom !== null && bookingStep !== 'success' && (
@@ -1519,8 +1518,8 @@ export default function App() {
   // MAIN APP VIEW (DASHBOARD, SEARCH, BOOKINGS, PROFILE)
   // -------------------------------------------------------------
   return (
-    <div className="flex justify-center bg-slate-900 min-h-screen sm:h-screen w-full sm:w-screen overflow-hidden font-sans text-slate-900">
-      <div className="w-full max-w-[430px] bg-slate-100 h-[100dvh] relative shadow-2xl flex flex-col overflow-hidden">
+    <div className="flex justify-center bg-slate-900 fixed inset-0 sm:static sm:min-h-screen w-full sm:w-screen overflow-hidden font-sans text-slate-900">
+      <div className="w-full max-w-[430px] bg-slate-100 h-full sm:h-[100dvh] relative shadow-2xl flex flex-col overflow-hidden">
         
         {/* Modern iOS Glassmorphic Top Header - Home */}
         {activeTab === 'home' && (
@@ -1790,36 +1789,75 @@ export default function App() {
 
               <div className="space-y-4 px-5">
               
-              {/* Circular Category Filters always visible in search */}
-              <div className="flex justify-between overflow-x-auto scrollbar-hide pb-2 gap-4">
+              {/* Circular Category Filters - Perfect 1:1 Geometric Circles */}
+              <div className="flex overflow-x-auto scrollbar-hide pb-2 gap-3.5 justify-start px-0.5">
                 {dashboardCategories.map(cat => (
-                  <div key={cat.id} className="flex flex-col items-center gap-2 cursor-pointer group shrink-0" onClick={() => setFilterType(cat.id)}>
-                    <div className={`w-[56px] h-[56px] rounded-full flex items-center justify-center transition-all duration-300 ${filterType === cat.id ? 'bg-[#002D62] text-white shadow-lg scale-105' : 'bg-white text-slate-500 border border-slate-200 group-hover:border-[#002D62]/30 group-hover:text-[#002D62]'}`}>
-                      <cat.icon size={22} strokeWidth={filterType === cat.id ? 2.5 : 2} />
+                  <div 
+                    key={cat.id} 
+                    className="flex flex-col items-center gap-1.5 cursor-pointer group shrink-0" 
+                    onClick={() => setFilterType(cat.id)}
+                  >
+                    <div className={`w-[52px] h-[52px] min-w-[52px] min-h-[52px] max-w-[52px] max-h-[52px] aspect-square rounded-full flex items-center justify-center transition-all duration-200 ${
+                      filterType === cat.id 
+                        ? 'bg-[#002D62] text-white ring-4 ring-[#002D62]/20 shadow-md' 
+                        : 'bg-white text-slate-500 border border-slate-200 group-hover:border-[#002D62]/30 group-hover:text-[#002D62] shadow-2xs'
+                    }`}>
+                      <cat.icon size={20} strokeWidth={filterType === cat.id ? 2.5 : 2} />
                     </div>
-                    <span className={`text-[11px] font-bold tracking-tight ${filterType === cat.id ? 'text-[#002D62]' : 'text-slate-500'}`}>{cat.label}</span>
+                    <span className={`text-[11px] font-bold tracking-tight text-center whitespace-nowrap ${
+                      filterType === cat.id ? 'text-[#002D62]' : 'text-slate-500'
+                    }`}>
+                      {cat.label}
+                    </span>
                   </div>
                 ))}
               </div>
 
-              <div className="flex gap-2">
+              {/* Search Bar + Available Now Toggle Pill + Filter Button */}
+              <div className="flex items-center gap-2">
                 <div className="relative flex-1">
-                  <SearchIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                  <SearchIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
                   <input 
                     type="text" 
                     placeholder="Search spaces..." 
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full bg-white border border-slate-200 text-[#002D62] rounded-xl pl-10 pr-4 py-3 outline-none focus:border-[#002D62] transition-all text-sm font-medium shadow-sm"
+                    className="w-full bg-white border border-slate-200 text-[#002D62] rounded-xl pl-9 pr-8 py-2.5 outline-none focus:border-[#002D62] transition-all text-xs font-semibold shadow-xs"
                   />
-                  {/* Calendar icon requested in search bar area */}
-                  <Calendar size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none" />
+                  {searchQuery ? (
+                    <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                      <X size={14} />
+                    </button>
+                  ) : (
+                    <Calendar size={15} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none" />
+                  )}
                 </div>
+
+                {/* Available Now Toggle Pill with Pulsing Green Dot */}
+                <button
+                  onClick={() => setAvailableOnly(!availableOnly)}
+                  className={`px-3 py-2.5 rounded-xl border flex items-center gap-1.5 transition-all text-xs font-bold shrink-0 ${
+                    availableOnly 
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-300 shadow-xs ring-2 ring-emerald-400/20' 
+                      : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                  }`}
+                  title="Filter spaces available right now"
+                >
+                  <span className={`w-2 h-2 rounded-full ${availableOnly ? 'bg-emerald-500 animate-pulse' : 'bg-emerald-400'}`} />
+                  <span className="text-[11px] whitespace-nowrap">Available</span>
+                </button>
+
+                {/* More Filters Toggle */}
                 <button 
                   onClick={() => setShowFilters(!showFilters)}
-                  className={`px-4 rounded-xl border flex items-center justify-center transition-all ${showFilters ? 'bg-[#002D62] text-white border-[#002D62]' : 'bg-white text-[#002D62] border-slate-200'}`}
+                  className={`p-2.5 rounded-xl border flex items-center justify-center transition-all shrink-0 ${
+                    showFilters || filterDay !== 'Any Day' || filterTime !== 'Any Time' || filterCapacity !== 'Any Capacity'
+                      ? 'bg-[#002D62] text-white border-[#002D62] shadow-xs' 
+                      : 'bg-white text-[#002D62] border-slate-200 hover:bg-slate-50'
+                  }`}
+                  title="Filter options"
                 >
-                  <SlidersHorizontal size={18} />
+                  <SlidersHorizontal size={16} />
                 </button>
               </div>
 
