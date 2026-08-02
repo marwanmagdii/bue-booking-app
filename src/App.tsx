@@ -228,105 +228,125 @@ export default function App() {
       images: [getAsset('conference_hall.jpg'), getAsset('conference_hall_alt.jpg'), getAsset('boardroom_interior.jpg')], 
       type: 'Theater', capacity: '8-12 People',
       description: 'A modern, acoustically treated conference room ideal for high-stakes presentations and lectures.',
-      amenities: [{ icon: Monitor, label: 'Smart TV' }, { icon: PenTool, label: 'Whiteboard' }, { icon: Thermometer, label: 'Climate Control' }], available: true 
+      amenities: [{ icon: Monitor, label: 'Smart TV' }, { icon: PenTool, label: 'Whiteboard' }, { icon: Thermometer, label: 'Climate Control' }], 
+      available: true 
     },
     { 
       name: 'Auditorium B', location: 'Building A, Floor 1', 
       images: [getAsset('theater_2.jpg'), getAsset('theater_3.jpg'), getAsset('conference_hall.jpg')], 
       type: 'Theater', capacity: '50-100 People',
       description: 'Large auditorium for guest speakers, symposiums, and major university events.',
-      amenities: [{ icon: Monitor, label: 'Projector' }, { icon: VolumeX, label: 'Sound System' }, { icon: Thermometer, label: 'Climate Control' }], available: true 
+      amenities: [{ icon: Monitor, label: 'Projector' }, { icon: VolumeX, label: 'Sound System' }, { icon: Thermometer, label: 'Climate Control' }], 
+      available: false,
+      nextFreeTime: '1:30 PM'
     },
     { 
       name: 'Lecture Hall', location: 'Building C, Floor 1', 
       images: [getAsset('theater_3.jpg'), getAsset('theater_2.jpg'), getAsset('conference_hall_alt.jpg')], 
       type: 'Theater', capacity: '30-50 People',
       description: 'Standard tiered lecture hall with multi-display projection and acoustic panels.',
-      amenities: [{ icon: PenTool, label: 'Whiteboards' }, { icon: Thermometer, label: 'Climate Control' }], available: true 
+      amenities: [{ icon: PenTool, label: 'Whiteboards' }, { icon: Thermometer, label: 'Climate Control' }], 
+      available: true 
     },
     { 
       name: 'Study Room B', location: 'Main Library, Floor 1', 
       images: [getAsset('study_room.jpg'), getAsset('study_room_alt.jpg'), getAsset('pod_interior.jpg')], 
       type: 'Study', capacity: '1-2 People',
       description: 'A dedicated quiet space for deep work, research papers, and focused study.',
-      amenities: [{ icon: Wifi, label: 'Fast WiFi' }, { icon: PenTool, label: 'Whiteboard' }, { icon: Coffee, label: 'Coffee Nearby' }], available: true 
+      amenities: [{ icon: Wifi, label: 'Fast WiFi' }, { icon: PenTool, label: 'Whiteboard' }, { icon: Coffee, label: 'Coffee Nearby' }], 
+      available: true 
     },
     { 
       name: 'Library Pod 4', location: 'Main Library, Basement', 
       images: [getAsset('library_pod.jpg'), getAsset('pod_interior.jpg'), getAsset('library_pod_alt.jpg')], 
       type: 'Study', capacity: '1 Person',
       description: 'Acoustically isolated personal focus pod with USB-C charging and LED task lamp.',
-      amenities: [{ icon: VolumeX, label: 'Soundproof' }, { icon: Thermometer, label: 'A/C' }], available: true 
+      amenities: [{ icon: VolumeX, label: 'Soundproof' }, { icon: Thermometer, label: 'A/C' }], 
+      available: true 
     },
     { 
       name: 'Quiet Zone', location: 'Main Library, Floor 2', 
       images: [getAsset('study_room_alt.jpg'), getAsset('study_room.jpg'), getAsset('library_pod.jpg')], 
       type: 'Study', capacity: '1-4 People',
       description: 'Open collaborative quiet area with natural lighting for group study sessions.',
-      amenities: [{ icon: Wifi, label: 'Fast WiFi' }, { icon: Thermometer, label: 'A/C' }], available: true 
+      amenities: [{ icon: Wifi, label: 'Fast WiFi' }, { icon: Thermometer, label: 'A/C' }], 
+      available: false,
+      nextFreeTime: '2:00 PM'
     },
     { 
       name: 'Meeting Room 1', location: 'Building B, Floor 2', 
       images: [getAsset('meeting_room.jpg'), getAsset('meeting_room_alt.jpg'), getAsset('boardroom_interior.jpg')], 
       type: 'Meeting', capacity: '4-8 People',
       description: 'Premium meeting room designed for team collaboration and hybrid video meetings.',
-      amenities: [{ icon: Monitor, label: 'Smart TV' }, { icon: Wifi, label: 'WiFi' }, { icon: PenTool, label: 'Whiteboard' }], available: true 
+      amenities: [{ icon: Monitor, label: 'Smart TV' }, { icon: Wifi, label: 'WiFi' }, { icon: PenTool, label: 'Whiteboard' }], 
+      available: false,
+      nextFreeTime: '11:30 AM'
     },
     { 
       name: 'Executive Boardroom', location: 'Building G, Floor 5', 
       images: [getAsset('meeting_3.jpg'), getAsset('boardroom_interior.jpg'), getAsset('meeting_room.jpg')], 
       type: 'Meeting', capacity: '10-15 People',
       description: 'Luxurious boardroom with panoramic campus views and executive conference facilities.',
-      amenities: [{ icon: Monitor, label: 'Smart TV' }, { icon: Coffee, label: 'Coffee Machine' }, { icon: Phone, label: 'Polycom' }], available: true 
+      amenities: [{ icon: Monitor, label: 'Smart TV' }, { icon: Coffee, label: 'Coffee Machine' }, { icon: Phone, label: 'Polycom' }], 
+      available: true 
     },
     { 
       name: 'Collab Space', location: 'Building B, Floor 1', 
       images: [getAsset('meeting_room_alt.jpg'), getAsset('meeting_room.jpg'), getAsset('study_room.jpg')], 
       type: 'Meeting', capacity: '4-6 People',
       description: 'Casual collaboration space with standing desks and interactive digital whiteboards.',
-      amenities: [{ icon: PenTool, label: 'Whiteboards' }, { icon: Wifi, label: 'WiFi' }], available: true 
+      amenities: [{ icon: PenTool, label: 'Whiteboards' }, { icon: Wifi, label: 'WiFi' }], 
+      available: true 
     },
     { 
       name: 'Computer Lab 3', location: 'Building C, Floor 2', 
       images: [getAsset('computer_lab.jpg'), getAsset('coding_lab.jpg'), getAsset('ai_research_lab.jpg')], 
       type: 'Lab', capacity: '20-30 People',
       description: 'Fully equipped computer lab with high-end workstations and Gigabit connectivity.',
-      amenities: [{ icon: Monitor, label: 'Workstations' }, { icon: Wifi, label: 'Gigabit LAN' }], available: true 
+      amenities: [{ icon: Monitor, label: 'Workstations' }, { icon: Wifi, label: 'Gigabit LAN' }], 
+      available: true 
     },
     { 
       name: 'Hardware Lab', location: 'Building E, Basement', 
       images: [getAsset('hardware_lab.jpg'), getAsset('computer_lab.jpg'), getAsset('coding_lab.jpg')], 
       type: 'Lab', capacity: '10-20 People',
       description: 'Electronics and hardware testing lab with digital oscilloscopes and soldering stations.',
-      amenities: [{ icon: Monitor, label: 'Oscilloscopes' }, { icon: Shield, label: 'Safety Gear' }], available: true 
+      amenities: [{ icon: Monitor, label: 'Oscilloscopes' }, { icon: Shield, label: 'Safety Gear' }], 
+      available: false,
+      nextFreeTime: '3:00 PM'
     },
     { 
       name: 'AI Research Lab', location: 'Building E, Floor 3', 
       images: [getAsset('ai_research_lab.jpg'), getAsset('coding_lab.jpg'), getAsset('computer_lab.jpg')], 
       type: 'Lab', capacity: '10-15 People',
       description: 'Advanced AI research lab with high-performance GPU server access and multi-monitor setups.',
-      amenities: [{ icon: Monitor, label: 'GPU Servers' }, { icon: Wifi, label: '10G LAN' }], available: true 
+      amenities: [{ icon: Monitor, label: 'GPU Servers' }, { icon: Wifi, label: '10G LAN' }], 
+      available: true 
     },
     { 
       name: 'Media Studio A', location: 'Building F, Basement', 
       images: [getAsset('media_studio.jpg'), getAsset('photography_studio.jpg'), getAsset('audio_booth.jpg')], 
       type: 'Studio', capacity: '2-5 People',
       description: 'Soundproof media recording studio with professional 3-point lighting and boom mics.',
-      amenities: [{ icon: Camera, label: 'Lighting' }, { icon: VolumeX, label: 'Soundproof' }], available: true 
+      amenities: [{ icon: Camera, label: 'Lighting' }, { icon: VolumeX, label: 'Soundproof' }], 
+      available: true 
     },
     { 
       name: 'Photography Studio', location: 'Building F, Floor 1', 
       images: [getAsset('photography_studio.jpg'), getAsset('media_studio.jpg'), getAsset('podcast_room.jpg')], 
       type: 'Studio', capacity: '3-6 People',
       description: 'Spacious studio with infinity cove cyclorama backdrop and professional strobe lighting.',
-      amenities: [{ icon: Camera, label: 'Backdrops' }, { icon: Monitor, label: 'Editing Mac' }], available: true 
+      amenities: [{ icon: Camera, label: 'Backdrops' }, { icon: Monitor, label: 'Editing Mac' }], 
+      available: true 
     },
     { 
       name: 'Podcast Room', location: 'Building F, Floor 2', 
       images: [getAsset('podcast_room.jpg'), getAsset('audio_booth.jpg'), getAsset('media_studio.jpg')], 
       type: 'Studio', capacity: '1-3 People',
       description: 'Acoustically soundproof podcast recording booth with broadcast-grade Shure mics.',
-      amenities: [{ icon: Camera, label: 'Microphones' }, { icon: VolumeX, label: 'Soundproof' }], available: true 
+      amenities: [{ icon: Camera, label: 'Microphones' }, { icon: VolumeX, label: 'Soundproof' }], 
+      available: false,
+      nextFreeTime: '1:00 PM'
     },
   ];
 
@@ -1021,15 +1041,37 @@ export default function App() {
               </div>
 
               <div className="px-6 pt-6">
-                <span className="inline-block bg-blue-100/50 text-[#002D62] border border-blue-200 text-[10px] font-black tracking-widest uppercase mb-2 px-2.5 py-0.5 rounded-full">
-                  {selectedRoom.type}
-                </span>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="inline-block bg-blue-100/50 text-[#002D62] border border-blue-200 text-[10px] font-black tracking-widest uppercase px-2.5 py-0.5 rounded-full">
+                    {selectedRoom.type}
+                  </span>
+                  {selectedRoom.available ? (
+                    <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      Available Now
+                    </span>
+                  ) : (
+                    <span className="bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-black px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                      In Use • Free at {selectedRoom.nextFreeTime || '2:00 PM'}
+                    </span>
+                  )}
+                </div>
+
                 <h1 className="text-[28px] font-serif font-bold text-[#002D62] leading-tight">{selectedRoom.name}</h1>
-                <p className="text-slate-500 font-medium text-sm flex items-center gap-1 mb-6 mt-1">
+                <p className="text-slate-500 font-medium text-sm flex items-center gap-1 mb-4 mt-1">
                   <MapPin size={14} className="text-[#DA291C]" /> {selectedRoom.location}
                   <span className="mx-1">•</span>
                   <Users size={14} className="text-[#DA291C]" /> {selectedRoom.capacity}
                 </p>
+
+                {/* Status Notice */}
+                {!selectedRoom.available && (
+                  <div className="flex items-center gap-2 p-3 bg-amber-50/80 border border-amber-200/80 rounded-xl mb-6 text-amber-900 text-xs font-semibold">
+                    <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
+                    <span>Occupied right now. You can reserve the next upcoming time slot ({selectedRoom.nextFreeTime || '2:00 PM'}).</span>
+                  </div>
+                )}
                 
                 <h2 className="text-xl font-serif font-bold text-[#002D62] mb-3">About this Space</h2>
                 <p className="text-slate-600 text-[15px] font-medium leading-relaxed tracking-wide mb-8">
@@ -1782,8 +1824,12 @@ export default function App() {
                   <h2 className="text-xl font-bold text-[#002D62] tracking-tight">Explore Spaces</h2>
                   <p className="text-[11px] font-medium text-slate-400">Find & reserve study rooms on campus</p>
                 </div>
-                <span className="bg-blue-50 text-[#002D62] border border-blue-100 text-xs font-bold px-2.5 py-1 rounded-full shadow-2xs">
-                  {filteredRooms.length} Spaces
+                <span className={`text-xs font-bold px-2.5 py-1 rounded-full shadow-2xs border transition-all ${
+                  availableOnly 
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
+                    : 'bg-blue-50 text-[#002D62] border-blue-100'
+                }`}>
+                  {availableOnly ? `${filteredRooms.length} Available` : `${filteredRooms.length} Spaces`}
                 </span>
               </div>
 
@@ -1835,16 +1881,22 @@ export default function App() {
 
                 {/* Available Now Toggle Pill with Pulsing Green Dot */}
                 <button
-                  onClick={() => setAvailableOnly(!availableOnly)}
-                  className={`px-3 py-2.5 rounded-xl border flex items-center gap-1.5 transition-all text-xs font-bold shrink-0 ${
+                  onClick={() => {
+                    const next = !availableOnly;
+                    setAvailableOnly(next);
+                    setToastMessage(next ? 'Filtered: Showing available spaces only' : 'Showing all spaces');
+                    setShowToast(true);
+                    setTimeout(() => setShowToast(false), 2000);
+                  }}
+                  className={`px-3 py-2.5 rounded-xl border flex items-center gap-1.5 transition-all text-xs font-bold shrink-0 cursor-pointer active:scale-95 ${
                     availableOnly 
-                      ? 'bg-emerald-50 text-emerald-700 border-emerald-300 shadow-xs ring-2 ring-emerald-400/20' 
-                      : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                      ? 'bg-emerald-600 text-white border-emerald-600 shadow-md ring-2 ring-emerald-500/30' 
+                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
                   }`}
                   title="Filter spaces available right now"
                 >
-                  <span className={`w-2 h-2 rounded-full ${availableOnly ? 'bg-emerald-500 animate-pulse' : 'bg-emerald-400'}`} />
-                  <span className="text-[11px] whitespace-nowrap">Available</span>
+                  <span className={`w-2 h-2 rounded-full ${availableOnly ? 'bg-white animate-pulse' : 'bg-emerald-500'}`} />
+                  <span className="text-[11px] whitespace-nowrap font-bold">Available</span>
                 </button>
 
                 {/* More Filters Toggle */}
@@ -1913,22 +1965,43 @@ export default function App() {
               <section>
                 <div className="space-y-4">
                   {filteredRooms.length === 0 ? (
-                    <div className="text-center py-8 bg-white rounded-2xl border border-slate-200">
-                       <p className="text-slate-500 text-sm font-medium">No spaces found matching criteria.</p>
+                    <div className="text-center py-10 bg-white rounded-2xl border border-slate-200 p-6">
+                       <p className="text-slate-700 text-sm font-bold mb-1">No spaces match this filter</p>
+                       <p className="text-slate-400 text-xs mb-4">Try toggling off the filter or selecting another category.</p>
+                       <button 
+                         onClick={() => { setAvailableOnly(false); setFilterType('All'); setSearchQuery(''); }}
+                         className="px-4 py-2 bg-[#002D62] text-white rounded-xl text-xs font-bold shadow-sm active:scale-95 transition-all"
+                       >
+                         Reset All Filters
+                       </button>
                     </div>
                   ) : (
                     filteredRooms.map((room, idx) => (
                       <div 
                         key={idx} 
-                        onClick={() => room.available && openRoom(room)}
-                        className={`relative rounded-2xl overflow-hidden bg-white shadow-sm border transition-all duration-300 border-slate-200 cursor-pointer hover:shadow-md hover:border-[#002D62]/50 active:scale-[0.98]`}
+                        onClick={() => openRoom(room)}
+                        className="relative rounded-2xl overflow-hidden bg-white shadow-sm border transition-all duration-300 border-slate-200 cursor-pointer hover:shadow-md hover:border-[#002D62]/50 active:scale-[0.98]"
                       >
-                        <div className="h-40 w-full relative">
+                        <div className="h-44 w-full relative">
                           <img src={room.images[0]} alt={room.name} className="w-full h-full object-cover" />
-                          <div className="absolute inset-0 bg-gradient-to-t from-[#002D62]/90 via-[#002D62]/15 to-transparent" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-[#002D62]/90 via-[#002D62]/20 to-transparent" />
                           
-                          <div className="absolute top-2.5 left-2.5 apple-glass-badge px-2.5 py-0.5 rounded-full text-[9px] font-normal uppercase tracking-wider">
-                             {room.type}
+                          {/* Live Status & Type Badges */}
+                          <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
+                            <span className="apple-glass-badge px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider text-white">
+                               {room.type}
+                            </span>
+                            {room.available ? (
+                              <span className="bg-emerald-600/95 backdrop-blur-md text-white text-[9px] font-black px-2.5 py-0.5 rounded-full flex items-center gap-1 border border-emerald-400/30 shadow-xs">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-200 animate-pulse" />
+                                Available Now
+                              </span>
+                            ) : (
+                              <span className="bg-amber-600/95 backdrop-blur-md text-white text-[9px] font-black px-2.5 py-0.5 rounded-full flex items-center gap-1 border border-amber-400/30 shadow-xs">
+                                <span className="w-1.5 h-1.5 rounded-full bg-amber-200" />
+                                In Use • Free at {room.nextFreeTime || '2:00 PM'}
+                              </span>
+                            )}
                           </div>
                           
                           <button 
@@ -1985,15 +2058,29 @@ export default function App() {
                   {favoriteRooms.map((room, idx) => (
                     <div 
                       key={idx} 
-                      onClick={() => room.available && openRoom(room)}
-                      className={`relative rounded-2xl overflow-hidden bg-white shadow-sm border transition-all duration-300 border-slate-200 cursor-pointer hover:shadow-md hover:border-[#002D62]/50 active:scale-[0.98]`}
+                      onClick={() => openRoom(room)}
+                      className="relative rounded-2xl overflow-hidden bg-white shadow-sm border transition-all duration-300 border-slate-200 cursor-pointer hover:shadow-md hover:border-[#002D62]/50 active:scale-[0.98]"
                     >
-                      <div className="h-40 w-full relative">
+                      <div className="h-44 w-full relative">
                         <img src={room.images[0]} alt={room.name} className="w-full h-full object-cover" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#002D62]/90 via-[#002D62]/15 to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#002D62]/90 via-[#002D62]/20 to-transparent" />
                         
-                        <div className="absolute top-2.5 left-2.5 apple-glass-badge px-2.5 py-0.5 rounded-full text-[9px] font-normal uppercase tracking-wider">
-                           {room.type}
+                        {/* Live Status & Type Badges */}
+                        <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
+                          <span className="apple-glass-badge px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider text-white">
+                             {room.type}
+                          </span>
+                          {room.available ? (
+                            <span className="bg-emerald-600/95 backdrop-blur-md text-white text-[9px] font-black px-2.5 py-0.5 rounded-full flex items-center gap-1 border border-emerald-400/30 shadow-xs">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-200 animate-pulse" />
+                              Available Now
+                            </span>
+                          ) : (
+                            <span className="bg-amber-600/95 backdrop-blur-md text-white text-[9px] font-black px-2.5 py-0.5 rounded-full flex items-center gap-1 border border-amber-400/30 shadow-xs">
+                              <span className="w-1.5 h-1.5 rounded-full bg-amber-200" />
+                              In Use • Free at {room.nextFreeTime || '2:00 PM'}
+                            </span>
+                          )}
                         </div>
                         
                         <button 
