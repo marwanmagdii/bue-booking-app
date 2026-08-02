@@ -1986,22 +1986,8 @@ export default function App() {
                           <img src={room.images[0]} alt={room.name} className="w-full h-full object-cover" />
                           <div className="absolute inset-0 bg-gradient-to-t from-[#002D62]/90 via-[#002D62]/20 to-transparent" />
                           
-                          {/* Live Status & Type Badges */}
-                          <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
-                            <span className="apple-glass-badge px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider text-white">
-                               {room.type}
-                            </span>
-                            {room.available ? (
-                              <span className="bg-emerald-600/95 backdrop-blur-md text-white text-[9px] font-black px-2.5 py-0.5 rounded-full flex items-center gap-1 border border-emerald-400/30 shadow-xs">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-200 animate-pulse" />
-                                Available Now
-                              </span>
-                            ) : (
-                              <span className="bg-amber-600/95 backdrop-blur-md text-white text-[9px] font-black px-2.5 py-0.5 rounded-full flex items-center gap-1 border border-amber-400/30 shadow-xs">
-                                <span className="w-1.5 h-1.5 rounded-full bg-amber-200" />
-                                In Use • Free at {room.nextFreeTime || '2:00 PM'}
-                              </span>
-                            )}
+                          <div className="absolute top-2.5 left-2.5 apple-glass-badge px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider text-white">
+                            {room.type}
                           </div>
                           
                           <button 
@@ -2065,22 +2051,8 @@ export default function App() {
                         <img src={room.images[0]} alt={room.name} className="w-full h-full object-cover" />
                         <div className="absolute inset-0 bg-gradient-to-t from-[#002D62]/90 via-[#002D62]/20 to-transparent" />
                         
-                        {/* Live Status & Type Badges */}
-                        <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
-                          <span className="apple-glass-badge px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider text-white">
-                             {room.type}
-                          </span>
-                          {room.available ? (
-                            <span className="bg-emerald-600/95 backdrop-blur-md text-white text-[9px] font-black px-2.5 py-0.5 rounded-full flex items-center gap-1 border border-emerald-400/30 shadow-xs">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-200 animate-pulse" />
-                              Available Now
-                            </span>
-                          ) : (
-                            <span className="bg-amber-600/95 backdrop-blur-md text-white text-[9px] font-black px-2.5 py-0.5 rounded-full flex items-center gap-1 border border-amber-400/30 shadow-xs">
-                              <span className="w-1.5 h-1.5 rounded-full bg-amber-200" />
-                              In Use • Free at {room.nextFreeTime || '2:00 PM'}
-                            </span>
-                          )}
+                        <div className="absolute top-2.5 left-2.5 apple-glass-badge px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider text-white">
+                          {room.type}
                         </div>
                         
                         <button 
