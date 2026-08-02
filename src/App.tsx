@@ -1210,7 +1210,7 @@ export default function App() {
                 <div className="grid grid-cols-2 gap-2.5">
                   {[
                     { title: 'New VR Tech Lab', desc: 'Book our newest VR-capable lab spaces.', tag: '🆕 New', image: getAsset('announcement_2.jpg') },
-                    { title: 'Study Hack Event', desc: 'Join the focus group at Room A.', tag: '🎉 Event', image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=300&h=150' },
+                    { title: 'Study Hack Event', desc: 'Join the focus group at Room A.', tag: '🎉 Event', image: getAsset('study_room.jpg') },
                   ].map((ann, i) => (
                     <div key={i} className="relative rounded-2xl overflow-hidden h-[110px] cursor-pointer active:scale-[0.98] transition-transform">
                       <img src={ann.image} alt={ann.title} className="absolute inset-0 w-full h-full object-cover" />
