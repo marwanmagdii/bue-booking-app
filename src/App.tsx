@@ -1608,11 +1608,11 @@ export default function App() {
           </header>
         )}
 
-        <main className="flex-1 overflow-y-auto pb-32 space-y-4">
+        <main className="flex-1 overflow-y-auto pb-6 space-y-4">
           
           {/* HOME TAB: DASHBOARD */}
           {activeTab === 'home' && (
-            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-5 pb-4">
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-5">
 
 
               {/* ③ Next Session Live Pass Card */}
@@ -2054,7 +2054,7 @@ export default function App() {
                    <p className="text-slate-500 text-sm font-medium">Tap the heart icon on any space to save it for quick access later.</p>
                 </div>
               ) : (
-                <div className="space-y-4 pb-32">
+                <div className="space-y-4 pb-4">
                   {favoriteRooms.map((room, idx) => (
                     <div 
                       key={idx} 
@@ -2882,7 +2882,7 @@ export default function App() {
                       Past
                     </button>
                   </div>
-                  <div className="space-y-4 pb-32">
+                  <div className="space-y-4 pb-4">
                     {bookingTab === 'upcoming' && (
                       displayBookings.length > 0 ? (
                         displayBookings.map((booking) => (
@@ -2991,7 +2991,7 @@ export default function App() {
                     </span>
                   </div>
 
-                  <div className="space-y-6 pt-4 pb-32">
+                  <div className="space-y-6 pt-4 pb-4">
                     <div className="px-5">
                     
                     {/* User Card */}
