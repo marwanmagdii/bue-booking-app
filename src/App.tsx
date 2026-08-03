@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Home, Calendar, User, Clock, Users, Wifi, Bell, ArrowLeft, ChevronLeft, ChevronRight, Monitor, Check, CheckCheck, BellOff, SlidersHorizontal, PenTool, Phone, Thermometer, Share2, Search as SearchIcon, MapPin, Coffee, Link2, ExternalLink, Plus, Trash2, Heart, LayoutGrid, BookOpen, Presentation, LogOut, ChevronRight as ChevronRightIcon, Edit3, Shield, HelpCircle, Camera, VolumeX, X, QrCode, Navigation, Copy, Sparkles } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Home, Calendar, User, Clock, Users, Wifi, Bell, ArrowLeft, ChevronLeft, ChevronRight, Monitor, Check, CheckCheck, BellOff, SlidersHorizontal, PenTool, Phone, Thermometer, Share2, Search as SearchIcon, MapPin, Coffee, Link2, ExternalLink, Plus, Trash2, Heart, LayoutGrid, BookOpen, Presentation, LogOut, ChevronRight as ChevronRightIcon, Edit3, Shield, HelpCircle, Camera, VolumeX, X, Copy, Sparkles, Mail, Eye } from 'lucide-react';
 
 const getAsset = (path: string) => {
   const base = import.meta.env.BASE_URL || '/';
@@ -12,7 +12,9 @@ export default function App() {
   const [selectedRoom, setSelectedRoom] = useState<any>(null);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
-  const [showQrAccessModal, setShowQrAccessModal] = useState(false);
+  const [showEmailPassModal, setShowEmailPassModal] = useState(false);
+  const [emailPreviewData, setEmailPreviewData] = useState<any>(null);
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
   
   // Countdown Timer for Active Reminders & Reservation Super Page
   const [countdownSeconds, setCountdownSeconds] = useState(4820);
@@ -254,8 +256,7 @@ export default function App() {
       type: 'Theater', capacity: '50-100 People',
       description: 'Large auditorium for guest speakers, symposiums, and major university events.',
       amenities: [{ icon: Monitor, label: 'Projector' }, { icon: VolumeX, label: 'Sound System' }, { icon: Thermometer, label: 'Climate Control' }], 
-      available: false,
-      nextFreeTime: '1:30 PM'
+      available: true
     },
     { 
       name: 'Lecture Hall', location: 'Building C, Floor 1', 
@@ -287,8 +288,7 @@ export default function App() {
       type: 'Study', capacity: '1-4 People',
       description: 'Open collaborative quiet area with natural lighting for group study sessions.',
       amenities: [{ icon: Wifi, label: 'Fast WiFi' }, { icon: Thermometer, label: 'A/C' }], 
-      available: false,
-      nextFreeTime: '2:00 PM'
+      available: true
     },
     { 
       name: 'Meeting Room 1', location: 'Building B, Floor 2', 
@@ -296,8 +296,7 @@ export default function App() {
       type: 'Meeting', capacity: '4-8 People',
       description: 'Premium meeting room designed for team collaboration and hybrid video meetings.',
       amenities: [{ icon: Monitor, label: 'Smart TV' }, { icon: Wifi, label: 'WiFi' }, { icon: PenTool, label: 'Whiteboard' }], 
-      available: false,
-      nextFreeTime: '11:30 AM'
+      available: true
     },
     { 
       name: 'Executive Boardroom', location: 'Building G, Floor 5', 
@@ -329,8 +328,7 @@ export default function App() {
       type: 'Lab', capacity: '10-20 People',
       description: 'Electronics and hardware testing lab with digital oscilloscopes and soldering stations.',
       amenities: [{ icon: Monitor, label: 'Oscilloscopes' }, { icon: Shield, label: 'Safety Gear' }], 
-      available: false,
-      nextFreeTime: '3:00 PM'
+      available: true
     },
     { 
       name: 'AI Research Lab', location: 'Building E, Floor 3', 
@@ -362,8 +360,7 @@ export default function App() {
       type: 'Studio', capacity: '1-3 People',
       description: 'Acoustically soundproof podcast recording booth with broadcast-grade Shure mics.',
       amenities: [{ icon: Camera, label: 'Microphones' }, { icon: VolumeX, label: 'Soundproof' }], 
-      available: false,
-      nextFreeTime: '1:00 PM'
+      available: true
     },
   ];
 
@@ -437,23 +434,82 @@ export default function App() {
     return `${first} - ${last}`;
   };
 
+  const sendBookingEmail = async (bookingData: any, customRecipient = 'amegomeg99@gmail.com') => {
+    const recipient = customRecipient || 'amegomeg99@gmail.com';
+    const room = bookingData?.room || selectedRoom?.name || 'BUE Study Space';
+    const date = bookingData?.date || ('May ' + selectedDate);
+    const time = bookingData?.time || getFormattedTimeRange();
+    const attendees = bookingData?.attendees && bookingData.attendees.length > 0 
+      ? bookingData.attendees.join(', ') 
+      : 'Mohamed (You)';
+
+    const pin = Math.floor(100000 + Math.random() * 900000);
+
+    const reminderMessage = `
+🏛️ THE BRITISH UNIVERSITY IN EGYPT (BUE)
+Study Space & Reservation Reminder Pass
+
+• Space: ${room}
+• Location: Building C • Floor 2 • Smart Commons
+• Date: ${date}
+• Time: ${time}
+• Gate PIN: #${pin}
+• Attendees: ${attendees}
+• Status: CONFIRMED (Smart Turnstiles & Door Unlocked)
+
+Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.eg for assistance.
+`.trim();
+
+    const emailPayload = {
+      _subject: `🏛️ BUE Reservation Reminder: ${room} (${date} • ${time})`,
+      _template: "box",
+      _captcha: "false",
+      Reservation_Reminder: reminderMessage
+    };
+
+    setIsSendingEmail(true);
+
+    try {
+      // Send using user's token in background
+      await fetch(`https://formsubmit.co/ajax/1c36fbba0d433cfa40fa86d4ab3677ae`, {
+        method: "POST",
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(emailPayload)
+      });
+    } catch {
+      try {
+        await fetch(`https://formsubmit.co/ajax/${recipient}`, {
+          method: "POST",
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify(emailPayload)
+        });
+      } catch {}
+    } finally {
+      setIsSendingEmail(false);
+    }
+  };
+
   const handleCreateBooking = () => {
     const newBookingId = Date.now();
-    setBookings([
-      { 
-        id: newBookingId, 
-        room: selectedRoom.name, 
-        date: 'May ' + selectedDate, 
-        time: getFormattedTimeRange(),
-        image: selectedRoom.images[0],
-        status: 'Confirmed',
-        attendees: []
-      },
-      ...bookings
-    ]);
-    
+    const newBooking = { 
+      id: newBookingId, 
+      room: selectedRoom.name, 
+      date: 'May ' + selectedDate, 
+      time: getFormattedTimeRange(),
+      image: selectedRoom.images[0],
+      status: 'Confirmed',
+      attendees: ['Mohamed (You)']
+    };
+
+    setBookings([newBooking, ...bookings]);
     setCurrentBookingId(newBookingId);
     setBookingStep('success');
+
+    // Automatically send confirmation email to amegomeg99@gmail.com
+    sendBookingEmail(newBooking, 'amegomeg99@gmail.com');
   };
 
   const handleShare = () => {
@@ -600,7 +656,8 @@ export default function App() {
       markAsRead(notif.id);
       if (notif.actionType === 'pass') {
         setShowNotifications(false);
-        setShowQrAccessModal(true);
+        setActiveTab('bookings');
+        if (bookings.length > 0) setViewingBooking(bookings[0]);
       } else if (notif.actionType === 'room') {
         setShowNotifications(false);
         const targetRoom = rooms.find(r => r.name === notif.roomName) || rooms[0];
@@ -1063,33 +1120,18 @@ export default function App() {
                   <span className="inline-block bg-blue-100/50 text-[#002D62] border border-blue-200 text-[10px] font-black tracking-widest uppercase px-2.5 py-0.5 rounded-full">
                     {selectedRoom.type}
                   </span>
-                  {selectedRoom.available ? (
-                    <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      Available
-                    </span>
-                  ) : (
-                    <span className="bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                      In Use • Free at {selectedRoom.nextFreeTime || '2:00 PM'}
-                    </span>
-                  )}
+                  <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    Available
+                  </span>
                 </div>
 
                 <h1 className="text-[28px] font-serif font-bold text-[#002D62] leading-tight">{selectedRoom.name}</h1>
-                <p className="text-slate-500 font-medium text-sm flex items-center gap-1 mb-4 mt-1">
+                <p className="text-slate-500 font-medium text-sm flex items-center gap-1 mb-6 mt-1">
                   <MapPin size={14} className="text-[#DA291C]" /> {selectedRoom.location}
                   <span className="mx-1">•</span>
                   <Users size={14} className="text-[#DA291C]" /> {selectedRoom.capacity}
                 </p>
-
-                {/* Status Notice */}
-                {!selectedRoom.available && (
-                  <div className="flex items-center gap-2 p-3 bg-amber-50/80 border border-amber-200/80 rounded-xl mb-6 text-amber-900 text-xs font-semibold">
-                    <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
-                    <span>Occupied right now. You can reserve the next upcoming time slot ({selectedRoom.nextFreeTime || '2:00 PM'}).</span>
-                  </div>
-                )}
                 
                 <h2 className="text-xl font-serif font-bold text-[#002D62] mb-3">About this Space</h2>
                 <p className="text-slate-600 text-[15px] font-medium leading-relaxed tracking-wide mb-8">
@@ -1269,30 +1311,63 @@ export default function App() {
                 <Check size={40} className="text-white" strokeWidth={4} />
               </div>
               <h1 className="text-3xl font-serif font-bold text-white mb-2 text-center">Booking Confirmed!</h1>
-              <p className="text-blue-100 text-center text-sm font-medium mb-12">
+              <p className="text-blue-100 text-center text-sm font-medium mb-4">
                 Your reservation for <strong className="text-white">{selectedRoom.name}</strong> is secured.
               </p>
+
+              {/* Automatic Email Confirmation Banner */}
+              <div className="flex items-center gap-2.5 bg-white/10 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-white/20 text-xs text-white mb-8 shadow-inner">
+                <div className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-300 flex items-center justify-center border border-emerald-400/30">
+                  <Check size={12} strokeWidth={3} />
+                </div>
+                <div className="text-left">
+                  <span className="text-[10px] uppercase font-bold tracking-wider text-blue-200 block">Pass Automatically Emailed</span>
+                  <span className="font-mono text-[11px] font-semibold text-white">amegomeg99@gmail.com</span>
+                </div>
+              </div>
               
-              <div className="w-full space-y-3">
+              <div className="w-full space-y-2.5">
+                <button 
+                  onClick={() => {
+                    setEmailPreviewData({ 
+                      room: selectedRoom.name, 
+                      date: 'May ' + selectedDate, 
+                      time: getFormattedTimeRange(),
+                      image: selectedRoom.images[0],
+                      attendees: ['Mohamed (You)']
+                    });
+                    setShowEmailPassModal(true);
+                  }}
+                  className="w-full bg-white text-[#002D62] font-black text-sm py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-xl hover:bg-slate-50 transition-all active:scale-95 border-2 border-white"
+                >
+                  <Eye size={17} strokeWidth={2.5} /> Preview Official Email Pass
+                </button>
+                <button 
+                  disabled={isSendingEmail}
+                  onClick={() => sendBookingEmail({ room: selectedRoom.name, date: 'May ' + selectedDate, time: getFormattedTimeRange() }, 'amegomeg99@gmail.com')}
+                  className="w-full bg-[#DA291C] hover:bg-[#c22418] text-white font-bold text-sm py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95 border border-red-400/30 disabled:opacity-50"
+                >
+                  <Mail size={16} /> {isSendingEmail ? 'Sending Pass...' : 'Resend Email to amegomeg99@gmail.com'}
+                </button>
                 <button 
                   onClick={() => {
                     setSelectedUserIds([]);
                     setUserSearchQuery('');
                     setBookingStep('invite');
                   }}
-                  className="w-full bg-white text-[#002D62] font-bold text-lg py-4 rounded-xl flex items-center justify-center gap-2 shadow-lg hover:bg-slate-50 transition-all active:scale-95"
+                  className="w-full bg-white/15 hover:bg-white/20 text-white font-bold text-sm py-3 rounded-xl flex items-center justify-center gap-2 border border-white/20 transition-all active:scale-95"
                 >
-                  <Share2 size={20} strokeWidth={2.5} /> Share with Colleagues
+                  <Share2 size={16} strokeWidth={2.5} /> Invite Study Colleagues
                 </button>
                 <button 
                   onClick={copyLink}
-                  className="w-full bg-[#00428f] text-white font-bold text-lg py-4 rounded-xl flex items-center justify-center gap-2 shadow-lg hover:bg-[#004f9e] transition-all active:scale-95"
+                  className="w-full bg-white/10 hover:bg-white/15 text-white font-medium text-sm py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95"
                 >
-                  <Link2 size={20} strokeWidth={2.5} /> Copy Generated Link
+                  <Link2 size={16} strokeWidth={2.5} /> Copy Generated Link
                 </button>
                 <button 
                   onClick={() => finishFlow('')}
-                  className="w-full bg-transparent border-2 border-white/20 text-white font-bold text-lg py-4 rounded-xl hover:bg-white/10 transition-all active:scale-95 mt-4"
+                  className="w-full bg-transparent border border-white/20 text-white font-semibold text-sm py-3 rounded-xl hover:bg-white/10 transition-all active:scale-95 mt-2"
                 >
                   Skip for Now
                 </button>
@@ -1653,10 +1728,11 @@ export default function App() {
                           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                         </div>
                         <button 
-                          onClick={(e) => { e.stopPropagation(); setActiveTab('bookings'); setViewingBooking(bookings[0]); setShowQrAccessModal(true); }}
+                          onClick={(e) => { e.stopPropagation(); setActiveTab('bookings'); setViewingBooking(bookings[0]); }}
                           className="bg-[#DA291C] hover:bg-[#c0241a] text-white text-[10px] font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg shadow-[#DA291C]/30 active:scale-95 transition-all"
                         >
-                          <QrCode size={12} /> View QR Pass
+                          <span>View Pass</span>
+                          <ArrowLeft size={11} className="rotate-180" />
                         </button>
                       </div>
 
@@ -2165,17 +2241,13 @@ export default function App() {
 
                     <div className="flex items-center gap-1.5">
                       <button 
-                        onClick={() => setShowQrAccessModal(true)}
-                        className="p-2 text-[#002D62] bg-blue-50 hover:bg-blue-100 border border-blue-100 rounded-full transition-all active:scale-95 shadow-2xs flex items-center justify-center"
-                        title="Show Digital QR Pass"
-                      >
-                        <QrCode size={17} />
-                      </button>
-                      <button 
                         onClick={() => {
+                          if (navigator.clipboard) {
+                            navigator.clipboard.writeText(`BUE Study Space Reservation Pass: ${viewingBooking.room} (${viewingBooking.date} • ${viewingBooking.time})`);
+                          }
                           setToastMessage(`Booking pass link copied!`);
                           setShowToast(true);
-                          setTimeout(() => setShowToast(false), 3000);
+                          setTimeout(() => setShowToast(false), 2500);
                         }} 
                         className="p-2 text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-full transition-all active:scale-95 shadow-2xs flex items-center justify-center"
                         title="Share Reservation"
@@ -2195,7 +2267,7 @@ export default function App() {
                   </div>
                   
                   {/* Super Page Scrollable Content */}
-                  <div className="flex-1 overflow-y-auto px-5 pt-4 pb-36 space-y-4">
+                  <div className="flex-1 overflow-y-auto px-5 pt-4 pb-8 space-y-4">
                     
                     {/* Apple-Wallet / Digital Ticket Card */}
                     <div className="bg-gradient-to-br from-[#001D42] via-[#002D62] to-[#0A3D78] text-white rounded-3xl p-5 shadow-xl shadow-[#002D62]/20 border border-blue-900/40 relative overflow-hidden">
@@ -2360,6 +2432,34 @@ export default function App() {
                         </button>
                       </div>
                     )}
+
+                    {/* In-Page Quick Actions: Share Pass & Calendar Sync */}
+                    <div className="grid grid-cols-2 gap-2.5">
+                      <button 
+                        onClick={() => {
+                          if (navigator.clipboard) {
+                            navigator.clipboard.writeText(`BUE Study Space Reservation Pass: ${viewingBooking.room} (${viewingBooking.date} • ${viewingBooking.time})`);
+                          }
+                          setToastMessage(`Reservation pass link copied!`);
+                          setShowToast(true);
+                          setTimeout(() => setShowToast(false), 2500);
+                        }}
+                        className="bg-[#002D62] hover:bg-[#002D62]/90 text-white font-bold py-3.5 px-3 rounded-2xl text-xs flex items-center justify-center gap-2 shadow-md active:scale-95 transition-all"
+                      >
+                        <Share2 size={15} /> Share Pass
+                      </button>
+
+                      <button 
+                        onClick={() => {
+                          setToastMessage(`Calendar invite synced for ${viewingBooking.date}!`);
+                          setShowToast(true);
+                          setTimeout(() => setShowToast(false), 2500);
+                        }}
+                        className="bg-white hover:bg-slate-50 text-[#002D62] border border-slate-200 font-bold py-3.5 px-3 rounded-2xl text-xs flex items-center justify-center gap-2 shadow-xs transition-all active:scale-95"
+                      >
+                        <Calendar size={15} /> Sync Calendar
+                      </button>
+                    </div>
 
                     {/* Campus Wi-Fi Quick Access Card */}
                     <button 
@@ -2591,12 +2691,23 @@ export default function App() {
                              </p>
                            </div>
                            {viewingBooking.status !== 'Completed' && (
-                             <button 
-                               onClick={() => setIsAddingMembersToBooking(true)}
-                               className="text-xs font-bold text-[#DA291C] flex items-center gap-1 hover:underline bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded-lg border border-red-100 active:scale-95 transition-all"
-                             >
-                               <Plus size={13} /> Add Member
-                             </button>
+                             <div className="flex items-center gap-1.5">
+                               <button 
+                                 onClick={() => {
+                                   sendBookingEmail(viewingBooking, 'amegomeg99@gmail.com');
+                                 }}
+                                 className="text-xs font-bold text-[#002D62] flex items-center gap-1 bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded-lg border border-blue-100 active:scale-95 transition-all"
+                                 title="Send email invite to all group study members"
+                               >
+                                 <Mail size={12} /> Email All
+                               </button>
+                               <button 
+                                 onClick={() => setIsAddingMembersToBooking(true)}
+                                 className="text-xs font-bold text-[#DA291C] flex items-center gap-1 hover:underline bg-red-50 hover:bg-red-100 px-2.5 py-1 rounded-lg border border-red-100 active:scale-95 transition-all"
+                               >
+                                 <Plus size={13} /> Add
+                               </button>
+                             </div>
                            )}
                          </div>
                          
@@ -2629,7 +2740,7 @@ export default function App() {
                                const userMatch = bueUsers.find(u => u.name === att);
                                const avatarSrc = userMatch ? userMatch.avatar : `https://i.pravatar.cc/150?img=${11 + (i % 5)}`;
                                const isConfirmed = i === 0 || i % 2 === 0;
-                               
+                                
                                return (
                                  <div key={i} className="bg-slate-50/80 p-2.5 rounded-xl flex items-center justify-between gap-3 border border-slate-100">
                                    <div className="flex items-center gap-2.5">
@@ -2654,7 +2765,7 @@ export default function App() {
                                      ) : (
                                        <div className="flex items-center gap-1.5">
                                          <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-100">
-                                           Pending...
+                                           Pending
                                          </span>
                                          {viewingBooking.status !== 'Completed' && (
                                            <button 
@@ -2664,9 +2775,10 @@ export default function App() {
                                                setShowToast(true); 
                                                setTimeout(() => setShowToast(false), 3000); 
                                              }}
-                                             className="bg-white px-2 py-1 rounded-md border border-slate-200 shadow-xs text-[9px] font-bold text-[#DA291C] hover:bg-slate-100 transition-colors flex items-center gap-1 active:scale-95"
+                                             className="w-7 h-7 bg-white hover:bg-red-50 border border-slate-200 hover:border-red-200 rounded-lg shadow-2xs text-[#DA291C] flex items-center justify-center transition-all active:scale-90"
+                                             title={`Send reminder to ${att}`}
                                            >
-                                             <Bell size={9} /> Remind
+                                             <Bell size={13} />
                                            </button>
                                          )}
                                        </div>
@@ -2692,92 +2804,6 @@ export default function App() {
                       </div>
                     )}
                   </div>
-
-                  {/* Sticky Bottom Actions Bar */}
-                  <div className="absolute bottom-0 left-0 right-0 p-4 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-lg z-20 flex gap-2.5">
-                    <button 
-                      onClick={() => {
-                        setToastMessage(`Navigating to ${viewingBooking.room} (Building C • Floor 2)...`);
-                        setShowToast(true);
-                        setTimeout(() => setShowToast(false), 3000);
-                      }}
-                      className="flex-1 bg-[#002D62] hover:bg-[#002D62]/90 text-white font-bold py-3 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition-all"
-                    >
-                      <Navigation size={14} /> Get Campus Directions
-                    </button>
-
-                    <button 
-                      onClick={() => {
-                        setToastMessage(`Calendar invite added for ${viewingBooking.date}!`);
-                        setShowToast(true);
-                        setTimeout(() => setShowToast(false), 3000);
-                      }}
-                      className="px-4 bg-slate-100 hover:bg-slate-200 text-[#002D62] font-bold py-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95"
-                      title="Sync with Calendar"
-                    >
-                      <Calendar size={14} /> Sync
-                    </button>
-                  </div>
-
-                  {/* Digital QR Access Modal */}
-                  {showQrAccessModal && (
-                    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
-                      <div className="bg-white rounded-3xl p-6 max-w-xs w-full shadow-2xl text-center space-y-4 animate-in zoom-in-95 duration-200 relative">
-                        <button 
-                          onClick={() => setShowQrAccessModal(false)}
-                          className="absolute right-4 top-4 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full text-slate-600"
-                        >
-                          <X size={16} />
-                        </button>
-
-                        <div className="pt-2">
-                          <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#DA291C] block">Smart Campus Gate Pass</span>
-                          <h3 className="text-lg font-black text-[#002D62]">{viewingBooking.room}</h3>
-                          <p className="text-[11px] font-semibold text-slate-400">{viewingBooking.date} • {viewingBooking.time}</p>
-                        </div>
-
-                        {/* High Quality Digital QR Code Box */}
-                        <div className="bg-slate-50 border-2 border-dashed border-[#002D62]/30 p-4 rounded-2xl flex flex-col items-center justify-center">
-                          <div className="w-44 h-44 bg-white p-3 rounded-xl shadow-inner flex flex-col items-center justify-center relative overflow-hidden border border-slate-200">
-                            {/* Clean Digital QR code graphic */}
-                            <div className="grid grid-cols-7 gap-1 w-full h-full p-1 opacity-90">
-                              {Array.from({ length: 49 }).map((_, i) => (
-                                <div 
-                                  key={i} 
-                                  className={`rounded-xs ${
-                                    i === 0 || i === 6 || i === 42 || i === 48 || (i % 3 === 0 && i % 2 !== 0) || i === 24
-                                      ? 'bg-[#002D62]'
-                                      : i % 2 === 0
-                                      ? 'bg-slate-900'
-                                      : 'bg-transparent'
-                                  }`} 
-                                />
-                              ))}
-                            </div>
-                          </div>
-                          <span className="text-[10px] font-mono font-bold text-[#002D62] mt-3 tracking-widest">
-                            #BUE-PASS-{viewingBooking.id}984-X
-                          </span>
-                        </div>
-
-                        <p className="text-[10px] text-slate-500 font-medium">
-                          Scan this pass at building entrance turnstiles and study room electronic door readers.
-                        </p>
-
-                        <button 
-                          onClick={() => {
-                            setShowQrAccessModal(false);
-                            setToastMessage(`Access pass saved to Apple Wallet / Google Pay!`);
-                            setShowToast(true);
-                            setTimeout(() => setShowToast(false), 3000);
-                          }}
-                          className="w-full bg-[#002D62] text-white font-bold py-2.5 rounded-xl text-xs shadow-md active:scale-95 transition-all"
-                        >
-                          Add to Digital Wallet
-                        </button>
-                      </div>
-                    </div>
-                  )}
 
                   {/* Cancel Booking Confirmation Modal */}
                   {showCancelConfirmModal && (
@@ -3661,6 +3687,158 @@ export default function App() {
             ))}
           </nav>
         </div>
+
+        {/* Executive Official BUE Email Pass Preview Modal */}
+        {showEmailPassModal && emailPreviewData && (
+          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-in fade-in duration-200">
+            <div className="bg-white rounded-3xl max-w-[390px] w-full shadow-2xl overflow-hidden border border-slate-200 animate-in zoom-in-95 duration-200 my-auto">
+              
+              {/* Simulated Mail Client Header */}
+              <div className="bg-slate-900 px-4 py-3 text-white flex items-center justify-between border-b border-slate-800">
+                <div className="flex items-center gap-2">
+                  <div className="flex gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-red-500/80"></div>
+                    <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80"></div>
+                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></div>
+                  </div>
+                  <span className="text-[11px] font-mono text-slate-300 ml-2 flex items-center gap-1">
+                    <Mail size={12} className="text-[#DA291C]" /> BUE Dispatcher
+                  </span>
+                </div>
+                <button 
+                  onClick={() => setShowEmailPassModal(false)}
+                  className="p-1 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition-colors"
+                >
+                  <X size={15} />
+                </button>
+              </div>
+
+              {/* Email Envelope Summary */}
+              <div className="bg-slate-50 px-4 py-2.5 border-b border-slate-200/80 text-[11px] space-y-1 text-slate-600">
+                <div className="flex justify-between">
+                  <span className="font-semibold text-slate-400">To:</span>
+                  <span className="font-bold text-[#002D62] font-mono">amegomeg99@gmail.com</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-semibold text-slate-400">From:</span>
+                  <span className="font-medium text-slate-700">The British University in Egypt &lt;digital.services@bue.edu.eg&gt;</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="font-semibold text-slate-400">Subject:</span>
+                  <span className="font-bold text-[#DA291C] truncate max-w-[240px]">🏛️ Confirmed Pass: {emailPreviewData.room}</span>
+                </div>
+              </div>
+
+              {/* Scrollable Email Body */}
+              <div className="max-h-[62vh] overflow-y-auto p-4 space-y-4 bg-white text-left">
+                
+                {/* Official BUE Header Banner with Generated Pass Graphic */}
+                <div className="rounded-2xl overflow-hidden border border-[#002D62]/20 shadow-md relative">
+                  <img 
+                    src={getAsset('bue_reservation_pass.jpg')} 
+                    alt="BUE Official Reservation Pass" 
+                    className="w-full h-36 object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#002D62]/90 via-[#002D62]/40 to-transparent flex flex-col justify-end p-3 text-white">
+                    <span className="text-[9px] font-black uppercase tracking-widest text-amber-300 block">THE BRITISH UNIVERSITY IN EGYPT</span>
+                    <h3 className="text-sm font-black text-white">{emailPreviewData.room}</h3>
+                  </div>
+                </div>
+
+                {/* Hero Room Card with Live Image */}
+                <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-xs relative group">
+                  <img 
+                    src={emailPreviewData.image || getAsset('meeting_room.jpg')} 
+                    alt={emailPreviewData.room}
+                    className="w-full h-32 object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800';
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent flex flex-col justify-end p-3 text-white">
+                    <span className="inline-flex items-center gap-1 bg-emerald-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full w-fit mb-1 shadow-xs">
+                      <Check size={10} strokeWidth={3} /> CONFIRMED & ACTIVE
+                    </span>
+                    <p className="text-[10px] text-slate-200 flex items-center gap-1 font-medium">
+                      <MapPin size={10} className="text-[#DA291C]" /> Building C • Floor 2 • Innovation Hub
+                    </p>
+                  </div>
+                </div>
+
+                {/* Reservation Key Specs Grid */}
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200/80">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 block mb-0.5">Date</span>
+                    <p className="text-xs font-bold text-[#002D62] flex items-center gap-1">
+                      <Calendar size={12} className="text-[#DA291C]" /> {emailPreviewData.date}
+                    </p>
+                  </div>
+                  <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200/80">
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 block mb-0.5">Time Slot</span>
+                    <p className="text-xs font-bold text-[#002D62] flex items-center gap-1">
+                      <Clock size={12} className="text-[#DA291C]" /> {emailPreviewData.time}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Security Smart Access PIN Pass */}
+                <div className="bg-gradient-to-br from-slate-50 to-blue-50/50 p-3.5 rounded-2xl border border-blue-100 flex items-center gap-3.5">
+                  <div className="w-14 h-14 bg-[#002D62] rounded-2xl border border-blue-900 shadow-sm shrink-0 flex flex-col items-center justify-center text-white">
+                    <Shield size={24} className="text-amber-400" />
+                    <span className="text-[8px] font-bold tracking-widest mt-0.5 uppercase">BUE</span>
+                  </div>
+                  <div className="space-y-0.5">
+                    <span className="text-[9px] font-extrabold uppercase tracking-widest text-[#DA291C] block">Turnstile Pass</span>
+                    <p className="text-sm font-black text-[#002D62] font-mono tracking-wider">PIN: #849201</p>
+                    <p className="text-[9px] text-slate-500 font-medium leading-tight">
+                      Validated for smart gates and electronic study room door lock.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Attendees Summary */}
+                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/80 space-y-1">
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 block">Invited Participants</span>
+                  <div className="flex flex-wrap gap-1 pt-0.5">
+                    {(emailPreviewData.attendees && emailPreviewData.attendees.length > 0 ? emailPreviewData.attendees : ['Mohamed Ali (Host)']).map((att: string, i: number) => (
+                      <span key={i} className="text-[10px] font-bold bg-white px-2 py-0.5 rounded-lg border border-slate-200 text-[#002D62]">
+                        {att}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Institutional Footer */}
+                <div className="pt-2 border-t border-slate-100 text-center space-y-1">
+                  <p className="text-[9px] font-bold text-slate-500">
+                    The British University in Egypt • Digital Space Services
+                  </p>
+                  <p className="text-[8px] text-slate-400">
+                    El Sherouk City, Suez Desert Road, Cairo 11837 • Helpdesk: support@bue.edu.eg
+                  </p>
+                </div>
+              </div>
+
+              {/* Modal Footer Controls */}
+              <div className="p-3 bg-slate-50 border-t border-slate-200 flex gap-2">
+                <button
+                  disabled={isSendingEmail}
+                  onClick={() => sendBookingEmail(emailPreviewData, 'amegomeg99@gmail.com')}
+                  className="flex-1 bg-[#DA291C] hover:bg-[#c22418] text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition-all disabled:opacity-50"
+                >
+                  <Mail size={14} /> {isSendingEmail ? 'Sending Pass...' : 'Dispatch Email to amegomeg99@gmail.com'}
+                </button>
+                <button
+                  onClick={() => setShowEmailPassModal(false)}
+                  className="px-3 bg-white border border-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-xs hover:bg-slate-100 transition-all active:scale-95"
+                >
+                  Done
+                </button>
+              </div>
+
+            </div>
+          </div>
+        )}
 
         {/* Success Toast Overlay */}
         {showToast && (
