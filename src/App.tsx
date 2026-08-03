@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Home, Calendar, User, Clock, Users, Wifi, Bell, ArrowLeft, ChevronLeft, ChevronRight, Monitor, Check, CheckCheck, BellOff, SlidersHorizontal, PenTool, Phone, Thermometer, Share2, Search as SearchIcon, MapPin, Coffee, Link2, ExternalLink, Plus, Trash2, Heart, LayoutGrid, BookOpen, Presentation, LogOut, ChevronRight as ChevronRightIcon, Edit3, Shield, HelpCircle, Camera, VolumeX, X, Copy, Sparkles, Mail, Eye } from 'lucide-react';
 
 const getAsset = (path: string) => {
@@ -16,6 +16,14 @@ export default function App() {
   const [emailPreviewData, setEmailPreviewData] = useState<any>(null);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   
+  // Ref for scroll-to-top on page / tab switches
+  const mainScrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    mainScrollRef.current?.scrollTo({ top: 0, behavior: 'instant' });
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [activeTab, selectedRoom]);
+
   // Countdown Timer for Active Reminders & Reservation Super Page
   const [countdownSeconds, setCountdownSeconds] = useState(4820);
   useEffect(() => {
@@ -1701,7 +1709,7 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
           </header>
         )}
 
-        <main className="flex-1 overflow-y-auto pb-6 space-y-4">
+        <main ref={mainScrollRef} className="flex-1 overflow-y-auto pb-6 space-y-4">
           
           {/* HOME TAB: DASHBOARD */}
           {activeTab === 'home' && (
@@ -1972,20 +1980,20 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                   )}
                 </div>
 
-                {/* More Filters Toggle */}
+                {/* Perfect Circle Filter Button */}
                 <button 
                   onClick={() => setShowFilters(!showFilters)}
-                  className={`p-3 rounded-xl border flex items-center justify-center gap-1.5 transition-all shrink-0 font-bold text-xs ${
+                  className={`w-10 h-10 min-w-10 min-h-10 aspect-square rounded-full border flex items-center justify-center transition-all shrink-0 cursor-pointer shadow-xs active:scale-95 relative ${
                     showFilters || availableOnly || filterDay !== 'Any Day' || filterTime !== 'Any Time' || capacityRange > 1
-                      ? 'bg-[#002D62] text-white border-[#002D62] shadow-xs' 
+                      ? 'bg-[#002D62] text-white border-[#002D62] shadow-sm ring-2 ring-[#002D62]/20' 
                       : 'bg-white text-[#002D62] border-slate-200 hover:bg-slate-50'
                   }`}
                   title="Filter options"
+                  aria-label="Filter options"
                 >
-                  <SlidersHorizontal size={16} />
-                  <span>Filter</span>
+                  <SlidersHorizontal size={17} strokeWidth={2.2} />
                   {(availableOnly || filterDay !== 'Any Day' || filterTime !== 'Any Time' || capacityRange > 1) && (
-                    <span className="w-2 h-2 rounded-full bg-[#DA291C]" />
+                    <span className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-[#DA291C] border-2 border-white shadow-xs" />
                   )}
                 </button>
               </div>
@@ -3672,7 +3680,11 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
             ].map((item) => (
               <button
                 key={item.id}
-                onClick={() => setActiveTab(item.id)}
+                onClick={() => {
+                  setActiveTab(item.id);
+                  mainScrollRef.current?.scrollTo({ top: 0, behavior: 'instant' });
+                  window.scrollTo({ top: 0, behavior: 'instant' });
+                }}
                 className={`flex items-center justify-center transition-all duration-300 ${
                   activeTab === item.id 
                   ? 'text-white bg-[#DA291C] px-4 py-2 rounded-2xl gap-2 shadow-md' 
