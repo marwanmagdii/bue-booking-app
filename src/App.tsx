@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { Home, Calendar, User, Clock, Users, Wifi, Bell, ArrowLeft, ChevronLeft, ChevronRight, Monitor, Check, CheckCheck, BellOff, SlidersHorizontal, PenTool, Phone, Thermometer, Share2, Search as SearchIcon, MapPin, Coffee, Link2, ExternalLink, Plus, Trash2, Heart, LayoutGrid, BookOpen, Presentation, LogOut, ChevronRight as ChevronRightIcon, Edit3, Shield, HelpCircle, Camera, VolumeX, X, Copy, Sparkles, Mail, Eye } from 'lucide-react';
 
 const getAsset = (path: string) => {
@@ -19,7 +19,22 @@ export default function App() {
   // Ref for scroll-to-top on page / tab switches
   const mainScrollRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  const switchTab = (tabId: string, extraAction?: () => void) => {
+    if (extraAction) extraAction();
+    setActiveTab(tabId);
+    if (mainScrollRef.current) {
+      mainScrollRef.current.scrollTop = 0;
+    }
+    window.scrollTo(0, 0);
+    requestAnimationFrame(() => {
+      if (mainScrollRef.current) {
+        mainScrollRef.current.scrollTop = 0;
+      }
+      window.scrollTo(0, 0);
+    });
+  };
+
+  useLayoutEffect(() => {
     if (mainScrollRef.current) {
       mainScrollRef.current.scrollTop = 0;
     }
@@ -1671,7 +1686,7 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
           <header className="sticky top-0 z-30 bg-white/90 backdrop-blur-xl border-b border-slate-200/70 px-5 py-3 flex justify-between items-center shadow-2xs">
             <div className="flex items-center gap-3">
               <div 
-                onClick={() => setActiveTab('profile')} 
+                onClick={() => switchTab('profile')} 
                 className="relative cursor-pointer group"
               >
                 <div className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-[#002D62]/20 group-hover:ring-[#002D62] transition-all">
@@ -1721,7 +1736,7 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
               <div className="px-5">
                 {bookings.length > 0 ? (
                   <div 
-                    onClick={() => { setActiveTab('bookings'); setViewingBooking(bookings[0]); }}
+                    onClick={() => switchTab('bookings', () => setViewingBooking(bookings[0]))}
                     className="bg-gradient-to-br from-[#001D42] via-[#002D62] to-[#0A3D78] text-white rounded-3xl p-5 shadow-xl shadow-[#002D62]/25 border border-blue-900/40 relative overflow-hidden cursor-pointer active:scale-[0.98] transition-transform"
                   >
                     {/* Ambient Glow */}
@@ -1738,7 +1753,7 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                         </div>
                         <button 
-                          onClick={(e) => { e.stopPropagation(); setActiveTab('bookings'); setViewingBooking(bookings[0]); }}
+                          onClick={(e) => { e.stopPropagation(); switchTab('bookings', () => setViewingBooking(bookings[0])); }}
                           className="bg-[#DA291C] hover:bg-[#c0241a] text-white text-[10px] font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-lg shadow-[#DA291C]/30 active:scale-95 transition-all"
                         >
                           <span>View Pass</span>
@@ -1793,7 +1808,7 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                     <h3 className="font-bold text-[#002D62] text-lg mb-1">No Upcoming Sessions</h3>
                     <p className="text-slate-500 text-sm mb-4">Book your first study room to get started</p>
                     <button 
-                      onClick={() => setActiveTab('search')}
+                      onClick={() => switchTab('search')}
                       className="bg-[#002D62] text-white font-bold text-sm px-6 py-2.5 rounded-full shadow-md active:scale-95 transition-all"
                     >
                       Browse Spaces →
@@ -1849,7 +1864,7 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                     <h3 className="text-base font-bold text-[#002D62] tracking-tight">Available Now</h3>
                     <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
                   </div>
-                  <button onClick={() => { setActiveTab('search'); setFilterType('All'); }} className="text-xs font-bold text-[#DA291C]">See All</button>
+                  <button onClick={() => switchTab('search', () => setFilterType('All'))} className="text-xs font-bold text-[#DA291C]">See All</button>
                 </div>
                 <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide -mx-5 px-5">
                   {availableRooms.slice(2, 6).map((room, idx) => (
@@ -1883,7 +1898,7 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
               <section className="px-5">
                 <div className="flex items-center justify-between mb-0">
                   <h3 className="text-base font-bold text-[#002D62] tracking-tight">Recommended</h3>
-                  <button onClick={() => { setActiveTab('search'); setFilterType('All'); }} className="text-xs font-bold text-[#DA291C]">See All</button>
+                  <button onClick={() => switchTab('search', () => setFilterType('All'))} className="text-xs font-bold text-[#DA291C]">See All</button>
                 </div>
                 <p className="text-[11px] font-medium text-slate-500 mb-3">Based on your history</p>
 
@@ -1941,14 +1956,15 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
               {/* Circular Category Filters - Perfect 1:1 Geometric Circles */}
               <div className="flex overflow-x-auto scrollbar-hide pb-2 gap-3.5 justify-start px-0.5">
                 {dashboardCategories.map(cat => (
-                  <div 
+                  <button 
                     key={cat.id} 
-                    className="flex flex-col items-center gap-1.5 cursor-pointer group shrink-0" 
+                    type="button"
+                    className="flex flex-col items-center gap-1.5 cursor-pointer group shrink-0 select-none outline-none focus:outline-none" 
                     onClick={() => setFilterType(cat.id)}
                   >
                     <div className={`w-[52px] h-[52px] min-w-[52px] min-h-[52px] max-w-[52px] max-h-[52px] aspect-square rounded-full flex items-center justify-center transition-all duration-200 ${
                       filterType === cat.id 
-                        ? 'bg-[#002D62] text-white ring-4 ring-[#002D62]/20 shadow-md' 
+                        ? 'bg-[#002D62] text-white ring-4 ring-[#002D62]/20 shadow-md scale-105' 
                         : 'bg-white text-slate-500 border border-slate-200 group-hover:border-[#002D62]/30 group-hover:text-[#002D62] shadow-2xs'
                     }`}>
                       <cat.icon size={20} strokeWidth={filterType === cat.id ? 2.5 : 2} />
@@ -1958,34 +1974,37 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                     }`}>
                       {cat.label}
                     </span>
-                  </div>
+                  </button>
                 ))}
               </div>
 
-              {/* Search Bar + Available Now Toggle Pill + Filter Button */}
-              <div className="flex items-center gap-2">
+              {/* Search Bar + Perfect Circle Filter Button */}
+              <div className="flex items-center gap-2.5">
                 <div className="relative flex-1">
-                  <SearchIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                  <SearchIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={16} />
                   <input 
                     type="text" 
                     placeholder="Search spaces..." 
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full bg-white border border-slate-200 text-[#002D62] rounded-xl pl-9 pr-8 py-2.5 outline-none focus:border-[#002D62] transition-all text-xs font-semibold shadow-xs"
+                    className="w-full h-11 bg-white border border-slate-200 text-[#002D62] rounded-full pl-9 pr-9 outline-none focus:border-[#002D62] focus:ring-2 focus:ring-[#002D62]/10 transition-all text-xs font-semibold shadow-xs"
                   />
-                  {searchQuery ? (
-                    <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                  {searchQuery && (
+                    <button 
+                      type="button"
+                      onClick={() => setSearchQuery('')} 
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+                    >
                       <X size={14} />
                     </button>
-                  ) : (
-                    <Calendar size={15} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none" />
                   )}
                 </div>
 
                 {/* Perfect Circle Filter Button */}
                 <button 
+                  type="button"
                   onClick={() => setShowFilters(!showFilters)}
-                  className={`w-10 h-10 min-w-10 min-h-10 aspect-square rounded-full border flex items-center justify-center transition-all shrink-0 cursor-pointer shadow-xs active:scale-95 relative ${
+                  className={`w-11 h-11 min-w-[44px] min-h-[44px] max-w-[44px] max-h-[44px] aspect-square rounded-full border flex items-center justify-center transition-all shrink-0 cursor-pointer shadow-xs active:scale-95 relative ${
                     showFilters || availableOnly || filterDay !== 'Any Day' || filterTime !== 'Any Time' || capacityRange > 1
                       ? 'bg-[#002D62] text-white border-[#002D62] shadow-sm ring-2 ring-[#002D62]/20' 
                       : 'bg-white text-[#002D62] border-slate-200 hover:bg-slate-50'
@@ -1993,9 +2012,9 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                   title="Filter options"
                   aria-label="Filter options"
                 >
-                  <SlidersHorizontal size={17} strokeWidth={2.2} />
+                  <SlidersHorizontal size={18} strokeWidth={2.2} />
                   {(availableOnly || filterDay !== 'Any Day' || filterTime !== 'Any Time' || capacityRange > 1) && (
-                    <span className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-[#DA291C] border-2 border-white shadow-xs" />
+                    <span className="absolute top-0.5 right-0.5 w-2.5 h-2.5 rounded-full bg-[#DA291C] border-2 border-white shadow-xs" />
                   )}
                 </button>
               </div>
@@ -3684,15 +3703,7 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
               return (
                 <button
                   key={item.id}
-                  onClick={() => {
-                    if (activeTab !== item.id) {
-                      setActiveTab(item.id);
-                      if (mainScrollRef.current) {
-                        mainScrollRef.current.scrollTop = 0;
-                      }
-                      window.scrollTo(0, 0);
-                    }
-                  }}
+                  onClick={() => switchTab(item.id)}
                   className={`flex flex-col items-center justify-center py-1 rounded-xl transition-transform active:scale-90 cursor-pointer select-none ${
                     isActive ? 'text-white' : 'text-slate-400 hover:text-slate-200'
                   }`}
