@@ -20,8 +20,10 @@ export default function App() {
   const mainScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    mainScrollRef.current?.scrollTo({ top: 0, behavior: 'instant' });
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    if (mainScrollRef.current) {
+      mainScrollRef.current.scrollTop = 0;
+    }
+    window.scrollTo(0, 0);
   }, [activeTab, selectedRoom]);
 
   // Countdown Timer for Active Reminders & Reservation Super Page
@@ -3669,34 +3671,42 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
         </main>
 
         {/* Bottom Navigation */}
-        <div className="shrink-0 w-full z-30 bg-[#002D62] rounded-t-2xl pb-1 shadow-[0_-10px_40px_rgba(0,45,98,0.2)]">
-          <nav className="flex justify-between items-center px-6 pt-3 pb-2">
+        <div className="shrink-0 w-full z-30 bg-[#002D62] border-t border-white/10 rounded-t-2xl px-3 pt-2 pb-1.5 shadow-[0_-10px_35px_rgba(0,45,98,0.35)]">
+          <nav className="grid grid-cols-5 items-center">
             {[
               { id: 'home', icon: Home, label: 'Home' },
-              { id: 'search', icon: SearchIcon, label: 'Search' },
+              { id: 'search', icon: SearchIcon, label: 'Explore' },
               { id: 'bookings', icon: Calendar, label: 'Bookings' },
               { id: 'favorites', icon: Heart, label: 'Saved' },
               { id: 'profile', icon: User, label: 'Profile' },
-            ].map((item) => (
-              <button
-                key={item.id}
-                onClick={() => {
-                  setActiveTab(item.id);
-                  mainScrollRef.current?.scrollTo({ top: 0, behavior: 'instant' });
-                  window.scrollTo({ top: 0, behavior: 'instant' });
-                }}
-                className={`flex items-center justify-center transition-all duration-300 ${
-                  activeTab === item.id 
-                  ? 'text-white bg-[#DA291C] px-4 py-2 rounded-2xl gap-2 shadow-md' 
-                  : 'text-white/50 hover:text-white/80 p-2'
-                }`}
-              >
-                <item.icon size={22} strokeWidth={activeTab === item.id ? 2.5 : 2} />
-                {activeTab === item.id && (
-                  <span className="text-[13px] font-bold tracking-wide">{item.label}</span>
-                )}
-              </button>
-            ))}
+            ].map((item) => {
+              const isActive = activeTab === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    if (activeTab !== item.id) {
+                      setActiveTab(item.id);
+                      if (mainScrollRef.current) {
+                        mainScrollRef.current.scrollTop = 0;
+                      }
+                      window.scrollTo(0, 0);
+                    }
+                  }}
+                  className={`flex flex-col items-center justify-center py-1 rounded-xl transition-transform active:scale-90 cursor-pointer select-none ${
+                    isActive ? 'text-white' : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                  aria-label={item.label}
+                >
+                  <div className={`px-3 py-1 rounded-full transition-colors flex items-center justify-center ${isActive ? 'bg-[#DA291C] text-white shadow-md shadow-red-500/30' : ''}`}>
+                    <item.icon size={19} strokeWidth={isActive ? 2.5 : 2} />
+                  </div>
+                  <span className={`text-[10px] tracking-tight mt-0.5 ${isActive ? 'font-black text-white' : 'font-semibold text-slate-400'}`}>
+                    {item.label}
+                  </span>
+                </button>
+              );
+            })}
           </nav>
         </div>
 
