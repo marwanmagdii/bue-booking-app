@@ -2483,24 +2483,24 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
 
               <div className="space-y-4 px-5">
               
-              {/* Circular Category Filters - Perfect 1:1 Geometric Circles */}
-              <div className="flex overflow-x-auto scrollbar-hide pb-2 gap-3.5 justify-start px-0.5">
+              {/* Circular Category Filters - Flawless 1:1 Geometric Circles */}
+              <div className="flex overflow-x-auto scrollbar-hide pt-2 pb-2.5 gap-3.5 justify-start -mx-1 px-1">
                 {dashboardCategories.map(cat => (
                   <button 
                     key={cat.id} 
                     type="button"
-                    className="flex flex-col items-center gap-1.5 cursor-pointer group shrink-0 select-none outline-none focus:outline-none" 
+                    className="flex flex-col items-center gap-1.5 cursor-pointer group shrink-0 select-none outline-none focus:outline-none active:scale-95 transition-transform" 
                     onClick={() => setFilterType(cat.id)}
                   >
                     <div className={`w-[52px] h-[52px] min-w-[52px] min-h-[52px] max-w-[52px] max-h-[52px] aspect-square rounded-full flex items-center justify-center transition-all duration-200 ${
                       filterType === cat.id 
-                        ? 'bg-[#002D62] text-white ring-4 ring-[#002D62]/20 shadow-md scale-105' 
+                        ? 'bg-[#002D62] text-white shadow-md shadow-[#002D62]/30 border-2 border-[#002D62]' 
                         : 'bg-white text-slate-500 border border-slate-200 group-hover:border-[#002D62]/30 group-hover:text-[#002D62] shadow-2xs'
                     }`}>
                       <cat.icon size={20} strokeWidth={filterType === cat.id ? 2.5 : 2} />
                     </div>
-                    <span className={`text-[11px] font-bold tracking-tight text-center whitespace-nowrap ${
-                      filterType === cat.id ? 'text-[#002D62]' : 'text-slate-500'
+                    <span className={`text-[11px] tracking-tight text-center whitespace-nowrap ${
+                      filterType === cat.id ? 'text-[#002D62] font-black' : 'text-slate-500 font-semibold'
                     }`}>
                       {cat.label}
                     </span>
