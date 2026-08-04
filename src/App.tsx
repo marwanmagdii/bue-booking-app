@@ -655,9 +655,11 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
 
     setBookings([newBooking, ...bookings]);
     setCurrentBookingId(newBookingId);
-    setBookingStep('success');
+    setSelectedUserIds([]);
+    setUserSearchQuery('');
+    setBookingStep('invite');
 
-    // Automatically send confirmation email to amegomeg99@gmail.com
+    // Automatically send confirmation email in background
     sendBookingEmail(newBooking, 'amegomeg99@gmail.com');
   };
 
