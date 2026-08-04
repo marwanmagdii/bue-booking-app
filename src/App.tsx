@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
-import { Home, Calendar, User, Clock, Users, Wifi, Bell, ArrowLeft, ChevronLeft, ChevronRight, Monitor, Check, CheckCheck, BellOff, SlidersHorizontal, PenTool, Phone, Thermometer, Share2, Search as SearchIcon, MapPin, Coffee, Link2, ExternalLink, Plus, Trash2, Heart, LayoutGrid, BookOpen, Presentation, LogOut, ChevronRight as ChevronRightIcon, Edit3, Shield, HelpCircle, Camera, VolumeX, X, Copy, Sparkles, Mail } from 'lucide-react';
+import { Home, Calendar, User, Clock, Users, Wifi, Bell, ArrowLeft, ChevronLeft, ChevronRight, Monitor, Check, CheckCheck, BellOff, SlidersHorizontal, PenTool, Phone, Thermometer, Share2, Search as SearchIcon, MapPin, Coffee, Link2, ExternalLink, Plus, Trash2, Heart, LayoutGrid, BookOpen, Presentation, LogOut, ChevronRight as ChevronRightIcon, Edit3, Shield, HelpCircle, Camera, VolumeX, X, Copy, Sparkles, Mail, Smartphone, Send, Inbox } from 'lucide-react';
 
 const getAsset = (path: string) => {
   const base = import.meta.env.BASE_URL || '/';
@@ -106,18 +106,18 @@ export default function App() {
     return parseInt(numbers[numbers.length - 1], 10);
   };
 
-
-
   // Notifications Page State
   const [showNotifications, setShowNotifications] = useState(false);
 
   // Profile State
-  const [profileView, setProfileView] = useState<'main' | 'edit' | 'notifications' | 'groups' | 'group-detail'>('main');
+  const [profileView, setProfileView] = useState<'main' | 'edit' | 'notifications' | 'groups' | 'group-detail' | 'invitations'>('main');
+  const [invitationsFilter, setInvitationsFilter] = useState<'pending' | 'all'>('pending');
   const [editingGroupName, setEditingGroupName] = useState<string | null>(null);
   const [groupPeopleSearch, setGroupPeopleSearch] = useState('');
   const [groupPeopleFilter, setGroupPeopleFilter] = useState<'all' | 'members' | 'available'>('all');
   const [newGroupNameInput, setNewGroupNameInput] = useState('');
   const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
+
   const [profileData] = useState({
     name: 'Mohamed Ali',
     email: 'mohamed.ali@bue.edu.eg',
@@ -147,14 +147,19 @@ export default function App() {
   // Favorites
   const [favorites, setFavorites] = useState<string[]>(['Conference Room A', 'Study Room B', 'Library Pod 4']);
 
-  // Booking Flow State
+  // Booking Flow State: Title, Description, Date & Slots
+  const [bookingTitle, setBookingTitle] = useState('');
+  const [bookingDescription, setBookingDescription] = useState('');
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [bookingStep, setBookingStep] = useState<'details' | 'time' | 'success' | 'invite'>('details');
   const [selectedDate, setSelectedDate] = useState(new Date().getDate().toString());
   const [selectedTimeSlots, setSelectedTimeSlots] = useState<string[]>([]);
   const [notifiedSlots, setNotifiedSlots] = useState<string[]>([]);
   
-  // Instagram-like Invite State
+  // Share & Invite Flow States
+  const [shareEmailInput, setShareEmailInput] = useState('');
+  const [isEmailSentSuccess, setIsEmailSentSuccess] = useState(false);
+  const [isCopiedLink, setIsCopiedLink] = useState(false);
   const [userSearchQuery, setUserSearchQuery] = useState('');
   const [userGroupFilter, setUserGroupFilter] = useState('All');
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
@@ -164,6 +169,44 @@ export default function App() {
   const [showAddGroupModal, setShowAddGroupModal] = useState(false);
   const [newGroupName, setNewGroupName] = useState('');
   const [facultyFilter, setFacultyFilter] = useState('All Roles');
+
+  // Received Invitations State
+  const [receivedInvitations, setReceivedInvitations] = useState([
+    {
+      id: 201,
+      title: 'Senior AI Capstone & Model Evaluation',
+      description: 'Reviewing final neural network benchmark models and presentation slides for the external evaluation board.',
+      hostName: 'Dr. Sarah Jenkins',
+      hostRole: 'Faculty Advisor • Informatics',
+      hostEmail: 'sarah.jenkins@bue.edu.eg',
+      hostAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=256',
+      room: 'Conference Room A',
+      image: getAsset('conference_hall.jpg'),
+      date: 'Aug 10',
+      time: '11:00 AM - 01:00 PM',
+      attendees: ['Dr. Sarah Jenkins', 'Mohamed (You)', 'Ahmed Ali', 'Sara Hassan'],
+      status: 'pending',
+      pin: '839201',
+      invitedAt: '15m ago'
+    },
+    {
+      id: 202,
+      title: 'BUE Smart Campus Hackathon Sprint',
+      description: 'Brainstorming MVP features, edge computing integration, and UI design tokens for next week hackathon.',
+      hostName: 'Karim Mostafa',
+      hostRole: 'Software Eng • Year 4',
+      hostEmail: 'karim.mostafa@bue.edu.eg',
+      hostAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=256',
+      room: 'Media Studio',
+      image: getAsset('media_studio.jpg'),
+      date: 'Aug 12',
+      time: '02:00 PM - 04:30 PM',
+      attendees: ['Karim Mostafa', 'Mohamed (You)', 'Omar Hassan'],
+      status: 'pending',
+      pin: '492817',
+      invitedAt: '2h ago'
+    }
+  ]);
 
   const [bueUsers, setBueUsers] = useState([
     { id: 'u1', name: 'Ahmed Ali', role: 'Software Engineer', category: 'Software Engineer', group: 'Study Group 1', avatar: 'https://i.pravatar.cc/150?img=11' },
@@ -251,16 +294,86 @@ export default function App() {
   const [notificationsList, setNotificationsList] = useState(INITIAL_NOTIFICATIONS_DATA);
 
   const [bookings, setBookings] = useState([
-    { id: 1, room: 'Meeting Room 1', date: 'Aug 3', time: '10:00 AM - 11:30 AM', image: getAsset('meeting_room.jpg'), status: 'Confirmed', attendees: ['Mohamed (You)', 'Ahmed Ali', 'Omar Hassan'] },
-    { id: 2, room: 'Study Room B', date: 'Aug 4', time: '02:00 PM - 05:00 PM', image: getAsset('study_room.jpg'), status: 'Confirmed', attendees: ['Mohamed (You)', 'Khaled Youssef'] },
-    { id: 3, room: 'Conference Room A', date: 'Aug 5', time: '11:00 AM - 01:00 PM', image: getAsset('conference_hall.jpg'), status: 'Confirmed', attendees: ['Mohamed (You)', 'Sara Hassan', 'Mohamed Tariq'] },
-    { id: 4, room: 'Library Pod 4', date: 'Aug 6', time: '09:00 AM - 12:00 PM', image: getAsset('library_pod.jpg'), status: 'Confirmed', attendees: ['Mohamed (You)'] },
-    { id: 5, room: 'Media Studio', date: 'Aug 7', time: '03:00 PM - 05:30 PM', image: getAsset('media_studio.jpg'), status: 'Confirmed', attendees: ['Mohamed (You)', 'Tarek Mahmoud'] }
+    { 
+      id: 1, 
+      room: 'Meeting Room 1', 
+      title: 'Graduation Project Review',
+      description: 'System architecture final sprint with faculty advisor and backend stress testing.',
+      date: 'Aug 3', 
+      time: '10:00 AM - 11:30 AM', 
+      image: getAsset('meeting_room.jpg'), 
+      status: 'Confirmed', 
+      attendees: ['Mohamed (You)', 'Ahmed Ali', 'Omar Hassan'] 
+    },
+    { 
+      id: 2, 
+      room: 'Study Room B', 
+      title: 'CS402 Machine Learning Prep',
+      description: 'Collaborative revision covering loss functions, gradient descent & transformer attention.',
+      date: 'Aug 4', 
+      time: '02:00 PM - 05:00 PM', 
+      image: getAsset('study_room.jpg'), 
+      status: 'Confirmed', 
+      attendees: ['Mohamed (You)', 'Khaled Youssef'] 
+    },
+    { 
+      id: 3, 
+      room: 'Conference Room A', 
+      title: 'Robotics Club General Assembly',
+      description: 'Autonomous vehicle sensor integration workshop and Egyptian Robotics Summit planning.',
+      date: 'Aug 5', 
+      time: '11:00 AM - 01:00 PM', 
+      image: getAsset('conference_hall.jpg'), 
+      status: 'Confirmed', 
+      attendees: ['Mohamed (You)', 'Sara Hassan', 'Mohamed Tariq'] 
+    },
+    { 
+      id: 4, 
+      room: 'Library Pod 4', 
+      title: 'Quiet Thesis Literature Review',
+      description: 'Focused research paper analysis for distributed database consensus protocols.',
+      date: 'Aug 6', 
+      time: '09:00 AM - 12:00 PM', 
+      image: getAsset('library_pod.jpg'), 
+      status: 'Confirmed', 
+      attendees: ['Mohamed (You)'] 
+    },
+    { 
+      id: 5, 
+      room: 'Media Studio', 
+      title: 'Podcast & Audio Production',
+      description: 'Recording Episode 4 of BUE Student Voices podcast with studio lighting and multi-mic audio.',
+      date: 'Aug 7', 
+      time: '03:00 PM - 05:30 PM', 
+      image: getAsset('media_studio.jpg'), 
+      status: 'Confirmed', 
+      attendees: ['Mohamed (You)', 'Tarek Mahmoud'] 
+    }
   ]);
 
   const pastBookings = [
-    { id: 101, room: 'Study Room B', date: 'Oct 15', time: '09:00 AM - 11:00 AM', image: getAsset('study_room.jpg'), status: 'Completed', attendees: ['Sara Hassan', 'Mohamed Tariq'] },
-    { id: 102, room: 'Conference Room A', date: 'Sep 28', time: '01:00 PM - 04:00 PM', image: getAsset('conference_hall.jpg'), status: 'Completed', attendees: [] },
+    { 
+      id: 101, 
+      room: 'Study Room B', 
+      title: 'Data Structures Group Revision',
+      description: 'Graph algorithms, AVL trees, and dynamic programming exam problem walkthrough.',
+      date: 'Oct 15', 
+      time: '09:00 AM - 11:00 AM', 
+      image: getAsset('study_room.jpg'), 
+      status: 'Completed', 
+      attendees: ['Sara Hassan', 'Mohamed Tariq'] 
+    },
+    { 
+      id: 102, 
+      room: 'Conference Room A', 
+      title: 'Faculty Department Orientation',
+      description: 'Department introductory session for freshmen and lab health & safety guidelines.',
+      date: 'Sep 28', 
+      time: '01:00 PM - 04:00 PM', 
+      image: getAsset('conference_hall.jpg'), 
+      status: 'Completed', 
+      attendees: [] 
+    },
   ];
 
   const rooms = [
@@ -459,34 +572,45 @@ export default function App() {
   const sendBookingEmail = async (bookingData: any, customRecipient = 'amegomeg99@gmail.com') => {
     const recipient = customRecipient || 'amegomeg99@gmail.com';
     const room = bookingData?.room || selectedRoom?.name || 'BUE Study Space';
-    const date = bookingData?.date || ('May ' + selectedDate);
+    const title = bookingData?.title || bookingTitle || 'Study & Collaboration Session';
+    const description = bookingData?.description || bookingDescription || 'Reserved via BUE Student Portal for academic and project work.';
+    const date = bookingData?.date || (`${myBookingsDate.toLocaleDateString('en-US', { month: 'short' })} ${selectedDate}`);
     const time = bookingData?.time || getFormattedTimeRange();
     const attendees = bookingData?.attendees && bookingData.attendees.length > 0 
       ? bookingData.attendees.join(', ') 
       : 'Mohamed (You)';
 
-    const pin = Math.floor(100000 + Math.random() * 900000);
+    const pin = bookingData?.pin || Math.floor(100000 + Math.random() * 900000);
 
     const reminderMessage = `
 🏛️ THE BRITISH UNIVERSITY IN EGYPT (BUE)
-Study Space & Reservation Reminder Pass
+Study Space & Reservation Invitation Pass
 
+• Reservation Topic: ${title}
+• Agenda & Notes: ${description}
 • Space: ${room}
 • Location: Building C • Floor 2 • Smart Commons
 • Date: ${date}
 • Time: ${time}
 • Gate PIN: #${pin}
+• Host: Mohamed Ali (BUE-2024-192)
 • Attendees: ${attendees}
-• Status: CONFIRMED (Smart Turnstiles & Door Unlocked)
+• Status: CONFIRMED (Smart Turnstiles & NFC Door Unlocked)
 
 Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.eg for assistance.
 `.trim();
 
     const emailPayload = {
-      _subject: `🏛️ BUE Reservation Reminder: ${room} (${date} • ${time})`,
+      _subject: `🏛️ BUE Pass: ${title} @ ${room} (${date} • ${time})`,
       _template: "box",
       _captcha: "false",
-      Reservation_Reminder: reminderMessage
+      Reservation_Topic: title,
+      Agenda_Details: description,
+      Space_Reserved: room,
+      Reservation_Date: date,
+      Time_Slot: time,
+      Entry_PIN: `#${pin}`,
+      Reservation_Summary: reminderMessage
     };
 
     try {
@@ -512,14 +636,21 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
 
   const handleCreateBooking = () => {
     const newBookingId = Date.now();
+    const formattedDate = `${myBookingsDate.toLocaleDateString('en-US', { month: 'short' })} ${selectedDate}`;
+    const newBookingTitle = bookingTitle.trim() || `${selectedRoom.name} Study Session`;
+    const newBookingDesc = bookingDescription.trim() || 'Reserved via BUE Student Portal for collaborative study.';
+
     const newBooking = { 
       id: newBookingId, 
       room: selectedRoom.name, 
-      date: 'May ' + selectedDate, 
+      title: newBookingTitle,
+      description: newBookingDesc,
+      date: formattedDate, 
       time: getFormattedTimeRange(),
       image: selectedRoom.images[0],
       status: 'Confirmed',
-      attendees: ['Mohamed (You)']
+      attendees: ['Mohamed (You)'],
+      pin: Math.floor(100000 + Math.random() * 900000).toString()
     };
 
     setBookings([newBooking, ...bookings]);
@@ -541,13 +672,17 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
         : b
     ));
     
-    finishFlow('Invites sent successfully!');
+    finishFlow(`Invitation passes dispatched to ${selectedUserIds.length} colleague${selectedUserIds.length > 1 ? 's' : ''}!`);
   };
 
   const finishFlow = (msg: string) => {
     setSelectedRoom(null);
     setSelectedTimeSlots([]);
     setCurrentBookingId(null);
+    setBookingTitle('');
+    setBookingDescription('');
+    setSelectedUserIds([]);
+    setShareEmailInput('');
     setBookingStep('details');
     setViewingBooking(null);
     
@@ -577,6 +712,10 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
     setActiveImageIndex(0);
     setSelectedDate('11');
     setSelectedTimeSlots([]);
+    setBookingTitle('');
+    setBookingDescription('');
+    setSelectedUserIds([]);
+    setShareEmailInput('');
     setBookingStep('details');
   };
 
@@ -1254,8 +1393,61 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                 })}
               </div>
 
-              <div className="flex justify-between items-end mt-6 mb-4">
-                <h2 className="text-[22px] font-serif font-bold text-[#002D62]">Available Slots</h2>
+              {/* Reservation Purpose, Topic & Notes */}
+              <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs mt-6 mb-2 space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-black text-[#002D62] uppercase tracking-wider flex items-center gap-1.5">
+                    <Edit3 size={13} className="text-[#DA291C]" />
+                    Reservation Topic & Notes
+                  </label>
+                  <span className="text-[10px] font-bold text-slate-400">Optional</span>
+                </div>
+                
+                <input 
+                  type="text"
+                  placeholder="e.g. AI Project Sprint, Study Group, Lab Prep..."
+                  value={bookingTitle}
+                  onChange={(e) => setBookingTitle(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-[#002D62] outline-none focus:bg-white focus:ring-2 focus:ring-[#002D62]/20 focus:border-[#002D62] transition-all placeholder:text-slate-400"
+                />
+
+                <textarea 
+                  rows={2}
+                  placeholder="Add agenda, topics to cover, or items colleagues should bring..."
+                  value={bookingDescription}
+                  onChange={(e) => setBookingDescription(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-medium text-slate-700 outline-none focus:bg-white focus:ring-2 focus:ring-[#002D62]/20 focus:border-[#002D62] transition-all placeholder:text-slate-400 resize-none"
+                />
+
+                {/* Quick Topic Presets */}
+                <div className="pt-1">
+                  <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide py-1">
+                    <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest shrink-0">Suggestions:</span>
+                    {[
+                      { label: '🎓 Capstone Sprint', title: 'Graduation Capstone Review', desc: 'System architecture final sprint with advisor and API stress testing.' },
+                      { label: '📚 Exam Prep', title: 'Course Midterm Revision', desc: 'Collaborative revision covering lecture slides and problem sets.' },
+                      { label: '🤖 Robotics Lab', title: 'Robotics Workshop Assembly', desc: 'Hardware testing, sensor calibration, and tournament strategy.' },
+                      { label: '🎙️ Media Recording', title: 'Podcast & Content Recording', desc: 'Recording student podcast episode with audio interface & lighting.' }
+                    ].map(preset => (
+                      <button
+                        key={preset.label}
+                        type="button"
+                        onClick={() => {
+                          setBookingTitle(preset.title);
+                          setBookingDescription(preset.desc);
+                        }}
+                        className="shrink-0 text-[10px] font-bold bg-slate-100 hover:bg-blue-50 hover:text-[#002D62] hover:border-blue-200 text-slate-600 px-2.5 py-1 rounded-lg border border-slate-200 transition-all active:scale-95 cursor-pointer"
+                      >
+                        {preset.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-between items-end mt-4 mb-3">
+                <h2 className="text-[20px] font-bold text-[#002D62] tracking-tight">Available Slots</h2>
+                <span className="text-xs font-semibold text-slate-400">Select 1 or more</span>
               </div>
               
               <div className="grid grid-cols-2 gap-3 pb-32">
@@ -1360,72 +1552,251 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
             </div>
           )}
 
-          {/* Flow Step 4: Invite Members */}
+          {/* Flow Step 4: Share & Invite Members (Emil Kowalski Design Polish) */}
           {bookingStep === 'invite' && (
-            <div className="flex flex-col h-full bg-slate-50 pt-20 animate-in fade-in slide-in-from-right-4 duration-300">
-              <div className="px-6 mb-6">
-                <div className="bg-white rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-slate-100 p-4 relative overflow-hidden">
-                  <div className="absolute top-0 left-0 w-1 h-full bg-[#002D62]"></div>
-                  <div className="flex justify-between items-start mb-3 border-b border-slate-100 pb-3">
-                    <div>
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Space</p>
-                      <p className="text-sm font-bold text-[#002D62]">{selectedRoom.name}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Date</p>
-                      <p className="text-sm font-bold text-[#DA291C]">{myBookingsDate.toLocaleDateString('en-US', { month: 'long' })} {selectedDate}</p>
-                    </div>
+            <div className="flex flex-col h-full bg-slate-50 pt-20 overflow-y-auto pb-36 animate-in fade-in slide-in-from-right-4 duration-300">
+              
+              {/* Glassmorphic Reservation Header Card */}
+              <div className="px-6 mb-5">
+                <div className="bg-gradient-to-br from-[#002D62] to-[#001838] text-white rounded-3xl p-5 shadow-xl shadow-[#002D62]/15 relative overflow-hidden border border-white/10">
+                  <div className="absolute top-0 right-0 w-36 h-36 bg-[#DA291C]/20 rounded-full blur-2xl pointer-events-none -mr-10 -mt-10" />
+                  
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <span className="inline-flex items-center gap-1 bg-white/15 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider text-blue-100">
+                      <Sparkles size={11} className="text-amber-300" />
+                      Official Pass
+                    </span>
+                    <span className="text-[11px] font-bold text-blue-200/90 bg-black/20 px-2.5 py-0.5 rounded-full">
+                      PIN #{Math.floor(100000 + ((selectedRoom?.name.length || 5) * 8912) % 900000)}
+                    </span>
                   </div>
-                  <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Time</p>
-                    <p className="text-sm font-bold text-[#002D62]">{getFormattedTimeRange()}</p>
+
+                  <h3 className="text-lg font-serif font-black leading-snug mb-1 text-white">
+                    {bookingTitle.trim() || `${selectedRoom.name} Study Session`}
+                  </h3>
+                  
+                  {bookingDescription.trim() && (
+                    <p className="text-xs text-blue-200/90 font-medium mb-3 line-clamp-2 leading-relaxed">
+                      {bookingDescription}
+                    </p>
+                  )}
+
+                  <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-white/15 text-xs font-semibold text-white/90">
+                    <span className="flex items-center gap-1 bg-white/10 px-2.5 py-1 rounded-xl">
+                      <MapPin size={12} className="text-[#DA291C]" />
+                      {selectedRoom.name}
+                    </span>
+                    <span className="flex items-center gap-1 bg-white/10 px-2.5 py-1 rounded-xl">
+                      <Calendar size={12} className="text-blue-300" />
+                      {myBookingsDate.toLocaleDateString('en-US', { month: 'short' })} {selectedDate}
+                    </span>
+                    <span className="flex items-center gap-1 bg-white/10 px-2.5 py-1 rounded-xl">
+                      <Clock size={12} className="text-amber-300" />
+                      {getFormattedTimeRange() || 'Selected Time'}
+                    </span>
                   </div>
                 </div>
               </div>
-              
-              <div className="px-6 mb-4">
-                {/* Search & Filter Button */}
-                <div className="flex gap-2 mb-3">
+
+              {/* Instant Share Channels (Copy Link & Direct Email Pass) */}
+              <div className="px-6 mb-5 space-y-3">
+                <div className="grid grid-cols-2 gap-2.5">
+                  {/* Copy Link Button */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsCopiedLink(true);
+                      navigator?.clipboard?.writeText(window.location.href);
+                      setToastMessage('Official invitation link copied!');
+                      setShowToast(true);
+                      setTimeout(() => setIsCopiedLink(false), 2500);
+                      setTimeout(() => setShowToast(false), 3000);
+                    }}
+                    className={`flex items-center justify-center gap-2 py-3 px-3 rounded-2xl font-bold text-xs border transition-all duration-200 active:scale-95 shadow-xs cursor-pointer ${
+                      isCopiedLink 
+                        ? 'bg-emerald-500 text-white border-emerald-500 shadow-emerald-500/25'
+                        : 'bg-white text-[#002D62] border-slate-200 hover:bg-slate-50 hover:border-slate-300'
+                    }`}
+                  >
+                    {isCopiedLink ? (
+                      <>
+                        <Check size={15} strokeWidth={3} />
+                        <span>Link Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy size={15} className="text-[#DA291C]" />
+                        <span>Copy Pass Link</span>
+                      </>
+                    )}
+                  </button>
+
+                  {/* Share System Pass / Sheet */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (navigator.share) {
+                        navigator.share({
+                          title: `BUE Space Pass: ${bookingTitle || selectedRoom.name}`,
+                          text: `Join my reserved session at ${selectedRoom.name} on ${myBookingsDate.toLocaleDateString('en-US', { month: 'short' })} ${selectedDate} (${getFormattedTimeRange()}).`,
+                          url: window.location.href
+                        }).catch(() => {});
+                      } else {
+                        copyLink();
+                      }
+                    }}
+                    className="flex items-center justify-center gap-2 py-3 px-3 rounded-2xl font-bold text-xs bg-white text-[#002D62] border border-slate-200 hover:bg-slate-50 active:scale-95 transition-all shadow-xs cursor-pointer"
+                  >
+                    <Smartphone size={15} className="text-[#002D62]" />
+                    <span>Native Share</span>
+                  </button>
+                </div>
+
+                {/* Direct Email Pass Dispatch */}
+                <div className="bg-white rounded-2xl p-3.5 border border-slate-200 shadow-xs space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-black text-[#002D62] uppercase tracking-wider flex items-center gap-1.5">
+                      <Mail size={13} className="text-[#DA291C]" />
+                      Email Pass to Colleague
+                    </span>
+                    <span className="text-[10px] text-slate-400 font-semibold">External / BUE Email</span>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <input
+                      type="email"
+                      placeholder="e.g. teammate@bue.edu.eg..."
+                      value={shareEmailInput}
+                      onChange={(e) => setShareEmailInput(e.target.value)}
+                      className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-[#002D62] outline-none focus:bg-white focus:ring-2 focus:ring-[#002D62]/20 focus:border-[#002D62] transition-all placeholder:text-slate-400"
+                    />
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        const target = shareEmailInput.trim() || 'amegomeg99@gmail.com';
+                        setIsEmailSentSuccess(true);
+                        await sendBookingEmail({
+                          room: selectedRoom.name,
+                          title: bookingTitle || `${selectedRoom.name} Study Session`,
+                          description: bookingDescription,
+                          date: `${myBookingsDate.toLocaleDateString('en-US', { month: 'short' })} ${selectedDate}`,
+                          time: getFormattedTimeRange()
+                        }, target);
+                        setToastMessage(`Invitation pass emailed to ${target}`);
+                        setShowToast(true);
+                        setTimeout(() => {
+                          setIsEmailSentSuccess(false);
+                          setShareEmailInput('');
+                        }, 3000);
+                        setTimeout(() => setShowToast(false), 3500);
+                      }}
+                      className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs shrink-0 cursor-pointer active:scale-95 ${
+                        isEmailSentSuccess 
+                          ? 'bg-emerald-500 text-white shadow-emerald-500/30'
+                          : 'bg-[#002D62] hover:bg-[#003b80] text-white'
+                      }`}
+                    >
+                      {isEmailSentSuccess ? (
+                        <>
+                          <Check size={13} strokeWidth={3} />
+                          <span>Sent</span>
+                        </>
+                      ) : (
+                        <>
+                          <Send size={13} />
+                          <span>Send</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Selected Guests Tray */}
+              {selectedUserIds.length > 0 && (
+                <div className="px-6 mb-4 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">
+                      Selected Guests ({selectedUserIds.length})
+                    </span>
+                    <button 
+                      onClick={() => setSelectedUserIds([])}
+                      className="text-[11px] text-[#DA291C] font-bold hover:underline"
+                    >
+                      Clear All
+                    </button>
+                  </div>
+                  <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide py-1">
+                    {bueUsers.filter(u => selectedUserIds.includes(u.id)).map(user => (
+                      <div 
+                        key={user.id} 
+                        className="flex items-center gap-1.5 bg-blue-50/80 border border-blue-200/80 rounded-full pl-1 pr-2.5 py-1 shrink-0 animate-in zoom-in-95 duration-150"
+                      >
+                        <img src={user.avatar} alt={user.name} className="w-5 h-5 rounded-full object-cover" />
+                        <span className="text-xs font-bold text-[#002D62]">{user.name.split(' ')[0]}</span>
+                        <button 
+                          onClick={() => setSelectedUserIds(prev => prev.filter(id => id !== user.id))}
+                          className="text-slate-400 hover:text-[#DA291C] ml-0.5"
+                        >
+                          <X size={12} strokeWidth={2.5} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Search & Colleagues Selection Header */}
+              <div className="px-6 mb-3">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[11px] font-black text-slate-400 uppercase tracking-widest">
+                    Add From Campus Directory
+                  </span>
+                  <span className="text-[11px] font-semibold text-slate-400">
+                    {filteredUsers.length} available
+                  </span>
+                </div>
+
+                <div className="flex gap-2">
                   <div className="relative flex-1">
-                    <SearchIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                    <SearchIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
                     <input 
                       type="text" 
-                      placeholder="Find colleagues by name or role..." 
+                      placeholder="Search colleagues by name or role..." 
                       value={userSearchQuery}
                       onChange={(e) => setUserSearchQuery(e.target.value)}
-                      className="w-full bg-slate-200/50 border-none text-[#002D62] rounded-2xl pl-11 pr-4 py-3.5 outline-none focus:bg-white focus:ring-2 focus:ring-[#002D62]/20 transition-all text-[14px] font-semibold placeholder:text-slate-400"
+                      className="w-full bg-white border border-slate-200 text-[#002D62] rounded-2xl pl-10 pr-9 py-2.5 outline-none focus:ring-2 focus:ring-[#002D62]/20 focus:border-[#002D62] transition-all text-xs font-bold placeholder:text-slate-400"
                     />
                     {userSearchQuery && (
-                      <button onClick={() => setUserSearchQuery('')} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400">
-                        <X size={16} />
+                      <button onClick={() => setUserSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                        <X size={14} />
                       </button>
                     )}
                   </div>
                   
-                  {/* Filter Button */}
+                  {/* Filter Toggle */}
                   <button 
                     onClick={() => setShowInviteFilters(!showInviteFilters)}
-                    className={`shrink-0 px-4 rounded-2xl flex items-center gap-1.5 font-bold text-xs transition-all ${
+                    className={`shrink-0 px-3.5 rounded-2xl flex items-center gap-1.5 font-bold text-xs transition-all border ${
                       showInviteFilters || facultyFilter !== 'All Roles' || userGroupFilter !== 'All' 
-                        ? 'bg-[#002D62] text-white shadow-md' 
-                        : 'bg-slate-200/60 text-slate-600 hover:bg-slate-200'
+                        ? 'bg-[#002D62] text-white border-[#002D62] shadow-sm' 
+                        : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
                     }`}
                   >
-                    <SlidersHorizontal size={16} />
+                    <SlidersHorizontal size={14} />
                     <span>Filter</span>
                     {(facultyFilter !== 'All Roles' || userGroupFilter !== 'All') && (
-                      <span className="w-2 h-2 rounded-full bg-[#DA291C]" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#DA291C]" />
                     )}
                   </button>
                 </div>
 
                 {/* Collapsible Filter Panel */}
                 {showInviteFilters && (
-                  <div className="bg-white rounded-2xl p-3.5 shadow-sm border border-slate-100 mb-3 space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
-                    {/* Profession / Role Filters */}
+                  <div className="bg-white rounded-2xl p-3.5 shadow-sm border border-slate-200 mt-2 space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
                     <div>
                       <div className="flex justify-between items-center mb-1.5 px-0.5">
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Filter by Profession / Role</span>
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Role / Specialization</span>
                         {facultyFilter !== 'All Roles' && (
                           <button onClick={() => setFacultyFilter('All Roles')} className="text-[10px] text-[#DA291C] font-bold">Reset</button>
                         )}
@@ -1435,7 +1806,7 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                           <button
                             key={opt.id}
                             onClick={() => setFacultyFilter(opt.id)}
-                            className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-bold transition-all shadow-xs ${
+                            className={`shrink-0 px-3 py-1 rounded-full text-[11px] font-bold transition-all shadow-xs ${
                               facultyFilter === opt.id 
                                 ? 'bg-[#002D62] text-white shadow-blue-900/20 scale-[1.02]' 
                                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -1447,10 +1818,9 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                       </div>
                     </div>
                     
-                    {/* Group Filters */}
                     <div>
                       <div className="flex justify-between items-center mb-1.5 px-0.5">
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Filter by Group</span>
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Study Groups</span>
                         {userGroupFilter !== 'All' && (
                           <button onClick={() => setUserGroupFilter('All')} className="text-[10px] text-[#DA291C] font-bold">Reset</button>
                         )}
@@ -1458,7 +1828,7 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                       <div className="flex gap-1.5 overflow-x-auto scrollbar-hide pb-1">
                         <button
                           onClick={() => setUserGroupFilter('All')}
-                          className={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors shadow-xs ${userGroupFilter === 'All' ? 'bg-[#002D62] text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                          className={`shrink-0 px-3 py-1 rounded-full text-[11px] font-bold transition-colors shadow-xs ${userGroupFilter === 'All' ? 'bg-[#002D62] text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
                         >
                           All Groups
                         </button>
@@ -1466,16 +1836,16 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                           <button
                             key={group}
                             onClick={() => setUserGroupFilter(group)}
-                            className={`shrink-0 px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors shadow-xs ${userGroupFilter === group ? 'bg-[#002D62] text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                            className={`shrink-0 px-3 py-1 rounded-full text-[11px] font-bold transition-colors shadow-xs ${userGroupFilter === group ? 'bg-[#002D62] text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
                           >
                             {group}
                           </button>
                         ))}
                         <button
                           onClick={() => setShowAddGroupModal(true)}
-                          className="shrink-0 px-3 py-1.5 rounded-full text-xs font-bold transition-colors bg-white text-[#DA291C] border border-[#DA291C]/30 hover:bg-[#DA291C]/10 flex items-center gap-1 shadow-xs"
+                          className="shrink-0 px-2.5 py-1 rounded-full text-[11px] font-bold transition-colors bg-white text-[#DA291C] border border-[#DA291C]/30 hover:bg-[#DA291C]/10 flex items-center gap-1 shadow-xs"
                         >
-                          <Plus size={13} /> New Group
+                          <Plus size={11} /> New Group
                         </button>
                       </div>
                     </div>
@@ -1526,51 +1896,75 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                 </div>
               )}
 
-              <div className="flex-1 overflow-y-auto px-6 pb-32">
-                <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-4">Suggested Colleagues</p>
-                <div className="space-y-3">
-                  {filteredUsers.map((user) => (
+              {/* Suggested / Filtered Colleagues List */}
+              <div className="px-6 space-y-2.5">
+                {filteredUsers.map((user) => {
+                  const isSelected = selectedUserIds.includes(user.id);
+                  return (
                     <div 
                       key={user.id} 
                       onClick={() => {
-                        if (selectedUserIds.includes(user.id)) setSelectedUserIds(prev => prev.filter(id => id !== user.id));
+                        if (isSelected) setSelectedUserIds(prev => prev.filter(id => id !== user.id));
                         else setSelectedUserIds(prev => [...prev, user.id]);
                       }}
-                      className={`flex items-center justify-between p-3.5 rounded-2xl border-2 transition-all cursor-pointer ${
-                        selectedUserIds.includes(user.id) 
-                        ? 'bg-white border-[#002D62] shadow-[0_4px_15px_rgba(0,45,98,0.1)] scale-[1.02]' 
-                        : 'bg-white border-transparent hover:border-slate-200 shadow-sm'
+                      className={`flex items-center justify-between p-3 rounded-2xl border transition-all duration-200 cursor-pointer select-none ${
+                        isSelected 
+                          ? 'bg-blue-50/70 border-[#002D62] shadow-sm scale-[1.01]' 
+                          : 'bg-white border-slate-200/80 hover:border-slate-300 hover:bg-slate-50/50 shadow-xs'
                       }`}
                     >
-                      <div className="flex items-center gap-4">
-                        <img src={user.avatar} alt={user.name} className="w-12 h-12 rounded-full object-cover border-2 border-slate-100 shadow-sm" />
+                      <div className="flex items-center gap-3">
+                        <div className="relative">
+                          <img src={user.avatar} alt={user.name} className="w-11 h-11 rounded-full object-cover border border-slate-200 shadow-xs" />
+                          {isSelected && (
+                            <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#002D62] rounded-full flex items-center justify-center ring-2 ring-white text-white">
+                              <Check size={11} strokeWidth={3} />
+                            </div>
+                          )}
+                        </div>
                         <div>
-                          <p className="font-bold text-[#002D62] text-[15px] leading-tight mb-0.5">{user.name}</p>
-                          <p className="text-[13px] text-slate-400 font-medium">{user.role}</p>
+                          <p className="font-bold text-[#002D62] text-sm leading-tight mb-0.5">{user.name}</p>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-[11px] text-slate-500 font-semibold">{user.role}</span>
+                            <span className="text-[9px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-md font-bold">{user.group}</span>
+                          </div>
                         </div>
                       </div>
-                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-300 ${
-                        selectedUserIds.includes(user.id) ? 'bg-[#002D62] border-[#002D62]' : 'border-slate-300'
+
+                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all ${
+                        isSelected ? 'bg-[#002D62] border-[#002D62] text-white shadow-xs' : 'border-slate-300 bg-white'
                       }`}>
-                        {selectedUserIds.includes(user.id) && <Check size={14} className="text-white" strokeWidth={3} />}
+                        {isSelected && <Check size={12} strokeWidth={3} />}
                       </div>
                     </div>
-                  ))}
-                </div>
+                  );
+                })}
               </div>
 
-              <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-gradient-to-t from-slate-50 via-slate-50 to-transparent pt-12 pb-6 px-6 z-30">
+              {/* Bottom Sticky Action Dock */}
+              <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white/95 backdrop-blur-md border-t border-slate-200/80 px-6 py-4 z-30 shadow-[0_-10px_30px_rgba(0,0,0,0.06)] space-y-2">
                 <button 
                   disabled={selectedUserIds.length === 0}
                   onClick={handleShare}
-                  className={`w-full py-4 rounded-2xl font-bold text-lg transition-all shadow-xl flex items-center justify-center gap-2 ${
+                  className={`w-full py-3.5 rounded-2xl font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 shadow-lg active:scale-98 cursor-pointer ${
                     selectedUserIds.length > 0 
-                      ? 'bg-[#002D62] text-white shadow-blue-900/20 hover:bg-[#002D62]/90 hover:scale-[1.02] active:scale-[0.98]' 
+                      ? 'bg-[#002D62] text-white shadow-blue-900/25 hover:bg-[#003b80]' 
                       : 'bg-slate-200 text-slate-400 shadow-none cursor-not-allowed'
                   }`}
                 >
-                  <Share2 size={20} strokeWidth={2.5} />
-                  {selectedUserIds.length > 0 ? `Share with ${selectedUserIds.length} Guest${selectedUserIds.length > 1 ? 's' : ''}` : 'Select Guests to Share'}
+                  <Send size={16} strokeWidth={2.5} />
+                  {selectedUserIds.length > 0 
+                    ? `Dispatch Invites (${selectedUserIds.length} Guest${selectedUserIds.length > 1 ? 's' : ''})` 
+                    : 'Select Colleagues to Invite'
+                  }
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => finishFlow('Reservation saved! Passes ready anytime.')}
+                  className="w-full text-center text-xs font-bold text-slate-500 hover:text-[#002D62] py-1 transition-colors"
+                >
+                  Done • Back to Space Directory
                 </button>
               </div>
             </div>
@@ -1605,6 +1999,14 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
       { room: 'Library Pod 4', image: getAsset('library_pod.jpg') },
       { room: 'Media Studio', image: getAsset('media_studio.jpg') }
     ];
+
+    const topicsList = [
+      { title: 'Senior AI Capstone Sprint', description: 'Reviewing loss functions, neural network architectures & thesis benchmark data.' },
+      { title: 'Collaborative Study Session', description: 'Group revision covering past examination papers and algorithmic problem sets.' },
+      { title: 'Robotics Workshop Assembly', description: 'Sensor integration, hardware testing, and team competition planning.' },
+      { title: 'Software Engineering Lab', description: 'API architecture design, pair programming sprint, and unit test verification.' },
+      { title: 'Podcast & Media Recording', description: 'Campus podcast episode recording with multi-mic acoustics and studio lighting.' }
+    ];
     
     const count = Math.floor(hash % 3) + 1; // 1 to 3 bookings
     
@@ -1613,6 +2015,7 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
     for (let i = 0; i < count; i++) {
       const roomIndex = Math.floor((hash + i * 13) % roomsList.length);
       const room = roomsList[roomIndex];
+      const topic = topicsList[Math.floor((hash + i * 7) % topicsList.length)];
       const statuses = isPast ? ['Completed', 'Cancelled', 'Completed'] : ['Confirmed', 'In Progress', 'Pending'];
       
       const attendeeCount = Math.floor((hash + i) % 3) + 1;
@@ -1621,11 +2024,14 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
       generated.push({
         id: `mock-${seed}-${isPast ? 'past' : 'up'}-${i}`,
         room: room.room,
+        title: topic.title,
+        description: topic.description,
         date: selectedDateStr,
         time: ['09:00 AM - 11:00 AM', '10:00 AM - 11:30 AM', '02:00 PM - 05:00 PM', '04:00 PM - 06:00 PM'][Math.floor((hash + i) % 4)],
         image: room.image,
         status: statuses[Math.floor((hash + i) % 3)],
-        attendees: attendees
+        attendees: attendees,
+        pin: Math.floor(100000 + ((hash + i * 19) % 900000)).toString()
       });
     }
     return generated;
@@ -3087,6 +3493,38 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                   {/* Settings Options */}
                   <div className="bg-white border-y border-slate-200 px-5 py-2">
                     
+                    {/* Invitations & Requests Button */}
+                    <button 
+                      onClick={() => {
+                        setInvitationsFilter('pending');
+                        setProfileView('invitations');
+                      }} 
+                      className="w-full flex items-center justify-between py-4 border-b border-slate-100 active:scale-[0.99] transition-transform group cursor-pointer"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 bg-red-50 text-[#DA291C] rounded-full flex items-center justify-center border border-red-100 group-hover:bg-[#DA291C] group-hover:text-white transition-colors relative">
+                          <Inbox size={18} />
+                          {receivedInvitations.filter(i => i.status === 'pending').length > 0 && (
+                            <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#DA291C] text-white text-[9px] font-black rounded-full flex items-center justify-center ring-2 ring-white">
+                              {receivedInvitations.filter(i => i.status === 'pending').length}
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-left">
+                          <div className="flex items-center gap-2">
+                            <p className="font-bold text-[#002D62] text-[15px]">Invitations & Passes</p>
+                            {receivedInvitations.filter(i => i.status === 'pending').length > 0 && (
+                              <span className="text-[10px] font-extrabold bg-[#DA291C] text-white px-2 py-0.5 rounded-full shadow-2xs">
+                                {receivedInvitations.filter(i => i.status === 'pending').length} Pending
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-xs text-slate-500 font-medium">View & accept invites from faculty & colleagues</p>
+                        </div>
+                      </div>
+                      <ChevronRightIcon size={20} className="text-slate-300 group-hover:text-[#002D62] transition-colors" />
+                    </button>
+
                     <button onClick={() => setProfileView('edit')} className="w-full flex items-center justify-between py-4 border-b border-slate-100 active:scale-[0.99] transition-transform">
                       <div className="flex items-center gap-4">
                         <div className="w-10 h-10 bg-blue-50 text-[#002D62] rounded-full flex items-center justify-center">
@@ -3641,6 +4079,259 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                     >
                       Save & Return ({bueUsers.filter(u => u.group === editingGroupName).length} Members)
                     </button>
+                  </div>
+                </div>
+              )}
+
+              {/* INVITATIONS INBOX SUB-VIEW (Emil Kowalski Design Polish) */}
+              {profileView === 'invitations' && (
+                <div className="absolute inset-0 bg-slate-50 z-30 flex flex-col animate-in slide-in-from-right-4 duration-300">
+                  {/* Sticky Header */}
+                  <div className="p-4 flex items-center justify-between border-b border-slate-200 bg-white/90 backdrop-blur-xl shadow-xs z-10 pt-5">
+                    <div className="flex items-center gap-3">
+                      <button 
+                        onClick={() => setProfileView('main')} 
+                        className="p-2 bg-slate-100 hover:bg-slate-200 rounded-full text-[#002D62] transition-colors cursor-pointer"
+                      >
+                        <ArrowLeft size={18} />
+                      </button>
+                      <div>
+                        <h2 className="font-bold text-[#002D62] text-lg leading-tight">Invitations Inbox</h2>
+                        <p className="text-[11px] text-slate-400 font-medium">Manage invitations to study spaces & labs</p>
+                      </div>
+                    </div>
+
+                    {receivedInvitations.filter(i => i.status === 'pending').length > 0 && (
+                      <span className="bg-[#DA291C] text-white text-[11px] font-black px-2.5 py-0.5 rounded-full shadow-2xs">
+                        {receivedInvitations.filter(i => i.status === 'pending').length} New
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Filter Segmented Control */}
+                  <div className="px-5 pt-3 pb-2 bg-white border-b border-slate-100">
+                    <div className="flex bg-slate-100 p-1 rounded-2xl">
+                      <button
+                        onClick={() => setInvitationsFilter('pending')}
+                        className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                          invitationsFilter === 'pending'
+                            ? 'bg-white text-[#002D62] shadow-xs'
+                            : 'text-slate-500 hover:text-slate-800'
+                        }`}
+                      >
+                        <span>Pending</span>
+                        <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-black ${
+                          invitationsFilter === 'pending' ? 'bg-red-50 text-[#DA291C]' : 'bg-slate-200 text-slate-600'
+                        }`}>
+                          {receivedInvitations.filter(i => i.status === 'pending').length}
+                        </span>
+                      </button>
+
+                      <button
+                        onClick={() => setInvitationsFilter('all')}
+                        className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                          invitationsFilter === 'all'
+                            ? 'bg-white text-[#002D62] shadow-xs'
+                            : 'text-slate-500 hover:text-slate-800'
+                        }`}
+                      >
+                        <span>All Invites</span>
+                        <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-black ${
+                          invitationsFilter === 'all' ? 'bg-blue-50 text-[#002D62]' : 'bg-slate-200 text-slate-600'
+                        }`}>
+                          {receivedInvitations.length}
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Invitations List */}
+                  <div className="flex-1 overflow-y-auto p-5 space-y-4 pb-28">
+                    {receivedInvitations
+                      .filter(inv => invitationsFilter === 'all' || inv.status === 'pending')
+                      .map((inv) => {
+                        return (
+                          <div 
+                            key={inv.id}
+                            className={`bg-white rounded-3xl border transition-all shadow-xs overflow-hidden ${
+                              inv.status === 'pending'
+                                ? 'border-blue-200 shadow-md shadow-blue-900/5'
+                                : 'border-slate-200 opacity-90'
+                            }`}
+                          >
+                            {/* Host Banner */}
+                            <div className="p-4 pb-3 flex items-center justify-between border-b border-slate-100 bg-slate-50/60">
+                              <div className="flex items-center gap-3">
+                                <img src={inv.hostAvatar} alt={inv.hostName} className="w-10 h-10 rounded-full object-cover border border-slate-200 shadow-2xs" />
+                                <div>
+                                  <div className="flex items-center gap-1.5">
+                                    <span className="font-bold text-[#002D62] text-sm leading-tight">{inv.hostName}</span>
+                                    <span className="text-[10px] bg-blue-100/70 text-[#002D62] font-black px-1.5 py-0.5 rounded-md">Host</span>
+                                  </div>
+                                  <p className="text-[11px] text-slate-400 font-medium">{inv.hostRole}</p>
+                                </div>
+                              </div>
+
+                              <span className="text-[10px] font-semibold text-slate-400">
+                                {inv.invitedAt}
+                              </span>
+                            </div>
+
+                            {/* Session Info */}
+                            <div className="p-4 space-y-3">
+                              <div>
+                                <h3 className="font-bold text-[#002D62] text-base leading-snug mb-1">
+                                  {inv.title}
+                                </h3>
+                                <p className="text-xs text-slate-500 font-medium line-clamp-2 leading-relaxed">
+                                  {inv.description}
+                                </p>
+                              </div>
+
+                              {/* Space & Time Chips */}
+                              <div className="bg-slate-50 rounded-2xl p-3 border border-slate-100 space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-1.5 text-xs font-bold text-[#002D62]">
+                                    <MapPin size={14} className="text-[#DA291C] shrink-0" />
+                                    <span>{inv.room}</span>
+                                  </div>
+                                  <span className="text-[10px] font-bold text-slate-500 bg-white px-2 py-0.5 rounded-md border border-slate-200">
+                                    PIN #{inv.pin}
+                                  </span>
+                                </div>
+
+                                <div className="flex items-center gap-3 text-xs font-semibold text-slate-600 pt-1 border-t border-slate-200/60">
+                                  <span className="flex items-center gap-1">
+                                    <Calendar size={12} className="text-blue-600" />
+                                    {inv.date}
+                                  </span>
+                                  <span>•</span>
+                                  <span className="flex items-center gap-1">
+                                    <Clock size={12} className="text-amber-600" />
+                                    {inv.time}
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Attendees stack */}
+                              {inv.attendees && inv.attendees.length > 0 && (
+                                <div className="flex items-center justify-between pt-1">
+                                  <span className="text-[11px] font-bold text-slate-400">Invited Attendees</span>
+                                  <div className="flex items-center -space-x-1.5">
+                                    {inv.attendees.slice(0, 3).map((att, i) => (
+                                      <div key={i} className="w-6 h-6 rounded-full bg-[#002D62] text-white text-[9px] font-bold flex items-center justify-center ring-2 ring-white">
+                                        {att.charAt(0)}
+                                      </div>
+                                    ))}
+                                    {inv.attendees.length > 3 && (
+                                      <span className="text-[10px] font-bold text-slate-400 pl-2">+{inv.attendees.length - 3}</span>
+                                    )}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Action Footer */}
+                              <div className="pt-2 border-t border-slate-100">
+                                {inv.status === 'pending' ? (
+                                  <div className="flex gap-2">
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setReceivedInvitations(prev => prev.map(i => i.id === inv.id ? { ...i, status: 'declined' } : i));
+                                        setToastMessage('Invitation declined.');
+                                        setShowToast(true);
+                                        setTimeout(() => setShowToast(false), 2500);
+                                      }}
+                                      className="flex-1 py-2.5 rounded-xl border border-slate-200 font-bold text-xs text-slate-500 hover:bg-slate-50 active:scale-95 transition-all cursor-pointer"
+                                    >
+                                      Decline
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={async () => {
+                                        // Update invitation status
+                                        setReceivedInvitations(prev => prev.map(i => i.id === inv.id ? { ...i, status: 'accepted' } : i));
+                                        
+                                        // Add to active bookings
+                                        const newBookingObj = {
+                                          id: Date.now(),
+                                          room: inv.room,
+                                          title: inv.title,
+                                          description: inv.description,
+                                          date: inv.date,
+                                          time: inv.time,
+                                          image: inv.image || getAsset('conference_hall.jpg'),
+                                          status: 'Confirmed',
+                                          pin: inv.pin,
+                                          attendees: ['Mohamed (You)', inv.hostName, ...(inv.attendees || [])]
+                                        };
+                                        setBookings(prev => [newBookingObj, ...prev]);
+
+                                        // Trigger feedback
+                                        setToastMessage(`Accepted! Added "${inv.title}" to My Bookings.`);
+                                        setShowToast(true);
+                                        setTimeout(() => setShowToast(false), 3500);
+
+                                        // Background email notification confirmation
+                                        await sendBookingEmail({
+                                          room: inv.room,
+                                          title: `[Accepted Invite] ${inv.title}`,
+                                          description: `Accepted invitation from ${inv.hostName}.\n${inv.description}`,
+                                          date: inv.date,
+                                          time: inv.time
+                                        }, 'amegomeg99@gmail.com');
+                                      }}
+                                      className="flex-2 py-2.5 rounded-xl bg-[#002D62] hover:bg-[#003b80] text-white font-bold text-xs shadow-md shadow-blue-900/20 active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                                    >
+                                      <Check size={14} strokeWidth={3} />
+                                      <span>Accept & Add Pass</span>
+                                    </button>
+                                  </div>
+                                ) : inv.status === 'accepted' ? (
+                                  <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-xl p-2.5">
+                                    <span className="text-xs font-bold text-emerald-700 flex items-center gap-1.5">
+                                      <Check size={14} strokeWidth={3} />
+                                      Accepted • Pass Active
+                                    </span>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        switchTab('bookings');
+                                      }}
+                                      className="text-xs font-bold text-[#002D62] underline hover:text-[#DA291C] cursor-pointer"
+                                    >
+                                      View in Bookings →
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <div className="flex items-center justify-between bg-slate-100 rounded-xl p-2.5 text-xs text-slate-500 font-semibold">
+                                    <span>Invitation Declined</span>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setReceivedInvitations(prev => prev.map(i => i.id === inv.id ? { ...i, status: 'pending' } : i));
+                                      }}
+                                      className="text-[#002D62] font-bold underline cursor-pointer"
+                                    >
+                                      Undo
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+
+                    {receivedInvitations.filter(inv => invitationsFilter === 'all' || inv.status === 'pending').length === 0 && (
+                      <div className="text-center py-12 px-6 bg-white rounded-3xl border border-slate-200">
+                        <div className="w-14 h-14 bg-blue-50 text-[#002D62] rounded-full flex items-center justify-center mx-auto mb-3">
+                          <Inbox size={24} />
+                        </div>
+                        <h3 className="font-bold text-[#002D62] text-base mb-1">No Pending Invitations</h3>
+                        <p className="text-xs text-slate-400 font-medium">When teachers or colleagues invite you to a reserved space, it will appear here.</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
