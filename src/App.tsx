@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
-import { Home, Calendar, User, Clock, Users, Wifi, Bell, ArrowLeft, ChevronLeft, ChevronRight, ChevronDown, Monitor, Check, CheckCheck, BellOff, SlidersHorizontal, PenTool, Phone, Thermometer, Share2, Search as SearchIcon, MapPin, Coffee, Link2, ExternalLink, Plus, Trash2, Heart, LayoutGrid, BookOpen, Presentation, LogOut, ChevronRight as ChevronRightIcon, Edit3, Shield, HelpCircle, Camera, VolumeX, X, Copy, Sparkles, Mail, Smartphone, Send, Inbox } from 'lucide-react';
+import { Home, Calendar, User, Clock, Users, Wifi, Bell, ArrowLeft, ChevronLeft, ChevronRight, Monitor, Check, CheckCheck, BellOff, SlidersHorizontal, PenTool, Phone, Thermometer, Share2, Search as SearchIcon, MapPin, Coffee, ExternalLink, Plus, Trash2, Heart, LayoutGrid, BookOpen, Presentation, LogOut, ChevronRight as ChevronRightIcon, Edit3, Shield, HelpCircle, Camera, VolumeX, X, Copy, Sparkles, Mail, Smartphone, Send, Inbox } from 'lucide-react';
 
 const getAsset = (path: string) => {
   const base = import.meta.env.BASE_URL || '/';
@@ -150,9 +150,8 @@ export default function App() {
   // Booking Flow State: Title, Description, Date & Slots
   const [bookingTitle, setBookingTitle] = useState('');
   const [bookingDescription, setBookingDescription] = useState('');
-  const [showTopicAccordion, setShowTopicAccordion] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [bookingStep, setBookingStep] = useState<'details' | 'time' | 'success' | 'invite'>('details');
+  const [bookingStep, setBookingStep] = useState<'details' | 'time' | 'topic' | 'success' | 'invite'>('details');
   const [selectedDate, setSelectedDate] = useState(new Date().getDate().toString());
   const [selectedTimeSlots, setSelectedTimeSlots] = useState<string[]>([]);
   const [notifiedSlots, setNotifiedSlots] = useState<string[]>([]);
@@ -635,11 +634,11 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
     }
   };
 
-  const handleCreateBooking = () => {
+  const handleCreateBooking = (skipCustomMeta = false) => {
     const newBookingId = Date.now();
     const formattedDate = `${myBookingsDate.toLocaleDateString('en-US', { month: 'short' })} ${selectedDate}`;
-    const newBookingTitle = bookingTitle.trim() || `${selectedRoom.name} Study Session`;
-    const newBookingDesc = bookingDescription.trim() || 'Reserved via BUE Student Portal for collaborative study.';
+    const newBookingTitle = (!skipCustomMeta && bookingTitle.trim()) ? bookingTitle.trim() : `${selectedRoom.name}`;
+    const newBookingDesc = (!skipCustomMeta && bookingDescription.trim()) ? bookingDescription.trim() : 'Reserved via BUE Student Portal for collaborative study.';
 
     const newBooking = { 
       id: newBookingId, 
@@ -1215,6 +1214,7 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                        if (viewingBooking) finishFlow('');
                        else finishFlow('Booking saved. You can invite later.');
                     }
+                    else if (bookingStep === 'topic') setBookingStep('time');
                     else if (bookingStep === 'time') setBookingStep('details');
                     else setSelectedRoom(null);
                   }} 
@@ -1224,8 +1224,13 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                 </button>
               </div>
               
-              {bookingStep !== 'invite' && bookingStep !== 'details' && (
+              {bookingStep === 'time' && (
                 <span className="text-[20px] font-serif font-bold text-white drop-shadow-sm absolute left-1/2 -translate-x-1/2">Reservation</span>
+              )}
+              {bookingStep === 'topic' && (
+                <h2 className="text-xl font-serif font-bold text-white tracking-tight text-center absolute left-1/2 -translate-x-1/2">
+                  Session Details
+                </h2>
               )}
               {bookingStep === 'invite' && (
                 <h2 className="text-xl font-serif font-bold text-white tracking-tight text-center absolute left-1/2 -translate-x-1/2">
@@ -1242,6 +1247,14 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                     <Calendar size={13} className="text-white" />
                     <span className="text-xs font-bold">{myBookingsDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</span>
                   </div>
+                )}
+                {bookingStep === 'topic' && (
+                  <button 
+                    onClick={() => handleCreateBooking(true)}
+                    className="bg-white/20 hover:bg-white/30 backdrop-blur-md px-3.5 py-1.5 rounded-full shadow-sm active:scale-95 transition-all text-white font-bold text-xs cursor-pointer"
+                  >
+                    Skip
+                  </button>
                 )}
                 {bookingStep === 'details' && (
                   <button 
@@ -1402,92 +1415,6 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                 })}
               </div>
 
-              {/* Collapsible Reservation Purpose, Topic & Notes */}
-              <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs mt-4 mb-2 overflow-hidden transition-all duration-200">
-                <button
-                  type="button"
-                  onClick={() => setShowTopicAccordion(!showTopicAccordion)}
-                  className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-slate-50/80 transition-colors cursor-pointer"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-xl bg-red-50 text-[#DA291C] flex items-center justify-center shrink-0">
-                      <Edit3 size={15} strokeWidth={2.5} />
-                    </div>
-                    <div>
-                      <p className="text-xs font-bold text-[#002D62] leading-tight">
-                        {bookingTitle.trim() || "Add Topic & Meeting Notes"}
-                      </p>
-                      <p className="text-[10px] text-slate-400 font-medium">
-                        {bookingTitle.trim() ? "Topic customized • Tap to edit" : "Optional agenda, topic, or items to bring"}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {bookingTitle.trim() && (
-                      <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
-                        Set
-                      </span>
-                    )}
-                    <ChevronDown size={16} className={`text-slate-400 transition-transform duration-200 ${showTopicAccordion ? 'rotate-180' : ''}`} />
-                  </div>
-                </button>
-
-                {showTopicAccordion && (
-                  <div className="p-4 pt-1 border-t border-slate-100 space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
-                    <div>
-                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
-                        Meeting / Topic Title
-                      </label>
-                      <input 
-                        type="text"
-                        placeholder="e.g. AI Project Sprint, Study Group, Lab Prep..."
-                        value={bookingTitle}
-                        onChange={(e) => setBookingTitle(e.target.value)}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-[#002D62] outline-none focus:bg-white focus:ring-2 focus:ring-[#002D62]/20 focus:border-[#002D62] transition-all placeholder:text-slate-400"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
-                        Agenda & Notes
-                      </label>
-                      <textarea 
-                        rows={2}
-                        placeholder="Add agenda, topics to cover, or items colleagues should bring..."
-                        value={bookingDescription}
-                        onChange={(e) => setBookingDescription(e.target.value)}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-medium text-slate-700 outline-none focus:bg-white focus:ring-2 focus:ring-[#002D62]/20 focus:border-[#002D62] transition-all placeholder:text-slate-400 resize-none"
-                      />
-                    </div>
-
-                    {/* Quick Topic Presets */}
-                    <div className="pt-1">
-                      <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide py-1">
-                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest shrink-0">Suggestions:</span>
-                        {[
-                          { label: '🎓 Capstone Sprint', title: 'Graduation Capstone Review', desc: 'System architecture final sprint with advisor and API stress testing.' },
-                          { label: '📚 Exam Prep', title: 'Course Midterm Revision', desc: 'Collaborative revision covering lecture slides and problem sets.' },
-                          { label: '🤖 Robotics Lab', title: 'Robotics Workshop Assembly', desc: 'Hardware testing, sensor calibration, and tournament strategy.' },
-                          { label: '🎙️ Media Recording', title: 'Podcast & Content Recording', desc: 'Recording student podcast episode with audio interface & lighting.' }
-                        ].map(preset => (
-                          <button
-                            key={preset.label}
-                            type="button"
-                            onClick={() => {
-                              setBookingTitle(preset.title);
-                              setBookingDescription(preset.desc);
-                            }}
-                            className="shrink-0 text-[10px] font-bold bg-slate-100 hover:bg-blue-50 hover:text-[#002D62] hover:border-blue-200 text-slate-600 px-2.5 py-1 rounded-lg border border-slate-200 transition-all active:scale-95 cursor-pointer"
-                          >
-                            {preset.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
               <div className="flex justify-between items-end mt-4 mb-3">
                 <h2 className="text-[20px] font-bold text-[#002D62] tracking-tight">Available Slots</h2>
                 <span className="text-xs font-semibold text-slate-400">Select 1 or more</span>
@@ -1547,8 +1474,8 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                     <p className="text-[#002D62] text-[22px] font-serif font-black">{calculateDuration()}</p>
                   </div>
                   <button 
-                    onClick={handleCreateBooking}
-                    className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold text-sm transition-all bg-[#002D62] text-white shadow-md hover:bg-[#002D62]/90"
+                    onClick={() => setBookingStep('topic')}
+                    className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold text-sm transition-all bg-[#002D62] text-white shadow-md hover:bg-[#002D62]/90 cursor-pointer active:scale-95"
                   >
                     Confirm <Check size={18} strokeWidth={3} />
                   </button>
@@ -1557,81 +1484,227 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
             </div>
           )}
 
-          {/* Flow Step 3: Success Screen (Confirm First, Then Share) */}
-          {bookingStep === 'success' && (
-            <div className="flex flex-col h-full bg-[#002D62] items-center justify-center px-6 animate-in fade-in slide-in-from-bottom-8 duration-500">
-              <div className="w-20 h-20 bg-[#DA291C] rounded-full flex items-center justify-center shadow-[0_0_40px_rgb(218,41,28,0.5)] mb-6 animate-bounce">
-                <Check size={40} className="text-white" strokeWidth={4} />
-              </div>
-              <h1 className="text-3xl font-serif font-bold text-white mb-2 text-center">Booking Confirmed!</h1>
-              <p className="text-blue-100 text-center text-sm font-medium mb-8">
-                Your reservation for <strong className="text-white">{selectedRoom.name}</strong> is secured.
-              </p>
+          {/* Flow Step 3: Session Title & Description (with Skip option) */}
+          {bookingStep === 'topic' && (
+            <div className="flex flex-col h-full bg-slate-50 pt-20 overflow-y-auto px-6 pb-36 animate-in fade-in slide-in-from-right-4 duration-300">
               
-              <div className="w-full space-y-3">
+              {/* Selected Space Summary Pill */}
+              <div className="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-2xs mb-5 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <img 
+                    src={selectedRoom.images ? selectedRoom.images[0] : (selectedRoom.image || getAsset('conference_hall.jpg'))} 
+                    alt={selectedRoom.name} 
+                    className="w-12 h-12 rounded-xl object-cover border border-slate-200" 
+                  />
+                  <div>
+                    <h3 className="font-bold text-[#002D62] text-sm leading-tight">{selectedRoom.name}</h3>
+                    <p className="text-[11px] font-medium text-slate-400 flex items-center gap-1 mt-0.5">
+                      <MapPin size={11} className="text-[#DA291C]" /> {selectedRoom.location}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <span className="text-[10px] font-black text-[#002D62] bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100 block mb-0.5">
+                    {myBookingsDate.toLocaleDateString('en-US', { month: 'short' })} {selectedDate}
+                  </span>
+                  <span className="text-[10px] font-bold text-slate-500 block">
+                    {getFormattedTimeRange()}
+                  </span>
+                </div>
+              </div>
+
+              {/* Form Section */}
+              <div className="space-y-4">
+                <div>
+                  <h2 className="text-xl font-serif font-black text-[#002D62] leading-tight mb-1">
+                    Add Session Details
+                  </h2>
+                  <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                    Give your study session a title and agenda for participants, or continue with defaults.
+                  </p>
+                </div>
+
+                {/* Title Input */}
+                <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-1.5">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                    <Edit3 size={12} className="text-[#002D62]" />
+                    Session / Meeting Title (Optional)
+                  </label>
+                  <input 
+                    type="text"
+                    placeholder={`e.g. ${selectedRoom.name} Study Sprint, AI Capstone...`}
+                    value={bookingTitle}
+                    onChange={(e) => setBookingTitle(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-3 text-sm font-bold text-[#002D62] outline-none focus:bg-white focus:ring-2 focus:ring-[#002D62]/20 focus:border-[#002D62] transition-all placeholder:text-slate-400"
+                  />
+                </div>
+
+                {/* Description Textarea */}
+                <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs space-y-1.5">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                    <Sparkles size={12} className="text-[#DA291C]" />
+                    Description & Agenda Notes (Optional)
+                  </label>
+                  <textarea 
+                    rows={3}
+                    placeholder="Add agenda, topics to cover, or items colleagues should bring..."
+                    value={bookingDescription}
+                    onChange={(e) => setBookingDescription(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-medium text-slate-700 outline-none focus:bg-white focus:ring-2 focus:ring-[#002D62]/20 focus:border-[#002D62] transition-all placeholder:text-slate-400 resize-none leading-relaxed"
+                  />
+                </div>
+
+                {/* Topic Presets */}
+                <div className="space-y-2 pt-1">
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">
+                    Quick Suggestions
+                  </span>
+                  <div className="grid grid-cols-2 gap-2">
+                    {[
+                      { label: '🎓 Capstone Review', title: 'Graduation Capstone Review', desc: 'System architecture final sprint with advisor and API stress testing.' },
+                      { label: '📚 Exam Revision', title: 'Course Exam Revision', desc: 'Collaborative revision covering lecture slides and problem sets.' },
+                      { label: '🤖 Robotics Lab', title: 'Robotics Workshop Assembly', desc: 'Hardware testing, sensor calibration, and tournament strategy.' },
+                      { label: '🎙️ Media Recording', title: 'Podcast & Content Recording', desc: 'Recording student podcast episode with audio interface & lighting.' }
+                    ].map(preset => (
+                      <button
+                        key={preset.label}
+                        type="button"
+                        onClick={() => {
+                          setBookingTitle(preset.title);
+                          setBookingDescription(preset.desc);
+                        }}
+                        className="p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-blue-50/70 hover:border-blue-200 text-left transition-all active:scale-95 cursor-pointer shadow-2xs group"
+                      >
+                        <span className="text-xs font-bold text-[#002D62] group-hover:text-[#DA291C] block leading-tight">
+                          {preset.label}
+                        </span>
+                        <span className="text-[10px] text-slate-400 font-medium truncate block mt-0.5">
+                          {preset.title}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Actions Fixed Bar */}
+              <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white border-t border-slate-200 px-6 py-4 z-30 shadow-[0_-10px_30px_rgba(0,0,0,0.05)] flex items-center gap-3">
                 <button 
-                  onClick={() => {
-                    setSelectedUserIds([]);
-                    setUserSearchQuery('');
-                    setBookingStep('invite');
-                  }}
-                  className="w-full bg-[#DA291C] hover:bg-[#c22418] text-white font-bold text-sm py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95 border border-red-400/30"
-                >
-                  <Share2 size={16} strokeWidth={2.5} /> Invite Study Colleagues
-                </button>
-                <button 
-                  onClick={copyLink}
-                  className="w-full bg-white/10 hover:bg-white/15 text-white font-medium text-sm py-3 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 border border-white/15"
-                >
-                  <Link2 size={16} strokeWidth={2.5} /> Copy Generated Link
-                </button>
-                <button 
-                  onClick={() => finishFlow('')}
-                  className="w-full bg-transparent border border-white/20 text-white font-semibold text-sm py-3 rounded-xl hover:bg-white/10 transition-all active:scale-95 mt-2"
+                  type="button"
+                  onClick={() => handleCreateBooking(true)}
+                  className="w-1/3 py-3.5 rounded-xl font-bold text-xs text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 transition-all active:scale-95 cursor-pointer text-center"
                 >
                   Skip for Now
+                </button>
+                <button 
+                  type="button"
+                  onClick={() => handleCreateBooking(false)}
+                  className="w-2/3 flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-xs transition-all bg-[#002D62] hover:bg-[#003b80] text-white shadow-md shadow-blue-900/20 active:scale-95 cursor-pointer"
+                >
+                  <span>Save & Continue</span>
+                  <ChevronRight size={16} strokeWidth={2.5} />
                 </button>
               </div>
             </div>
           )}
 
-          {/* Flow Step 4: Share & Invite Members (Emil Kowalski Design Polish) */}
+          {/* Flow Step 4: Share & Invite Members (Official Campus Pass Ticket - Matching Image 2) */}
           {bookingStep === 'invite' && (
             <div className="flex flex-col h-full bg-slate-50 pt-20 overflow-y-auto pb-36 animate-in fade-in slide-in-from-right-4 duration-300">
               
-              {/* Glassmorphic Reservation Header Card (Clean Stacked Readable Layout) */}
+              {/* Official Campus Pass Ticket Card (Matching Image 2) */}
               <div className="px-6 mb-5">
-                <div className="bg-gradient-to-br from-[#002D62] to-[#001838] text-white rounded-3xl p-5 shadow-xl shadow-[#002D62]/15 relative overflow-hidden border border-white/10">
-                  <div className="absolute top-0 right-0 w-36 h-36 bg-[#DA291C]/20 rounded-full blur-2xl pointer-events-none -mr-10 -mt-10" />
-                  
-                  <h3 className="text-xl font-serif font-black leading-snug mb-1 text-white">
-                    {bookingTitle.trim() || selectedRoom.name}
-                  </h3>
-                  
-                  {bookingDescription.trim() && (
-                    <p className="text-xs text-blue-200/90 font-medium mb-3 line-clamp-2 leading-relaxed">
-                      {bookingDescription}
-                    </p>
-                  )}
+                <div className="bg-[#002D62] text-white rounded-3xl p-5 shadow-xl shadow-[#002D62]/20 relative overflow-hidden border border-white/10">
+                  {/* Top BUE Header */}
+                  <div className="flex items-center justify-between mb-3.5">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-lg bg-[#DA291C] flex items-center justify-center font-serif font-black text-white text-base shadow-sm">
+                        B
+                      </div>
+                      <div className="text-left">
+                        <span className="text-[11px] font-black tracking-wider block text-white uppercase leading-tight font-serif">
+                          THE BRITISH UNIVERSITY
+                        </span>
+                        <span className="text-[8.5px] font-bold text-slate-300 tracking-widest block uppercase">
+                          SMART CAMPUS PASS
+                        </span>
+                      </div>
+                    </div>
 
-                  <div className="pt-3 border-t border-white/15 space-y-2 text-xs font-semibold text-white/90">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
-                        <MapPin size={13} className="text-[#DA291C]" />
-                      </div>
-                      <span className="truncate">{selectedRoom.name} • {selectedRoom.location}</span>
+                    <span className="bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[9.5px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider flex items-center gap-1.5 shadow-2xs">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                      CONFIRMED PASS
+                    </span>
+                  </div>
+
+                  {/* Room Image Hero Card */}
+                  <div className="relative rounded-2xl overflow-hidden mb-3 border border-white/15 shadow-inner">
+                    <img 
+                      src={selectedRoom.images ? selectedRoom.images[0] : (selectedRoom.image || getAsset('conference_hall.jpg'))} 
+                      alt={selectedRoom.name}
+                      className="w-full h-40 object-cover" 
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+                    
+                    {/* Top Badges */}
+                    <div className="absolute top-3 left-3">
+                      <span className="bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-lg border border-white/10">
+                        {selectedRoom.location || 'Building C • Floor 2'}
+                      </span>
                     </div>
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
-                        <Calendar size={13} className="text-blue-300" />
-                      </div>
-                      <span>{myBookingsDate.toLocaleDateString('en-US', { month: 'short' })} {selectedDate}, {myBookingsDate.getFullYear()}</span>
+                    <div className="absolute top-3 right-3">
+                      <span className="bg-[#DA291C] text-white text-[10px] font-bold px-2.5 py-1 rounded-lg flex items-center gap-1 shadow-xs">
+                        <Users size={11} /> {selectedRoom.seats || selectedRoom.capacity || '6 Seats'}
+                      </span>
                     </div>
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
-                        <Clock size={13} className="text-amber-300" />
+
+                    {/* Room Info Bottom Overlay */}
+                    <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between">
+                      <div className="pr-2 min-w-0">
+                        <h1 className="text-xl font-black text-white leading-tight drop-shadow-sm font-sans truncate">
+                          {bookingTitle.trim() || selectedRoom.name}
+                        </h1>
+                        <p className="text-[11px] font-medium text-slate-200 flex items-center gap-1 mt-0.5 truncate">
+                          <MapPin size={11} className="text-[#DA291C] shrink-0" /> 
+                          <span className="truncate">{selectedRoom.name} • {selectedRoom.type || 'Study Lab'}</span>
+                        </p>
                       </div>
-                      <span>{getFormattedTimeRange() || 'Selected Time Slot'}</span>
+                      
+                      <button 
+                        type="button"
+                        onClick={() => {
+                          setBookingStep('details');
+                        }} 
+                        className="text-white hover:text-blue-200 bg-white/20 hover:bg-white/30 backdrop-blur-md px-2.5 py-1.5 rounded-xl transition-all active:scale-95 border border-white/20 flex items-center gap-1 text-[11px] font-bold cursor-pointer shrink-0"
+                      >
+                        <span>Details</span>
+                        <ExternalLink size={12} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Ticket Divider Notch */}
+                  <div className="relative py-2 my-0.5">
+                    <div className="border-t-2 border-dashed border-white/20" />
+                    <div className="absolute -left-8 top-1/2 -translate-y-1/2 w-6 h-6 bg-slate-50 rounded-full" />
+                    <div className="absolute -right-8 top-1/2 -translate-y-1/2 w-6 h-6 bg-slate-50 rounded-full" />
+                  </div>
+
+                  {/* Pass Quick Details Matrix */}
+                  <div className="grid grid-cols-2 gap-2 pt-0.5">
+                    <div className="bg-white/10 backdrop-blur-sm px-3 py-2.5 rounded-xl border border-white/10 flex flex-col justify-center">
+                      <span className="text-[9px] font-bold text-slate-300 uppercase tracking-wider block mb-0.5">RESERVED DATE</span>
+                      <span className="text-xs font-bold text-white flex items-center gap-1.5 whitespace-nowrap">
+                        <Calendar size={12} className="text-[#DA291C] shrink-0" /> 
+                        <span>{myBookingsDate.toLocaleDateString('en-US', { month: 'short' })} {selectedDate}</span>
+                      </span>
+                    </div>
+                    <div className="bg-white/10 backdrop-blur-sm px-3 py-2.5 rounded-xl border border-white/10 flex flex-col justify-center min-w-0">
+                      <span className="text-[9px] font-bold text-slate-300 uppercase tracking-wider block mb-0.5 whitespace-nowrap">RESERVED SLOT</span>
+                      <span className="text-[11px] font-bold text-white flex items-center gap-1 whitespace-nowrap tracking-tight">
+                        <Clock size={12} className="text-emerald-400 shrink-0" /> 
+                        <span className="whitespace-nowrap truncate">{getFormattedTimeRange() || 'Selected Time'}</span>
+                      </span>
                     </div>
                   </div>
                 </div>
