@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
-import { Home, Calendar, User, Clock, Users, Wifi, Bell, ArrowLeft, ChevronLeft, ChevronRight, Monitor, Check, CheckCheck, BellOff, SlidersHorizontal, PenTool, Phone, Thermometer, Share2, Search as SearchIcon, MapPin, Coffee, Link2, ExternalLink, Plus, Trash2, Heart, LayoutGrid, BookOpen, Presentation, LogOut, ChevronRight as ChevronRightIcon, Edit3, Shield, HelpCircle, Camera, VolumeX, X, Copy, Sparkles, Mail, Eye } from 'lucide-react';
+import { Home, Calendar, User, Clock, Users, Wifi, Bell, ArrowLeft, ChevronLeft, ChevronRight, Monitor, Check, CheckCheck, BellOff, SlidersHorizontal, PenTool, Phone, Thermometer, Share2, Search as SearchIcon, MapPin, Coffee, Link2, ExternalLink, Plus, Trash2, Heart, LayoutGrid, BookOpen, Presentation, LogOut, ChevronRight as ChevronRightIcon, Edit3, Shield, HelpCircle, Camera, VolumeX, X, Copy, Sparkles, Mail } from 'lucide-react';
 
 const getAsset = (path: string) => {
   const base = import.meta.env.BASE_URL || '/';
@@ -12,9 +12,6 @@ export default function App() {
   const [selectedRoom, setSelectedRoom] = useState<any>(null);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
-  const [showEmailPassModal, setShowEmailPassModal] = useState(false);
-  const [emailPreviewData, setEmailPreviewData] = useState<any>(null);
-  const [isSendingEmail, setIsSendingEmail] = useState(false);
   
   // Ref for scroll-to-top on page / tab switches
   const mainScrollRef = useRef<HTMLDivElement>(null);
@@ -492,8 +489,6 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
       Reservation_Reminder: reminderMessage
     };
 
-    setIsSendingEmail(true);
-
     try {
       // Send using user's token in background
       await fetch(`https://formsubmit.co/ajax/1c36fbba0d433cfa40fa86d4ab3677ae`, {
@@ -512,8 +507,6 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
           body: JSON.stringify(emailPayload)
         });
       } catch {}
-    } finally {
-      setIsSendingEmail(false);
     }
   };
 
@@ -1332,61 +1325,28 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
           {/* Flow Step 3: Success Screen (Confirm First, Then Share) */}
           {bookingStep === 'success' && (
             <div className="flex flex-col h-full bg-[#002D62] items-center justify-center px-6 animate-in fade-in slide-in-from-bottom-8 duration-500">
-              <div className="w-20 h-20 bg-[#DA291C] rounded-full flex items-center justify-center shadow-[0_0_40px_rgb(218,41,28,0.5)] mb-8 animate-bounce">
+              <div className="w-20 h-20 bg-[#DA291C] rounded-full flex items-center justify-center shadow-[0_0_40px_rgb(218,41,28,0.5)] mb-6 animate-bounce">
                 <Check size={40} className="text-white" strokeWidth={4} />
               </div>
               <h1 className="text-3xl font-serif font-bold text-white mb-2 text-center">Booking Confirmed!</h1>
-              <p className="text-blue-100 text-center text-sm font-medium mb-4">
+              <p className="text-blue-100 text-center text-sm font-medium mb-8">
                 Your reservation for <strong className="text-white">{selectedRoom.name}</strong> is secured.
               </p>
-
-              {/* Automatic Email Confirmation Banner */}
-              <div className="flex items-center gap-2.5 bg-white/10 backdrop-blur-md px-4 py-2.5 rounded-2xl border border-white/20 text-xs text-white mb-8 shadow-inner">
-                <div className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-300 flex items-center justify-center border border-emerald-400/30">
-                  <Check size={12} strokeWidth={3} />
-                </div>
-                <div className="text-left">
-                  <span className="text-[10px] uppercase font-bold tracking-wider text-blue-200 block">Pass Automatically Emailed</span>
-                  <span className="font-mono text-[11px] font-semibold text-white">amegomeg99@gmail.com</span>
-                </div>
-              </div>
               
-              <div className="w-full space-y-2.5">
-                <button 
-                  onClick={() => {
-                    setEmailPreviewData({ 
-                      room: selectedRoom.name, 
-                      date: 'May ' + selectedDate, 
-                      time: getFormattedTimeRange(),
-                      image: selectedRoom.images[0],
-                      attendees: ['Mohamed (You)']
-                    });
-                    setShowEmailPassModal(true);
-                  }}
-                  className="w-full bg-white text-[#002D62] font-black text-sm py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-xl hover:bg-slate-50 transition-all active:scale-95 border-2 border-white"
-                >
-                  <Eye size={17} strokeWidth={2.5} /> Preview Official Email Pass
-                </button>
-                <button 
-                  disabled={isSendingEmail}
-                  onClick={() => sendBookingEmail({ room: selectedRoom.name, date: 'May ' + selectedDate, time: getFormattedTimeRange() }, 'amegomeg99@gmail.com')}
-                  className="w-full bg-[#DA291C] hover:bg-[#c22418] text-white font-bold text-sm py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95 border border-red-400/30 disabled:opacity-50"
-                >
-                  <Mail size={16} /> {isSendingEmail ? 'Sending Pass...' : 'Resend Email to amegomeg99@gmail.com'}
-                </button>
+              <div className="w-full space-y-3">
                 <button 
                   onClick={() => {
                     setSelectedUserIds([]);
                     setUserSearchQuery('');
                     setBookingStep('invite');
                   }}
-                  className="w-full bg-white/15 hover:bg-white/20 text-white font-bold text-sm py-3 rounded-xl flex items-center justify-center gap-2 border border-white/20 transition-all active:scale-95"
+                  className="w-full bg-[#DA291C] hover:bg-[#c22418] text-white font-bold text-sm py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95 border border-red-400/30"
                 >
                   <Share2 size={16} strokeWidth={2.5} /> Invite Study Colleagues
                 </button>
                 <button 
                   onClick={copyLink}
-                  className="w-full bg-white/10 hover:bg-white/15 text-white font-medium text-sm py-2.5 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95"
+                  className="w-full bg-white/10 hover:bg-white/15 text-white font-medium text-sm py-3 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 border border-white/15"
                 >
                   <Link2 size={16} strokeWidth={2.5} /> Copy Generated Link
                 </button>
@@ -3717,157 +3677,7 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
           </nav>
         </div>
 
-        {/* Executive Official BUE Email Pass Preview Modal */}
-        {showEmailPassModal && emailPreviewData && (
-          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-in fade-in duration-200">
-            <div className="bg-white rounded-3xl max-w-[390px] w-full shadow-2xl overflow-hidden border border-slate-200 animate-in zoom-in-95 duration-200 my-auto">
-              
-              {/* Simulated Mail Client Header */}
-              <div className="bg-slate-900 px-4 py-3 text-white flex items-center justify-between border-b border-slate-800">
-                <div className="flex items-center gap-2">
-                  <div className="flex gap-1.5">
-                    <div className="w-2.5 h-2.5 rounded-full bg-red-500/80"></div>
-                    <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80"></div>
-                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></div>
-                  </div>
-                  <span className="text-[11px] font-mono text-slate-300 ml-2 flex items-center gap-1">
-                    <Mail size={12} className="text-[#DA291C]" /> BUE Dispatcher
-                  </span>
-                </div>
-                <button 
-                  onClick={() => setShowEmailPassModal(false)}
-                  className="p-1 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition-colors"
-                >
-                  <X size={15} />
-                </button>
-              </div>
 
-              {/* Email Envelope Summary */}
-              <div className="bg-slate-50 px-4 py-2.5 border-b border-slate-200/80 text-[11px] space-y-1 text-slate-600">
-                <div className="flex justify-between">
-                  <span className="font-semibold text-slate-400">To:</span>
-                  <span className="font-bold text-[#002D62] font-mono">amegomeg99@gmail.com</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-semibold text-slate-400">From:</span>
-                  <span className="font-medium text-slate-700">The British University in Egypt &lt;digital.services@bue.edu.eg&gt;</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="font-semibold text-slate-400">Subject:</span>
-                  <span className="font-bold text-[#DA291C] truncate max-w-[240px]">🏛️ Confirmed Pass: {emailPreviewData.room}</span>
-                </div>
-              </div>
-
-              {/* Scrollable Email Body */}
-              <div className="max-h-[62vh] overflow-y-auto p-4 space-y-4 bg-white text-left">
-                
-                {/* Official BUE Header Banner with Generated Pass Graphic */}
-                <div className="rounded-2xl overflow-hidden border border-[#002D62]/20 shadow-md relative">
-                  <img 
-                    src={getAsset('bue_reservation_pass.jpg')} 
-                    alt="BUE Official Reservation Pass" 
-                    className="w-full h-36 object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#002D62]/90 via-[#002D62]/40 to-transparent flex flex-col justify-end p-3 text-white">
-                    <span className="text-[9px] font-black uppercase tracking-widest text-amber-300 block">THE BRITISH UNIVERSITY IN EGYPT</span>
-                    <h3 className="text-sm font-black text-white">{emailPreviewData.room}</h3>
-                  </div>
-                </div>
-
-                {/* Hero Room Card with Live Image */}
-                <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-xs relative group">
-                  <img 
-                    src={emailPreviewData.image || getAsset('meeting_room.jpg')} 
-                    alt={emailPreviewData.room}
-                    className="w-full h-32 object-cover"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800';
-                    }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent flex flex-col justify-end p-3 text-white">
-                    <span className="inline-flex items-center gap-1 bg-emerald-500 text-white text-[9px] font-black px-2 py-0.5 rounded-full w-fit mb-1 shadow-xs">
-                      <Check size={10} strokeWidth={3} /> CONFIRMED & ACTIVE
-                    </span>
-                    <p className="text-[10px] text-slate-200 flex items-center gap-1 font-medium">
-                      <MapPin size={10} className="text-[#DA291C]" /> Building C • Floor 2 • Innovation Hub
-                    </p>
-                  </div>
-                </div>
-
-                {/* Reservation Key Specs Grid */}
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200/80">
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 block mb-0.5">Date</span>
-                    <p className="text-xs font-bold text-[#002D62] flex items-center gap-1">
-                      <Calendar size={12} className="text-[#DA291C]" /> {emailPreviewData.date}
-                    </p>
-                  </div>
-                  <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200/80">
-                    <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 block mb-0.5">Time Slot</span>
-                    <p className="text-xs font-bold text-[#002D62] flex items-center gap-1">
-                      <Clock size={12} className="text-[#DA291C]" /> {emailPreviewData.time}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Security Smart Access PIN Pass */}
-                <div className="bg-gradient-to-br from-slate-50 to-blue-50/50 p-3.5 rounded-2xl border border-blue-100 flex items-center gap-3.5">
-                  <div className="w-14 h-14 bg-[#002D62] rounded-2xl border border-blue-900 shadow-sm shrink-0 flex flex-col items-center justify-center text-white">
-                    <Shield size={24} className="text-amber-400" />
-                    <span className="text-[8px] font-bold tracking-widest mt-0.5 uppercase">BUE</span>
-                  </div>
-                  <div className="space-y-0.5">
-                    <span className="text-[9px] font-extrabold uppercase tracking-widest text-[#DA291C] block">Turnstile Pass</span>
-                    <p className="text-sm font-black text-[#002D62] font-mono tracking-wider">PIN: #849201</p>
-                    <p className="text-[9px] text-slate-500 font-medium leading-tight">
-                      Validated for smart gates and electronic study room door lock.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Attendees Summary */}
-                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/80 space-y-1">
-                  <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 block">Invited Participants</span>
-                  <div className="flex flex-wrap gap-1 pt-0.5">
-                    {(emailPreviewData.attendees && emailPreviewData.attendees.length > 0 ? emailPreviewData.attendees : ['Mohamed Ali (Host)']).map((att: string, i: number) => (
-                      <span key={i} className="text-[10px] font-bold bg-white px-2 py-0.5 rounded-lg border border-slate-200 text-[#002D62]">
-                        {att}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Institutional Footer */}
-                <div className="pt-2 border-t border-slate-100 text-center space-y-1">
-                  <p className="text-[9px] font-bold text-slate-500">
-                    The British University in Egypt • Digital Space Services
-                  </p>
-                  <p className="text-[8px] text-slate-400">
-                    El Sherouk City, Suez Desert Road, Cairo 11837 • Helpdesk: support@bue.edu.eg
-                  </p>
-                </div>
-              </div>
-
-              {/* Modal Footer Controls */}
-              <div className="p-3 bg-slate-50 border-t border-slate-200 flex gap-2">
-                <button
-                  disabled={isSendingEmail}
-                  onClick={() => sendBookingEmail(emailPreviewData, 'amegomeg99@gmail.com')}
-                  className="flex-1 bg-[#DA291C] hover:bg-[#c22418] text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition-all disabled:opacity-50"
-                >
-                  <Mail size={14} /> {isSendingEmail ? 'Sending Pass...' : 'Dispatch Email to amegomeg99@gmail.com'}
-                </button>
-                <button
-                  onClick={() => setShowEmailPassModal(false)}
-                  className="px-3 bg-white border border-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-xs hover:bg-slate-100 transition-all active:scale-95"
-                >
-                  Done
-                </button>
-              </div>
-
-            </div>
-          </div>
-        )}
 
         {/* Success Toast Overlay */}
         {showToast && (
