@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
-import { Home, Calendar, User, Clock, Users, Wifi, Bell, ArrowLeft, ChevronLeft, ChevronRight, Monitor, Check, CheckCheck, BellOff, SlidersHorizontal, PenTool, Phone, Thermometer, Share2, Search as SearchIcon, MapPin, Coffee, Link2, ExternalLink, Plus, Trash2, Heart, LayoutGrid, BookOpen, Presentation, LogOut, ChevronRight as ChevronRightIcon, Edit3, Shield, HelpCircle, Camera, VolumeX, X, Copy, Sparkles, Mail, Smartphone, Send, Inbox } from 'lucide-react';
+import { Home, Calendar, User, Clock, Users, Wifi, Bell, ArrowLeft, ChevronLeft, ChevronRight, ChevronDown, Monitor, Check, CheckCheck, BellOff, SlidersHorizontal, PenTool, Phone, Thermometer, Share2, Search as SearchIcon, MapPin, Coffee, Link2, ExternalLink, Plus, Trash2, Heart, LayoutGrid, BookOpen, Presentation, LogOut, ChevronRight as ChevronRightIcon, Edit3, Shield, HelpCircle, Camera, VolumeX, X, Copy, Sparkles, Mail, Smartphone, Send, Inbox } from 'lucide-react';
 
 const getAsset = (path: string) => {
   const base = import.meta.env.BASE_URL || '/';
@@ -150,6 +150,7 @@ export default function App() {
   // Booking Flow State: Title, Description, Date & Slots
   const [bookingTitle, setBookingTitle] = useState('');
   const [bookingDescription, setBookingDescription] = useState('');
+  const [showTopicAccordion, setShowTopicAccordion] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [bookingStep, setBookingStep] = useState<'details' | 'time' | 'success' | 'invite'>('details');
   const [selectedDate, setSelectedDate] = useState(new Date().getDate().toString());
@@ -170,21 +171,21 @@ export default function App() {
   const [newGroupName, setNewGroupName] = useState('');
   const [facultyFilter, setFacultyFilter] = useState('All Roles');
 
-  // Received Invitations State
+  // Received Invitations State (Male personas only)
   const [receivedInvitations, setReceivedInvitations] = useState([
     {
       id: 201,
       title: 'Senior AI Capstone & Model Evaluation',
       description: 'Reviewing final neural network benchmark models and presentation slides for the external evaluation board.',
-      hostName: 'Dr. Sarah Jenkins',
+      hostName: 'Dr. Tarek Mansour',
       hostRole: 'Faculty Advisor • Informatics',
-      hostEmail: 'sarah.jenkins@bue.edu.eg',
-      hostAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=256',
+      hostEmail: 'tarek.mansour@bue.edu.eg',
+      hostAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=256',
       room: 'Conference Room A',
       image: getAsset('conference_hall.jpg'),
       date: 'Aug 10',
       time: '11:00 AM - 01:00 PM',
-      attendees: ['Dr. Sarah Jenkins', 'Mohamed (You)', 'Ahmed Ali', 'Sara Hassan'],
+      attendees: ['Dr. Tarek Mansour', 'Mohamed (You)', 'Ahmed Ali', 'Khaled Youssef'],
       status: 'pending',
       pin: '839201',
       invitedAt: '15m ago'
@@ -209,18 +210,18 @@ export default function App() {
   ]);
 
   const [bueUsers, setBueUsers] = useState([
-    { id: 'u1', name: 'Ahmed Ali', role: 'Software Engineer', category: 'Software Engineer', group: 'Study Group 1', avatar: 'https://i.pravatar.cc/150?img=11' },
-    { id: 'u2', name: 'Omar Hassan', role: 'Data Analyst', category: 'Data Analyst', group: 'Study Group 2', avatar: 'https://i.pravatar.cc/150?img=12' },
-    { id: 'u3', name: 'Mohamed Tariq', role: 'Project Manager', category: 'Project Manager', group: 'Study Group 1', avatar: 'https://i.pravatar.cc/150?img=13' },
-    { id: 'u4', name: 'Khaled Youssef', role: 'Cloud Architect', category: 'Software Engineer', group: 'Study Group 2', avatar: 'https://i.pravatar.cc/150?img=14' },
-    { id: 'u5', name: 'Youssef Omar', role: 'Product Designer', category: 'Product Designer', group: 'Study Group 1', avatar: 'https://i.pravatar.cc/150?img=15' },
-    { id: 'u6', name: 'Tarek Mahmoud', role: 'Quality Assurance', category: 'Quality Assurance', group: 'Study Group 2', avatar: 'https://i.pravatar.cc/150?img=33' },
-    { id: 'u7', name: 'Ziad Nabil', role: 'Data Scientist', category: 'Data Analyst', group: 'Project Team', avatar: 'https://i.pravatar.cc/150?img=59' },
-    { id: 'u8', name: 'Karim Mostafa', role: 'Cybersecurity Analyst', category: 'Cyber Security', group: 'Project Team', avatar: 'https://i.pravatar.cc/150?img=60' },
-    { id: 'u9', name: 'Hassan Adel', role: 'AI & ML Engineer', category: 'Data Analyst', group: 'Study Group 1', avatar: 'https://i.pravatar.cc/150?img=68' },
-    { id: 'u10', name: 'Amr Ibrahim', role: 'DevOps Engineer', category: 'Software Engineer', group: 'Project Team', avatar: 'https://i.pravatar.cc/150?img=53' },
-    { id: 'u11', name: 'Nader Farouk', role: 'UI/UX Specialist', category: 'Product Designer', group: 'Study Group 2', avatar: 'https://i.pravatar.cc/150?img=56' },
-    { id: 'u12', name: 'Mostafa Samy', role: 'Systems Engineer', category: 'Software Engineer', group: 'Project Team', avatar: 'https://i.pravatar.cc/150?img=70' },
+    { id: 'u1', name: 'Ahmed Ali', email: 'ahmed.ali@bue.edu.eg', role: 'Software Engineer', category: 'Software Engineer', group: 'Study Group 1', avatar: 'https://i.pravatar.cc/150?img=11' },
+    { id: 'u2', name: 'Omar Hassan', email: 'omar.hassan@bue.edu.eg', role: 'Data Analyst', category: 'Data Analyst', group: 'Study Group 2', avatar: 'https://i.pravatar.cc/150?img=12' },
+    { id: 'u3', name: 'Mohamed Tariq', email: 'mohamed.tariq@bue.edu.eg', role: 'Project Manager', category: 'Project Manager', group: 'Study Group 1', avatar: 'https://i.pravatar.cc/150?img=13' },
+    { id: 'u4', name: 'Khaled Youssef', email: 'khaled.youssef@bue.edu.eg', role: 'Cloud Architect', category: 'Software Engineer', group: 'Study Group 2', avatar: 'https://i.pravatar.cc/150?img=14' },
+    { id: 'u5', name: 'Youssef Omar', email: 'youssef.omar@bue.edu.eg', role: 'Product Designer', category: 'Product Designer', group: 'Study Group 1', avatar: 'https://i.pravatar.cc/150?img=15' },
+    { id: 'u6', name: 'Tarek Mahmoud', email: 'tarek.mahmoud@bue.edu.eg', role: 'Quality Assurance', category: 'Quality Assurance', group: 'Study Group 2', avatar: 'https://i.pravatar.cc/150?img=33' },
+    { id: 'u7', name: 'Ziad Nabil', email: 'ziad.nabil@bue.edu.eg', role: 'Data Scientist', category: 'Data Analyst', group: 'Project Team', avatar: 'https://i.pravatar.cc/150?img=59' },
+    { id: 'u8', name: 'Karim Mostafa', email: 'karim.mostafa@bue.edu.eg', role: 'Cybersecurity Analyst', category: 'Cyber Security', group: 'Project Team', avatar: 'https://i.pravatar.cc/150?img=60' },
+    { id: 'u9', name: 'Hassan Adel', email: 'hassan.adel@bue.edu.eg', role: 'AI & ML Engineer', category: 'Data Analyst', group: 'Study Group 1', avatar: 'https://i.pravatar.cc/150?img=68' },
+    { id: 'u10', name: 'Amr Ibrahim', email: 'amr.ibrahim@bue.edu.eg', role: 'DevOps Engineer', category: 'Software Engineer', group: 'Project Team', avatar: 'https://i.pravatar.cc/150?img=53' },
+    { id: 'u11', name: 'Nader Farouk', email: 'nader.farouk@bue.edu.eg', role: 'UI/UX Specialist', category: 'Product Designer', group: 'Study Group 2', avatar: 'https://i.pravatar.cc/150?img=56' },
+    { id: 'u12', name: 'Mostafa Samy', email: 'mostafa.samy@bue.edu.eg', role: 'Systems Engineer', category: 'Software Engineer', group: 'Project Team', avatar: 'https://i.pravatar.cc/150?img=70' },
   ]);
 
   const INITIAL_NOTIFICATIONS_DATA = [
@@ -325,7 +326,7 @@ export default function App() {
       time: '11:00 AM - 01:00 PM', 
       image: getAsset('conference_hall.jpg'), 
       status: 'Confirmed', 
-      attendees: ['Mohamed (You)', 'Sara Hassan', 'Mohamed Tariq'] 
+      attendees: ['Mohamed (You)', 'Khaled Youssef', 'Mohamed Tariq'] 
     },
     { 
       id: 4, 
@@ -361,7 +362,7 @@ export default function App() {
       time: '09:00 AM - 11:00 AM', 
       image: getAsset('study_room.jpg'), 
       status: 'Completed', 
-      attendees: ['Sara Hassan', 'Mohamed Tariq'] 
+      attendees: ['Khaled Youssef', 'Mohamed Tariq'] 
     },
     { 
       id: 102, 
@@ -754,7 +755,10 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
   });
 
   const filteredUsers = bueUsers.filter(u => {
-    const matchesSearch = u.name.toLowerCase().includes(userSearchQuery.toLowerCase()) || u.role.toLowerCase().includes(userSearchQuery.toLowerCase());
+    const query = userSearchQuery.toLowerCase();
+    const matchesSearch = u.name.toLowerCase().includes(query) || 
+                          u.role.toLowerCase().includes(query) || 
+                          (u.email && u.email.toLowerCase().includes(query));
     const matchesGroup = userGroupFilter === 'All' || u.group === userGroupFilter;
     const matchesRole = matchUserRole(u.role, (u as any).category, facultyFilter);
     return matchesSearch && matchesGroup && matchesRole;
@@ -1221,7 +1225,7 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
               </div>
               
               {bookingStep !== 'invite' && bookingStep !== 'details' && (
-                <span className="text-[22px] font-serif font-bold text-white drop-shadow-sm absolute left-1/2 -translate-x-1/2">Reservation</span>
+                <span className="text-[20px] font-serif font-bold text-white drop-shadow-sm absolute left-1/2 -translate-x-1/2">Reservation</span>
               )}
               {bookingStep === 'invite' && (
                 <h2 className="text-xl font-serif font-bold text-white tracking-tight text-center absolute left-1/2 -translate-x-1/2">
@@ -1229,7 +1233,16 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                 </h2>
               )}
 
-              <div className="flex gap-2">
+              <div className="flex items-center gap-2">
+                {bookingStep === 'time' && (
+                  <div 
+                    onClick={() => { setShowMonthPicker(true); setPickerYear(myBookingsDate.getFullYear()); }}
+                    className="flex items-center gap-1.5 bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/20 px-3 py-1.5 rounded-full cursor-pointer transition-all active:scale-95 text-white shadow-2xs"
+                  >
+                    <Calendar size={13} className="text-white" />
+                    <span className="text-xs font-bold">{myBookingsDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</span>
+                  </div>
+                )}
                 {bookingStep === 'details' && (
                   <button 
                     onClick={(e) => toggleFavorite(e, selectedRoom.name)}
@@ -1253,50 +1266,54 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
           {/* Flow Step 1: Room Details */}
           {bookingStep === 'details' && (
             <div className="flex flex-col h-full overflow-y-auto pb-24 animate-in fade-in slide-in-from-left-4 duration-300">
-              <div className="relative h-64 w-full bg-slate-200 shrink-0">
-                <img src={selectedRoom.images[activeImageIndex]} alt="Room" className="w-full h-full object-cover animate-in fade-in duration-300" />
-                <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-slate-900/60 to-transparent" />
+              {/* Room Hero Image Carousel */}
+              <div className="h-64 w-full relative bg-slate-900 overflow-hidden">
+                <img 
+                  src={selectedRoom.images[activeImageIndex]} 
+                  alt={selectedRoom.name} 
+                  className="w-full h-full object-cover animate-in fade-in duration-300"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
                 
-                {selectedRoom.images.length > 1 && (
-                  <div className="absolute inset-0 flex items-center justify-between px-2">
-                    <button onClick={() => setActiveImageIndex((prev) => prev === 0 ? selectedRoom.images.length - 1 : prev - 1)} className="bg-black/20 hover:bg-black/40 backdrop-blur-sm p-1.5 rounded-full text-white transition-colors">
-                      <ChevronLeft size={24} />
-                    </button>
-                    <button onClick={() => setActiveImageIndex((prev) => (prev + 1) % selectedRoom.images.length)} className="bg-black/20 hover:bg-black/40 backdrop-blur-sm p-1.5 rounded-full text-white transition-colors">
-                      <ChevronRight size={24} />
-                    </button>
-                  </div>
-                )}
-                <div className="absolute bottom-4 left-0 w-full flex justify-center gap-1.5">
-                  {selectedRoom.images.map((_: any, i: number) => (
-                    <div key={i} className={`h-1.5 rounded-full transition-all ${i === activeImageIndex ? 'w-4 bg-[#DA291C]' : 'w-1.5 bg-white/70'}`} />
+                {/* Image Dots */}
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+                  {selectedRoom.images.map((_: any, idx: number) => (
+                    <button
+                      key={idx}
+                      onClick={() => setActiveImageIndex(idx)}
+                      className={`h-1.5 rounded-full transition-all duration-300 ${
+                        activeImageIndex === idx ? 'w-5 bg-white' : 'w-1.5 bg-white/50'
+                      }`}
+                    />
                   ))}
                 </div>
               </div>
 
-              <div className="px-6 pt-6">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="inline-block bg-blue-100/50 text-[#002D62] border border-blue-200 text-[10px] font-black tracking-widest uppercase px-2.5 py-0.5 rounded-full">
+              {/* Room Info */}
+              <div className="p-6 flex-1 bg-slate-50">
+                <div className="flex justify-between items-start mb-2">
+                  <div>
+                    <h1 className="text-2xl font-serif font-black text-[#002D62] leading-tight">{selectedRoom.name}</h1>
+                    <p className="text-sm font-semibold text-slate-500 flex items-center gap-1 mt-1">
+                      <MapPin size={14} className="text-[#DA291C]" /> {selectedRoom.location}
+                    </p>
+                  </div>
+                  <span className="bg-blue-50 text-[#002D62] border border-blue-200 text-xs font-bold px-3 py-1.5 rounded-full">
                     {selectedRoom.type}
-                  </span>
-                  <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    Available
                   </span>
                 </div>
 
-                <h1 className="text-[28px] font-serif font-bold text-[#002D62] leading-tight">{selectedRoom.name}</h1>
-                <p className="text-slate-500 font-medium text-sm flex items-center gap-1 mb-6 mt-1">
-                  <MapPin size={14} className="text-[#DA291C]" /> {selectedRoom.location}
-                  <span className="mx-1">•</span>
-                  <Users size={14} className="text-[#DA291C]" /> {selectedRoom.capacity}
-                </p>
-                
-                <h2 className="text-xl font-serif font-bold text-[#002D62] mb-3">About this Space</h2>
-                <p className="text-slate-600 text-[15px] font-medium leading-relaxed tracking-wide mb-8">
-                  {selectedRoom.description}
-                </p>
-                
+                {/* Capacity Pill */}
+                <div className="inline-flex items-center gap-1.5 bg-white border border-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 mt-2 mb-4 shadow-2xs">
+                  <Users size={14} className="text-[#DA291C]" />
+                  <span>Capacity: {selectedRoom.capacity}</span>
+                </div>
+
+                <div className="border-t border-slate-200 my-4" />
+
+                <h2 className="text-sm font-bold text-[#002D62] uppercase tracking-wider mb-2">About this Space</h2>
+                <p className="text-sm text-slate-600 leading-relaxed mb-6">{selectedRoom.description}</p>
+
                 <h2 className="text-xl font-serif font-bold text-[#002D62] mb-4">Equipment</h2>
                 <div className="grid grid-cols-2 gap-3 mb-8">
                   {selectedRoom.amenities.map((item: any, i: number) => (
@@ -1323,59 +1340,49 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
           {bookingStep === 'time' && (
             <div className="flex flex-col h-full overflow-y-auto pt-20 px-6 animate-in fade-in slide-in-from-right-4 duration-300">
               
-              <div className="flex items-center justify-between mb-4 mt-2">
-                <h2 className="text-[22px] font-bold text-[#002D62] tracking-tight">Select Date</h2>
-                <div className="relative">
-                  <div 
-                    onClick={() => { setShowMonthPicker(true); setPickerYear(myBookingsDate.getFullYear()); }}
-                    className="flex items-center gap-1.5 text-[#002D62] mt-1 cursor-pointer hover:bg-slate-100 p-1.5 -mr-1.5 rounded-lg transition-colors"
-                  >
-                    <span className="font-bold text-sm tracking-wide">{myBookingsDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
-                    <Calendar size={18} className="opacity-90 stroke-[2.5]" />
+              {/* Month Picker Popup (when month calendar pill is tapped) */}
+              {showMonthPicker && (
+                <>
+                  <div className="fixed inset-0 z-40 bg-black/30 backdrop-blur-2xs" onClick={() => setShowMonthPicker(false)} />
+                  <div className="fixed top-16 right-6 w-[260px] bg-white rounded-2xl shadow-2xl shadow-[#002D62]/20 border border-slate-200 p-4 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div className="flex justify-between items-center mb-4 px-2">
+                      <button onClick={() => setPickerYear(y => y - 1)} className="p-1 hover:bg-slate-100 rounded-full text-[#002D62] transition-colors">
+                        <ChevronLeft size={20} />
+                      </button>
+                      <span className="font-black text-[#002D62] text-sm tracking-wider">{pickerYear}</span>
+                      <button onClick={() => setPickerYear(y => y + 1)} className="p-1 hover:bg-slate-100 rounded-full text-[#002D62] transition-colors">
+                        <ChevronRight size={20} />
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((m, idx) => {
+                        const isSelected = myBookingsDate.getMonth() === idx && myBookingsDate.getFullYear() === pickerYear;
+                        return (
+                          <button
+                            key={m}
+                            onClick={() => {
+                              setMyBookingsDate(new Date(pickerYear, idx, 1));
+                              setMyBookingsActiveDay(1);
+                              setSelectedDate('1');
+                              setShowMonthPicker(false);
+                            }}
+                            className={`py-2.5 text-[11px] font-black uppercase tracking-wider rounded-[14px] transition-all ${
+                              isSelected 
+                                ? 'bg-[#002D62] text-white shadow-md scale-105' 
+                                : 'text-slate-500 bg-slate-50 hover:bg-slate-100 hover:text-[#DA291C]'
+                            }`}
+                          >
+                            {m}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
-                  {showMonthPicker && (
-                    <>
-                      <div className="fixed inset-0 z-40" onClick={() => setShowMonthPicker(false)} />
-                      <div className="absolute top-full right-0 mt-2 w-[260px] bg-white rounded-2xl shadow-xl shadow-[#002D62]/10 border border-slate-100 p-4 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                        <div className="flex justify-between items-center mb-4 px-2">
-                          <button onClick={() => setPickerYear(y => y - 1)} className="p-1 hover:bg-slate-100 rounded-full text-[#002D62] transition-colors">
-                            <ChevronLeft size={20} />
-                          </button>
-                          <span className="font-black text-[#002D62] text-sm tracking-wider">{pickerYear}</span>
-                          <button onClick={() => setPickerYear(y => y + 1)} className="p-1 hover:bg-slate-100 rounded-full text-[#002D62] transition-colors">
-                            <ChevronRight size={20} />
-                          </button>
-                        </div>
-                        <div className="grid grid-cols-3 gap-2">
-                          {['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((m, idx) => {
-                            const isSelected = myBookingsDate.getMonth() === idx && myBookingsDate.getFullYear() === pickerYear;
-                            return (
-                              <button
-                                key={m}
-                                onClick={() => {
-                                  setMyBookingsDate(new Date(pickerYear, idx, 1));
-                                  setMyBookingsActiveDay(1);
-                                  setSelectedDate('1');
-                                  setShowMonthPicker(false);
-                                }}
-                                className={`py-2.5 text-[11px] font-black uppercase tracking-wider rounded-[14px] transition-all ${
-                                  isSelected 
-                                    ? 'bg-[#002D62] text-white shadow-md scale-105' 
-                                    : 'text-slate-500 bg-slate-50 hover:bg-slate-100 hover:text-[#DA291C]'
-                                }`}
-                              >
-                                {m}
-                              </button>
-                            )
-                          })}
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-              
-              <div className="flex justify-between w-full pb-2">
+                </>
+              )}
+
+              {/* 7 Days Row */}
+              <div className="flex justify-between w-full pb-2 pt-2">
                 {daysData.map((d) => {
                   const actualDate = new Date(myBookingsDate.getFullYear(), myBookingsDate.getMonth(), parseInt(d.date));
                   const isToday = actualDate.toDateString() === new Date().toDateString();
@@ -1395,56 +1402,90 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                 })}
               </div>
 
-              {/* Reservation Purpose, Topic & Notes */}
-              <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-xs mt-6 mb-2 space-y-3">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-black text-[#002D62] uppercase tracking-wider flex items-center gap-1.5">
-                    <Edit3 size={13} className="text-[#DA291C]" />
-                    Reservation Topic & Notes
-                  </label>
-                  <span className="text-[10px] font-bold text-slate-400">Optional</span>
-                </div>
-                
-                <input 
-                  type="text"
-                  placeholder="e.g. AI Project Sprint, Study Group, Lab Prep..."
-                  value={bookingTitle}
-                  onChange={(e) => setBookingTitle(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-[#002D62] outline-none focus:bg-white focus:ring-2 focus:ring-[#002D62]/20 focus:border-[#002D62] transition-all placeholder:text-slate-400"
-                />
-
-                <textarea 
-                  rows={2}
-                  placeholder="Add agenda, topics to cover, or items colleagues should bring..."
-                  value={bookingDescription}
-                  onChange={(e) => setBookingDescription(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-medium text-slate-700 outline-none focus:bg-white focus:ring-2 focus:ring-[#002D62]/20 focus:border-[#002D62] transition-all placeholder:text-slate-400 resize-none"
-                />
-
-                {/* Quick Topic Presets */}
-                <div className="pt-1">
-                  <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide py-1">
-                    <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest shrink-0">Suggestions:</span>
-                    {[
-                      { label: '🎓 Capstone Sprint', title: 'Graduation Capstone Review', desc: 'System architecture final sprint with advisor and API stress testing.' },
-                      { label: '📚 Exam Prep', title: 'Course Midterm Revision', desc: 'Collaborative revision covering lecture slides and problem sets.' },
-                      { label: '🤖 Robotics Lab', title: 'Robotics Workshop Assembly', desc: 'Hardware testing, sensor calibration, and tournament strategy.' },
-                      { label: '🎙️ Media Recording', title: 'Podcast & Content Recording', desc: 'Recording student podcast episode with audio interface & lighting.' }
-                    ].map(preset => (
-                      <button
-                        key={preset.label}
-                        type="button"
-                        onClick={() => {
-                          setBookingTitle(preset.title);
-                          setBookingDescription(preset.desc);
-                        }}
-                        className="shrink-0 text-[10px] font-bold bg-slate-100 hover:bg-blue-50 hover:text-[#002D62] hover:border-blue-200 text-slate-600 px-2.5 py-1 rounded-lg border border-slate-200 transition-all active:scale-95 cursor-pointer"
-                      >
-                        {preset.label}
-                      </button>
-                    ))}
+              {/* Collapsible Reservation Purpose, Topic & Notes */}
+              <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs mt-4 mb-2 overflow-hidden transition-all duration-200">
+                <button
+                  type="button"
+                  onClick={() => setShowTopicAccordion(!showTopicAccordion)}
+                  className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-slate-50/80 transition-colors cursor-pointer"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-xl bg-red-50 text-[#DA291C] flex items-center justify-center shrink-0">
+                      <Edit3 size={15} strokeWidth={2.5} />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-[#002D62] leading-tight">
+                        {bookingTitle.trim() || "Add Topic & Meeting Notes"}
+                      </p>
+                      <p className="text-[10px] text-slate-400 font-medium">
+                        {bookingTitle.trim() ? "Topic customized • Tap to edit" : "Optional agenda, topic, or items to bring"}
+                      </p>
+                    </div>
                   </div>
-                </div>
+                  <div className="flex items-center gap-2">
+                    {bookingTitle.trim() && (
+                      <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                        Set
+                      </span>
+                    )}
+                    <ChevronDown size={16} className={`text-slate-400 transition-transform duration-200 ${showTopicAccordion ? 'rotate-180' : ''}`} />
+                  </div>
+                </button>
+
+                {showTopicAccordion && (
+                  <div className="p-4 pt-1 border-t border-slate-100 space-y-3 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div>
+                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                        Meeting / Topic Title
+                      </label>
+                      <input 
+                        type="text"
+                        placeholder="e.g. AI Project Sprint, Study Group, Lab Prep..."
+                        value={bookingTitle}
+                        onChange={(e) => setBookingTitle(e.target.value)}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-bold text-[#002D62] outline-none focus:bg-white focus:ring-2 focus:ring-[#002D62]/20 focus:border-[#002D62] transition-all placeholder:text-slate-400"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                        Agenda & Notes
+                      </label>
+                      <textarea 
+                        rows={2}
+                        placeholder="Add agenda, topics to cover, or items colleagues should bring..."
+                        value={bookingDescription}
+                        onChange={(e) => setBookingDescription(e.target.value)}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-medium text-slate-700 outline-none focus:bg-white focus:ring-2 focus:ring-[#002D62]/20 focus:border-[#002D62] transition-all placeholder:text-slate-400 resize-none"
+                      />
+                    </div>
+
+                    {/* Quick Topic Presets */}
+                    <div className="pt-1">
+                      <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide py-1">
+                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest shrink-0">Suggestions:</span>
+                        {[
+                          { label: '🎓 Capstone Sprint', title: 'Graduation Capstone Review', desc: 'System architecture final sprint with advisor and API stress testing.' },
+                          { label: '📚 Exam Prep', title: 'Course Midterm Revision', desc: 'Collaborative revision covering lecture slides and problem sets.' },
+                          { label: '🤖 Robotics Lab', title: 'Robotics Workshop Assembly', desc: 'Hardware testing, sensor calibration, and tournament strategy.' },
+                          { label: '🎙️ Media Recording', title: 'Podcast & Content Recording', desc: 'Recording student podcast episode with audio interface & lighting.' }
+                        ].map(preset => (
+                          <button
+                            key={preset.label}
+                            type="button"
+                            onClick={() => {
+                              setBookingTitle(preset.title);
+                              setBookingDescription(preset.desc);
+                            }}
+                            className="shrink-0 text-[10px] font-bold bg-slate-100 hover:bg-blue-50 hover:text-[#002D62] hover:border-blue-200 text-slate-600 px-2.5 py-1 rounded-lg border border-slate-200 transition-all active:scale-95 cursor-pointer"
+                          >
+                            {preset.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="flex justify-between items-end mt-4 mb-3">
@@ -1558,23 +1599,13 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
           {bookingStep === 'invite' && (
             <div className="flex flex-col h-full bg-slate-50 pt-20 overflow-y-auto pb-36 animate-in fade-in slide-in-from-right-4 duration-300">
               
-              {/* Glassmorphic Reservation Header Card */}
+              {/* Glassmorphic Reservation Header Card (Clean Stacked Readable Layout) */}
               <div className="px-6 mb-5">
                 <div className="bg-gradient-to-br from-[#002D62] to-[#001838] text-white rounded-3xl p-5 shadow-xl shadow-[#002D62]/15 relative overflow-hidden border border-white/10">
                   <div className="absolute top-0 right-0 w-36 h-36 bg-[#DA291C]/20 rounded-full blur-2xl pointer-events-none -mr-10 -mt-10" />
                   
-                  <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className="inline-flex items-center gap-1 bg-white/15 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider text-blue-100">
-                      <Sparkles size={11} className="text-amber-300" />
-                      Official Pass
-                    </span>
-                    <span className="text-[11px] font-bold text-blue-200/90 bg-black/20 px-2.5 py-0.5 rounded-full">
-                      PIN #{Math.floor(100000 + ((selectedRoom?.name.length || 5) * 8912) % 900000)}
-                    </span>
-                  </div>
-
-                  <h3 className="text-lg font-serif font-black leading-snug mb-1 text-white">
-                    {bookingTitle.trim() || `${selectedRoom.name} Study Session`}
+                  <h3 className="text-xl font-serif font-black leading-snug mb-1 text-white">
+                    {bookingTitle.trim() || selectedRoom.name}
                   </h3>
                   
                   {bookingDescription.trim() && (
@@ -1583,19 +1614,25 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                     </p>
                   )}
 
-                  <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-white/15 text-xs font-semibold text-white/90">
-                    <span className="flex items-center gap-1 bg-white/10 px-2.5 py-1 rounded-xl">
-                      <MapPin size={12} className="text-[#DA291C]" />
-                      {selectedRoom.name}
-                    </span>
-                    <span className="flex items-center gap-1 bg-white/10 px-2.5 py-1 rounded-xl">
-                      <Calendar size={12} className="text-blue-300" />
-                      {myBookingsDate.toLocaleDateString('en-US', { month: 'short' })} {selectedDate}
-                    </span>
-                    <span className="flex items-center gap-1 bg-white/10 px-2.5 py-1 rounded-xl">
-                      <Clock size={12} className="text-amber-300" />
-                      {getFormattedTimeRange() || 'Selected Time'}
-                    </span>
+                  <div className="pt-3 border-t border-white/15 space-y-2 text-xs font-semibold text-white/90">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
+                        <MapPin size={13} className="text-[#DA291C]" />
+                      </div>
+                      <span className="truncate">{selectedRoom.name} • {selectedRoom.location}</span>
+                    </div>
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
+                        <Calendar size={13} className="text-blue-300" />
+                      </div>
+                      <span>{myBookingsDate.toLocaleDateString('en-US', { month: 'short' })} {selectedDate}, {myBookingsDate.getFullYear()}</span>
+                    </div>
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
+                        <Clock size={13} className="text-amber-300" />
+                      </div>
+                      <span>{getFormattedTimeRange() || 'Selected Time Slot'}</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1609,7 +1646,7 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                     onClick={() => {
                       setIsCopiedLink(true);
                       navigator?.clipboard?.writeText(window.location.href);
-                      setToastMessage('Official invitation link copied!');
+                      setToastMessage('Invitation pass link copied!');
                       setShowToast(true);
                       setTimeout(() => setIsCopiedLink(false), 2500);
                       setTimeout(() => setShowToast(false), 3000);
@@ -1667,7 +1704,7 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                   <div className="flex gap-2">
                     <input
                       type="email"
-                      placeholder="e.g. teammate@bue.edu.eg..."
+                      placeholder="e.g. colleague@bue.edu.eg..."
                       value={shareEmailInput}
                       onChange={(e) => setShareEmailInput(e.target.value)}
                       className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-[#002D62] outline-none focus:bg-white focus:ring-2 focus:ring-[#002D62]/20 focus:border-[#002D62] transition-all placeholder:text-slate-400"
@@ -1679,7 +1716,7 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                         setIsEmailSentSuccess(true);
                         await sendBookingEmail({
                           room: selectedRoom.name,
-                          title: bookingTitle || `${selectedRoom.name} Study Session`,
+                          title: bookingTitle || selectedRoom.name,
                           description: bookingDescription,
                           date: `${myBookingsDate.toLocaleDateString('en-US', { month: 'short' })} ${selectedDate}`,
                           time: getFormattedTimeRange()
@@ -1723,7 +1760,7 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                     </span>
                     <button 
                       onClick={() => setSelectedUserIds([])}
-                      className="text-[11px] text-[#DA291C] font-bold hover:underline"
+                      className="text-[11px] text-[#DA291C] font-bold hover:underline cursor-pointer"
                     >
                       Clear All
                     </button>
@@ -1738,7 +1775,7 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                         <span className="text-xs font-bold text-[#002D62]">{user.name.split(' ')[0]}</span>
                         <button 
                           onClick={() => setSelectedUserIds(prev => prev.filter(id => id !== user.id))}
-                          className="text-slate-400 hover:text-[#DA291C] ml-0.5"
+                          className="text-slate-400 hover:text-[#DA291C] ml-0.5 cursor-pointer"
                         >
                           <X size={12} strokeWidth={2.5} />
                         </button>
@@ -1759,12 +1796,12 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                   </span>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex gap-2 items-center">
                   <div className="relative flex-1">
                     <SearchIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
                     <input 
                       type="text" 
-                      placeholder="Search colleagues by name or role..." 
+                      placeholder="Search by name, role or email..." 
                       value={userSearchQuery}
                       onChange={(e) => setUserSearchQuery(e.target.value)}
                       className="w-full bg-white border border-slate-200 text-[#002D62] rounded-2xl pl-10 pr-9 py-2.5 outline-none focus:ring-2 focus:ring-[#002D62]/20 focus:border-[#002D62] transition-all text-xs font-bold placeholder:text-slate-400"
@@ -1776,21 +1813,72 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                     )}
                   </div>
                   
-                  {/* Filter Toggle */}
+                  {/* Filter Icon Button (Without text) */}
                   <button 
+                    type="button"
                     onClick={() => setShowInviteFilters(!showInviteFilters)}
-                    className={`shrink-0 px-3.5 rounded-2xl flex items-center gap-1.5 font-bold text-xs transition-all border ${
+                    title="Filters"
+                    className={`w-11 h-11 shrink-0 rounded-2xl flex items-center justify-center transition-all border cursor-pointer ${
                       showInviteFilters || facultyFilter !== 'All Roles' || userGroupFilter !== 'All' 
-                        ? 'bg-[#002D62] text-white border-[#002D62] shadow-sm' 
+                        ? 'bg-[#002D62] text-white border-[#002D62] shadow-md shadow-blue-900/20' 
                         : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
                     }`}
                   >
-                    <SlidersHorizontal size={14} />
-                    <span>Filter</span>
-                    {(facultyFilter !== 'All Roles' || userGroupFilter !== 'All') && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#DA291C]" />
-                    )}
+                    <div className="relative">
+                      <SlidersHorizontal size={17} strokeWidth={2.2} />
+                      {(facultyFilter !== 'All Roles' || userGroupFilter !== 'All') && (
+                        <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-[#DA291C] ring-2 ring-white" />
+                      )}
+                    </div>
                   </button>
+                </div>
+
+                {/* Group Quick Actions */}
+                <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-100">
+                  <span className="text-[10px] font-bold text-slate-400 truncate max-w-[170px]">
+                    {userGroupFilter === 'All' ? 'Campus Directory' : userGroupFilter}
+                  </span>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const idsInView = filteredUsers.map(u => u.id);
+                        const allSelected = idsInView.every(id => selectedUserIds.includes(id));
+                        if (allSelected) {
+                          setSelectedUserIds(prev => prev.filter(id => !idsInView.includes(id)));
+                        } else {
+                          setSelectedUserIds(prev => Array.from(new Set([...prev, ...idsInView])));
+                        }
+                      }}
+                      className="text-[10px] font-bold text-[#002D62] bg-blue-50 hover:bg-blue-100 border border-blue-200 px-2 py-1 rounded-lg transition-all active:scale-95 cursor-pointer"
+                    >
+                      {filteredUsers.every(u => selectedUserIds.includes(u.id)) && filteredUsers.length > 0 ? 'Deselect Group' : 'Select All Group'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        const emails = filteredUsers.map(u => u.email).filter(Boolean);
+                        setToastMessage(`Emailing pass to ${emails.length} group colleagues...`);
+                        setShowToast(true);
+                        await sendBookingEmail({
+                          room: selectedRoom.name,
+                          title: bookingTitle || selectedRoom.name,
+                          description: bookingDescription,
+                          date: `${myBookingsDate.toLocaleDateString('en-US', { month: 'short' })} ${selectedDate}`,
+                          time: getFormattedTimeRange()
+                        }, 'amegomeg99@gmail.com');
+                        setTimeout(() => {
+                          setToastMessage(`Group pass sent to ${emails.length} participants!`);
+                          setShowToast(true);
+                        }, 1000);
+                        setTimeout(() => setShowToast(false), 3500);
+                      }}
+                      className="text-[10px] font-bold text-white bg-[#DA291C] hover:bg-[#c22418] px-2 py-1 rounded-lg transition-all active:scale-95 cursor-pointer flex items-center gap-1 shadow-xs"
+                    >
+                      <Mail size={11} />
+                      <span>Email All</span>
+                    </button>
+                  </div>
                 </div>
 
                 {/* Collapsible Filter Panel */}
@@ -1872,7 +1960,7 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                     <div className="flex gap-3">
                       <button 
                         onClick={() => { setShowAddGroupModal(false); setNewGroupName(''); }}
-                        className="flex-1 py-3 rounded-xl font-bold text-slate-500 hover:bg-slate-100 transition-colors"
+                        className="flex-1 py-3 rounded-xl font-bold text-slate-500 hover:bg-slate-100 transition-colors cursor-pointer"
                       >
                         Cancel
                       </button>
@@ -1889,7 +1977,7 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                             setNewGroupName('');
                           }
                         }}
-                        className="flex-1 py-3 rounded-xl font-bold bg-[#002D62] text-white shadow-md hover:bg-[#003b80] transition-colors"
+                        className="flex-1 py-3 rounded-xl font-bold bg-[#002D62] text-white shadow-md hover:bg-[#003b80] transition-colors cursor-pointer"
                       >
                         Create Group
                       </button>
@@ -1898,7 +1986,7 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                 </div>
               )}
 
-              {/* Suggested / Filtered Colleagues List */}
+              {/* Suggested / Filtered Colleagues List (Showing Name, Role, Group, and Email) */}
               <div className="px-6 space-y-2.5">
                 {filteredUsers.map((user) => {
                   const isSelected = selectedUserIds.includes(user.id);
@@ -1916,7 +2004,7 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <div className="relative">
+                        <div className="relative shrink-0">
                           <img src={user.avatar} alt={user.name} className="w-11 h-11 rounded-full object-cover border border-slate-200 shadow-xs" />
                           {isSelected && (
                             <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#002D62] rounded-full flex items-center justify-center ring-2 ring-white text-white">
@@ -1926,14 +2014,15 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                         </div>
                         <div>
                           <p className="font-bold text-[#002D62] text-sm leading-tight mb-0.5">{user.name}</p>
-                          <div className="flex items-center gap-1.5">
+                          <div className="flex items-center gap-1.5 mb-0.5">
                             <span className="text-[11px] text-slate-500 font-semibold">{user.role}</span>
                             <span className="text-[9px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-md font-bold">{user.group}</span>
                           </div>
+                          <p className="text-[10px] text-slate-400 font-medium">{user.email}</p>
                         </div>
                       </div>
 
-                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all ${
+                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 transition-all ${
                         isSelected ? 'bg-[#002D62] border-[#002D62] text-white shadow-xs' : 'border-slate-300 bg-white'
                       }`}>
                         {isSelected && <Check size={12} strokeWidth={3} />}
@@ -1964,7 +2053,7 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                 <button
                   type="button"
                   onClick={() => finishFlow('Reservation saved! Passes ready anytime.')}
-                  className="w-full text-center text-xs font-bold text-slate-500 hover:text-[#002D62] py-1 transition-colors"
+                  className="w-full text-center text-xs font-bold text-slate-500 hover:text-[#002D62] py-1 transition-colors cursor-pointer"
                 >
                   Done • Back to Space Directory
                 </button>
@@ -2830,6 +2919,24 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                       </div>
                     )}
 
+                    {/* Session Topic & Notes Display */}
+                    {(viewingBooking.title || viewingBooking.description) && (
+                      <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs space-y-1.5 animate-in fade-in duration-200">
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                          <Sparkles size={12} className="text-[#DA291C]" />
+                          Topic & Study Focus
+                        </span>
+                        <h3 className="font-bold text-[#002D62] text-sm leading-snug">
+                          {viewingBooking.title || `${viewingBooking.room} Session`}
+                        </h3>
+                        {viewingBooking.description && (
+                          <p className="text-xs text-slate-500 font-medium leading-relaxed">
+                            {viewingBooking.description}
+                          </p>
+                        )}
+                      </div>
+                    )}
+
                     {/* In-Page Quick Actions: Share Pass & Calendar Sync */}
                     <div className="grid grid-cols-2 gap-2.5">
                       <button 
@@ -2841,7 +2948,7 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                           setShowToast(true);
                           setTimeout(() => setShowToast(false), 2500);
                         }}
-                        className="bg-[#002D62] hover:bg-[#002D62]/90 text-white font-bold py-3.5 px-3 rounded-2xl text-xs flex items-center justify-center gap-2 shadow-md active:scale-95 transition-all"
+                        className="bg-[#002D62] hover:bg-[#002D62]/90 text-white font-bold py-3.5 px-3 rounded-2xl text-xs flex items-center justify-center gap-2 shadow-md active:scale-95 transition-all cursor-pointer"
                       >
                         <Share2 size={15} /> Share Pass
                       </button>
@@ -4148,33 +4255,33 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                   </div>
 
                   {/* Invitations List */}
-                  <div className="flex-1 overflow-y-auto p-5 space-y-4 pb-28">
+                  <div className="flex-1 overflow-y-auto p-5 space-y-4 pb-20">
                     {receivedInvitations
                       .filter(inv => invitationsFilter === 'all' || inv.status === 'pending')
                       .map((inv) => {
                         return (
                           <div 
                             key={inv.id}
-                            className={`bg-white rounded-3xl border transition-all shadow-xs overflow-hidden ${
+                            className={`bg-white rounded-3xl border transition-all shadow-sm overflow-hidden ${
                               inv.status === 'pending'
-                                ? 'border-blue-200 shadow-md shadow-blue-900/5'
+                                ? 'border-[#002D62]/20 shadow-md shadow-[#002D62]/5 ring-1 ring-[#002D62]/5'
                                 : 'border-slate-200 opacity-90'
                             }`}
                           >
                             {/* Host Banner */}
-                            <div className="p-4 pb-3 flex items-center justify-between border-b border-slate-100 bg-slate-50/60">
+                            <div className="p-4 pb-3 flex items-center justify-between border-b border-slate-100 bg-gradient-to-r from-blue-50/70 to-slate-50">
                               <div className="flex items-center gap-3">
-                                <img src={inv.hostAvatar} alt={inv.hostName} className="w-10 h-10 rounded-full object-cover border border-slate-200 shadow-2xs" />
+                                <img src={inv.hostAvatar} alt={inv.hostName} className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-xs" />
                                 <div>
                                   <div className="flex items-center gap-1.5">
                                     <span className="font-bold text-[#002D62] text-sm leading-tight">{inv.hostName}</span>
-                                    <span className="text-[10px] bg-blue-100/70 text-[#002D62] font-black px-1.5 py-0.5 rounded-md">Host</span>
+                                    <span className="text-[9.5px] bg-[#002D62] text-white font-black px-1.5 py-0.5 rounded-md">Host</span>
                                   </div>
-                                  <p className="text-[11px] text-slate-400 font-medium">{inv.hostRole}</p>
+                                  <p className="text-[11px] text-slate-500 font-medium">{inv.hostRole}</p>
                                 </div>
                               </div>
 
-                              <span className="text-[10px] font-semibold text-slate-400">
+                              <span className="text-[10px] font-bold text-slate-400 bg-white px-2 py-0.5 rounded-full border border-slate-200/60 shadow-2xs">
                                 {inv.invitedAt}
                               </span>
                             </div>
@@ -4190,26 +4297,23 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                                 </p>
                               </div>
 
-                              {/* Space & Time Chips */}
-                              <div className="bg-slate-50 rounded-2xl p-3 border border-slate-100 space-y-2">
-                                <div className="flex items-center justify-between">
-                                  <div className="flex items-center gap-1.5 text-xs font-bold text-[#002D62]">
-                                    <MapPin size={14} className="text-[#DA291C] shrink-0" />
-                                    <span>{inv.room}</span>
+                              {/* Space & Time Chips (Readable Stack) */}
+                              <div className="bg-slate-50/90 rounded-2xl p-3 border border-slate-100 space-y-2">
+                                <div className="flex items-center gap-2 text-xs font-bold text-[#002D62]">
+                                  <div className="w-6 h-6 rounded-lg bg-blue-100/70 text-[#002D62] flex items-center justify-center shrink-0">
+                                    <MapPin size={13} className="text-[#DA291C]" />
                                   </div>
-                                  <span className="text-[10px] font-bold text-slate-500 bg-white px-2 py-0.5 rounded-md border border-slate-200">
-                                    PIN #{inv.pin}
-                                  </span>
+                                  <span>{inv.room}</span>
                                 </div>
 
-                                <div className="flex items-center gap-3 text-xs font-semibold text-slate-600 pt-1 border-t border-slate-200/60">
+                                <div className="flex items-center gap-3 text-xs font-semibold text-slate-600 pt-1.5 border-t border-slate-200/60">
                                   <span className="flex items-center gap-1">
-                                    <Calendar size={12} className="text-blue-600" />
+                                    <Calendar size={12} className="text-[#002D62]" />
                                     {inv.date}
                                   </span>
                                   <span>•</span>
                                   <span className="flex items-center gap-1">
-                                    <Clock size={12} className="text-amber-600" />
+                                    <Clock size={12} className="text-[#DA291C]" />
                                     {inv.time}
                                   </span>
                                 </div>
@@ -4221,7 +4325,7 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                                   <span className="text-[11px] font-bold text-slate-400">Invited Attendees</span>
                                   <div className="flex items-center -space-x-1.5">
                                     {inv.attendees.slice(0, 3).map((att, i) => (
-                                      <div key={i} className="w-6 h-6 rounded-full bg-[#002D62] text-white text-[9px] font-bold flex items-center justify-center ring-2 ring-white">
+                                      <div key={i} className="w-6 h-6 rounded-full bg-[#002D62] text-white text-[9px] font-bold flex items-center justify-center ring-2 ring-white shadow-2xs">
                                         {att.charAt(0)}
                                       </div>
                                     ))}
@@ -4232,10 +4336,10 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                                 </div>
                               )}
 
-                              {/* Action Footer */}
+                              {/* Action Footer (Equal flex-1 sizes, Red Decline & Navy Accept) */}
                               <div className="pt-2 border-t border-slate-100">
                                 {inv.status === 'pending' ? (
-                                  <div className="flex gap-2">
+                                  <div className="flex gap-2.5">
                                     <button
                                       type="button"
                                       onClick={() => {
@@ -4244,7 +4348,7 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                                         setShowToast(true);
                                         setTimeout(() => setShowToast(false), 2500);
                                       }}
-                                      className="flex-1 py-2.5 rounded-xl border border-slate-200 font-bold text-xs text-slate-500 hover:bg-slate-50 active:scale-95 transition-all cursor-pointer"
+                                      className="flex-1 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 border border-red-200 text-[#DA291C] font-bold text-xs active:scale-95 transition-all cursor-pointer text-center"
                                     >
                                       Decline
                                     </button>
@@ -4283,26 +4387,27 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                                           time: inv.time
                                         }, 'amegomeg99@gmail.com');
                                       }}
-                                      className="flex-2 py-2.5 rounded-xl bg-[#002D62] hover:bg-[#003b80] text-white font-bold text-xs shadow-md shadow-blue-900/20 active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                                      className="flex-1 py-2.5 rounded-xl bg-[#002D62] hover:bg-[#003b80] text-white font-bold text-xs shadow-md shadow-blue-900/20 active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer text-center"
                                     >
                                       <Check size={14} strokeWidth={3} />
-                                      <span>Accept & Add Pass</span>
+                                      <span>Accept</span>
                                     </button>
                                   </div>
                                 ) : inv.status === 'accepted' ? (
                                   <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-xl p-2.5">
                                     <span className="text-xs font-bold text-emerald-700 flex items-center gap-1.5">
                                       <Check size={14} strokeWidth={3} />
-                                      Accepted • Pass Active
+                                      Accepted • Added to Bookings
                                     </span>
                                     <button
                                       type="button"
                                       onClick={() => {
+                                        setProfileView('main');
                                         switchTab('bookings');
                                       }}
                                       className="text-xs font-bold text-[#002D62] underline hover:text-[#DA291C] cursor-pointer"
                                     >
-                                      View in Bookings →
+                                      View Bookings →
                                     </button>
                                   </div>
                                 ) : (
@@ -4342,33 +4447,35 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
           )}
         </main>
 
-        {/* Bottom Navigation */}
-        <div className="shrink-0 w-full z-30 bg-[#002D62] rounded-t-2xl pb-1 shadow-[0_-10px_40px_rgba(0,45,98,0.2)]">
-          <nav className="flex justify-between items-center px-6 pt-3 pb-2">
-            {[
-              { id: 'home', icon: Home, label: 'Home' },
-              { id: 'search', icon: SearchIcon, label: 'Search' },
-              { id: 'bookings', icon: Calendar, label: 'Bookings' },
-              { id: 'favorites', icon: Heart, label: 'Saved' },
-              { id: 'profile', icon: User, label: 'Profile' },
-            ].map((item) => (
-              <button
-                key={item.id}
-                onClick={() => switchTab(item.id)}
-                className={`flex items-center justify-center transition-all duration-300 ${
-                  activeTab === item.id 
-                  ? 'text-white bg-[#DA291C] px-4 py-2 rounded-2xl gap-2 shadow-md' 
-                  : 'text-white/50 hover:text-white/80 p-2'
-                }`}
-              >
-                <item.icon size={22} strokeWidth={activeTab === item.id ? 2.5 : 2} />
-                {activeTab === item.id && (
-                  <span className="text-[13px] font-bold tracking-wide">{item.label}</span>
-                )}
-              </button>
-            ))}
-          </nav>
-        </div>
+        {/* Bottom Navigation (Hidden when in Invitations Inbox) */}
+        {!(activeTab === 'profile' && profileView === 'invitations') && (
+          <div className="shrink-0 w-full z-30 bg-[#002D62] rounded-t-2xl pb-1 shadow-[0_-10px_40px_rgba(0,45,98,0.2)] animate-in fade-in duration-200">
+            <nav className="flex justify-between items-center px-6 pt-3 pb-2">
+              {[
+                { id: 'home', icon: Home, label: 'Home' },
+                { id: 'search', icon: SearchIcon, label: 'Search' },
+                { id: 'bookings', icon: Calendar, label: 'Bookings' },
+                { id: 'favorites', icon: Heart, label: 'Saved' },
+                { id: 'profile', icon: User, label: 'Profile' },
+              ].map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => switchTab(item.id)}
+                  className={`flex items-center justify-center transition-all duration-300 ${
+                    activeTab === item.id 
+                    ? 'text-white bg-[#DA291C] px-4 py-2 rounded-2xl gap-2 shadow-md' 
+                    : 'text-white/50 hover:text-white/80 p-2'
+                  }`}
+                >
+                  <item.icon size={22} strokeWidth={activeTab === item.id ? 2.5 : 2} />
+                  {activeTab === item.id && (
+                    <span className="text-[13px] font-bold tracking-wide">{item.label}</span>
+                  )}
+                </button>
+              ))}
+            </nav>
+          </div>
+        )}
 
 
 
