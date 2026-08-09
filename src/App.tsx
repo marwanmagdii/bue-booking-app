@@ -758,20 +758,25 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
        const isCS = profileData.department === 'Computer Science';
        const isEng = profileData.department === 'Engineering';
        const isBiz = profileData.department === 'Business Admin';
+       const isDent = profileData.department === 'Dentistry';
 
-       if (r.type === 'Lab') {
-          matchesMajor = isCS || isEng;
-       } else if (r.name.includes('Media Studio') || r.name.includes('Audio Booth')) {
-          matchesMajor = isBiz || isCS;
-       } else if (r.name.includes('Executive Boardroom')) {
-          matchesMajor = isBiz;
-       } else if (r.name.includes('AI Research') || r.name.includes('Computer')) {
-          matchesMajor = isCS;
-       } else if (r.name.includes('Hardware')) {
-          matchesMajor = isEng || isCS;
-       } else {
-          // General rooms like Library, Study Room, Theater are visible to all
+       // 1. Everyone sees standard Study rooms and General Theaters/Meeting rooms
+       const isGeneralStudy = r.type === 'Study';
+       const isGeneralMeeting = (r.type === 'Meeting' || r.type === 'Theater') && !r.name.includes('Executive') && !r.name.includes('Conference');
+       
+       if (isGeneralStudy || isGeneralMeeting) {
           matchesMajor = true;
+       } else {
+          // 2. Specialized Rooms (Labs, Studios, Executive)
+          if (r.type === 'Lab' || r.name.includes('AI') || r.name.includes('Hardware')) {
+             matchesMajor = isCS || isEng;
+          } else if (r.type === 'Studio' || r.name.includes('Media') || r.name.includes('Podcast') || r.name.includes('Photography')) {
+             matchesMajor = isBiz; // Let's restrict Studios to Business/Arts for dramatic effect
+          } else if (r.name.includes('Executive') || r.name.includes('Conference')) {
+             matchesMajor = isBiz;
+          } else {
+             matchesMajor = false; // If it's specialized and not caught above, hide it.
+          }
        }
     }
 
