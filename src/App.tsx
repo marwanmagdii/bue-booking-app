@@ -3832,32 +3832,75 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                       </div>
                     </div>
 
-                    <div className="space-y-4">
-                      <div>
-                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1 mb-1 block">Full Name</label>
-                        <input type="text" defaultValue={profileData.name} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-[#002D62] font-bold outline-none focus:border-[#002D62]" />
+                    <div className="space-y-5 bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                      
+                      {/* Full Name */}
+                      <div className="relative">
+                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Full Name</label>
+                        <div className="relative flex items-center">
+                          <User className="absolute left-4 text-slate-400" size={18} />
+                          <input type="text" 
+                            defaultValue={profileData.name} 
+                            onChange={(e) => setProfileData({...profileData, name: e.target.value})}
+                            className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 text-[#002D62] font-bold outline-none focus:border-[#002D62] focus:bg-white transition-all shadow-sm" />
+                        </div>
                       </div>
-                      <div>
-                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1 mb-1 block">Phone Number</label>
-                        <input type="text" defaultValue={profileData.phone} className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-[#002D62] font-bold outline-none focus:border-[#002D62]" />
+
+                      {/* Email Address */}
+                      <div className="relative">
+                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Email Address</label>
+                        <div className="relative flex items-center">
+                          <Mail className="absolute left-4 text-slate-400" size={18} />
+                          <input type="email" 
+                            defaultValue={profileData.email} 
+                            onChange={(e) => setProfileData({...profileData, email: e.target.value})}
+                            className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 text-[#002D62] font-bold outline-none focus:border-[#002D62] focus:bg-white transition-all shadow-sm" />
+                        </div>
                       </div>
-                      <div>
-                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1 mb-1 block">Department</label>
-                        <select 
-                          value={profileData.department}
-                          onChange={(e) => setProfileData({...profileData, department: e.target.value})}
-                          className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-[#002D62] font-bold outline-none focus:border-[#002D62] appearance-none">
-                          <option value="General (See All)">General (See All)</option>
-                          <option value="Computer Science">Computer Science</option>
-                          <option value="Engineering">Engineering</option>
-                          <option value="Business Admin">Business Admin</option>
-                          <option value="Dentistry">Dentistry</option>
-                        </select>
+
+                      {/* Phone Number */}
+                      <div className="relative">
+                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Phone Number</label>
+                        <div className="relative flex items-center">
+                          <Phone className="absolute left-4 text-slate-400" size={18} />
+                          <input type="tel" 
+                            defaultValue={profileData.phone} 
+                            onChange={(e) => setProfileData({...profileData, phone: e.target.value})}
+                            className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 text-[#002D62] font-bold outline-none focus:border-[#002D62] focus:bg-white transition-all shadow-sm" />
+                        </div>
                       </div>
-                      <div>
-                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1 mb-1 block">Student ID (Read Only)</label>
-                        <input type="text" defaultValue={profileData.id} disabled className="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-3 text-slate-500 font-bold outline-none" />
+
+                      {/* Department */}
+                      <div className="relative">
+                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Department</label>
+                        <div className="relative flex items-center">
+                          <BookOpen className="absolute left-4 text-slate-400" size={18} />
+                          <select 
+                            value={profileData.department}
+                            onChange={(e) => setProfileData({...profileData, department: e.target.value})}
+                            className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 text-[#002D62] font-bold outline-none focus:border-[#002D62] focus:bg-white appearance-none transition-all shadow-sm">
+                            <option value="General (See All)">General (See All)</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Engineering">Engineering</option>
+                            <option value="Business Admin">Business Admin</option>
+                            <option value="Dentistry">Dentistry</option>
+                          </select>
+                          <ChevronRight className="absolute right-4 text-slate-400 rotate-90 pointer-events-none" size={18} />
+                        </div>
                       </div>
+
+                      {/* Student ID */}
+                      <div className="relative">
+                        <label className="text-[10px] font-bold text-[#DA291C] uppercase tracking-widest ml-1 mb-1.5 block">Student ID (Read Only)</label>
+                        <div className="relative flex items-center">
+                          <Shield className="absolute left-4 text-slate-400" size={18} />
+                          <input type="text" 
+                            defaultValue={profileData.id} 
+                            disabled 
+                            className="w-full bg-slate-100 border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 text-slate-400 font-bold outline-none cursor-not-allowed" />
+                        </div>
+                      </div>
+                      
                     </div>
                   </div>
 
