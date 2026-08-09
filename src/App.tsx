@@ -3812,100 +3812,112 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
 
               {/* Edit Personal Info Flow */}
               {profileView === 'edit' && (
-                <div className="absolute inset-0 bg-slate-50 z-30 flex flex-col animate-in slide-in-from-right-4 duration-300">
-                  <div className="p-4 flex items-center gap-4 border-b border-slate-200 bg-white shadow-sm z-10 pt-6">
-                    <button onClick={() => setProfileView('main')} className="p-2 bg-slate-50 rounded-full text-[#002D62] hover:bg-slate-100">
+                <div className="absolute inset-0 bg-[#F8FAFC] z-[60] flex flex-col animate-in slide-in-from-right-4 duration-300">
+                  <div className="p-4 flex items-center gap-4 bg-white/80 backdrop-blur-md sticky top-0 z-10 pt-6">
+                    <button onClick={() => setProfileView('main')} className="p-2.5 bg-slate-100/80 rounded-full text-[#002D62] hover:bg-slate-200 transition-colors">
                       <ArrowLeft size={20} />
                     </button>
-                    <h2 className="font-bold text-[#002D62] text-lg">Edit Profile</h2>
+                    <h2 className="font-extrabold text-[#002D62] text-xl tracking-tight">Edit Profile</h2>
                   </div>
                   
-                  <div className="flex-1 overflow-y-auto p-6">
+                  <div className="flex-1 overflow-y-auto px-6 pt-4 pb-12">
                     <div className="flex justify-center mb-8">
-                      <div className="relative">
-                        <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center text-[#002D62] border-4 border-white shadow-sm overflow-hidden">
+                      <div className="relative group cursor-pointer">
+                        <div className="w-28 h-28 bg-gradient-to-tr from-blue-100 to-slate-50 rounded-[2rem] flex items-center justify-center text-[#002D62] shadow-[0_8px_30px_rgb(0,0,0,0.08)] overflow-hidden ring-4 ring-white">
                           <img src={profileData.avatar} alt="Profile" className="w-full h-full object-cover" />
                         </div>
-                        <button className="absolute bottom-0 right-0 bg-[#DA291C] text-white p-2 rounded-full shadow-md hover:bg-red-700">
-                          <Edit3 size={14} />
-                        </button>
+                        <div className="absolute -bottom-2 -right-2 bg-[#002D62] text-white p-3 rounded-2xl shadow-xl hover:scale-105 transition-transform">
+                          <Camera size={18} />
+                        </div>
                       </div>
                     </div>
 
-                    <div className="space-y-5 bg-white p-6 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100">
+                    <div className="space-y-4">
                       
                       {/* Full Name */}
-                      <div className="relative">
-                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Full Name</label>
-                        <div className="relative flex items-center">
-                          <User className="absolute left-4 text-slate-400" size={18} />
+                      <div className="bg-white rounded-3xl p-1.5 shadow-[0_4px_20px_rgb(0,0,0,0.03)] flex items-center gap-3 border border-slate-100/50">
+                        <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-[#002D62]">
+                          <User size={20} strokeWidth={2.5} />
+                        </div>
+                        <div className="flex-1 pr-4 py-1">
+                          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Full Name</label>
                           <input type="text" 
                             defaultValue={profileData.name} 
                             onChange={(e) => setProfileData({...profileData, name: e.target.value})}
-                            className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 text-[#002D62] font-bold outline-none focus:border-[#002D62] focus:bg-white transition-all shadow-sm" />
+                            className="w-full bg-transparent text-[#002D62] font-bold text-[15px] outline-none placeholder-slate-300" />
                         </div>
                       </div>
 
                       {/* Email Address */}
-                      <div className="relative">
-                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Email Address</label>
-                        <div className="relative flex items-center">
-                          <Mail className="absolute left-4 text-slate-400" size={18} />
+                      <div className="bg-white rounded-3xl p-1.5 shadow-[0_4px_20px_rgb(0,0,0,0.03)] flex items-center gap-3 border border-slate-100/50">
+                        <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-[#002D62]">
+                          <Mail size={20} strokeWidth={2.5} />
+                        </div>
+                        <div className="flex-1 pr-4 py-1">
+                          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Email Address</label>
                           <input type="email" 
                             defaultValue={profileData.email} 
                             onChange={(e) => setProfileData({...profileData, email: e.target.value})}
-                            className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 text-[#002D62] font-bold outline-none focus:border-[#002D62] focus:bg-white transition-all shadow-sm" />
+                            className="w-full bg-transparent text-[#002D62] font-bold text-[15px] outline-none placeholder-slate-300" />
                         </div>
                       </div>
 
                       {/* Phone Number */}
-                      <div className="relative">
-                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Phone Number</label>
-                        <div className="relative flex items-center">
-                          <Phone className="absolute left-4 text-slate-400" size={18} />
+                      <div className="bg-white rounded-3xl p-1.5 shadow-[0_4px_20px_rgb(0,0,0,0.03)] flex items-center gap-3 border border-slate-100/50">
+                        <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-[#002D62]">
+                          <Smartphone size={20} strokeWidth={2.5} />
+                        </div>
+                        <div className="flex-1 pr-4 py-1">
+                          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Phone Number</label>
                           <input type="tel" 
                             defaultValue={profileData.phone} 
                             onChange={(e) => setProfileData({...profileData, phone: e.target.value})}
-                            className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 text-[#002D62] font-bold outline-none focus:border-[#002D62] focus:bg-white transition-all shadow-sm" />
+                            className="w-full bg-transparent text-[#002D62] font-bold text-[15px] outline-none placeholder-slate-300" />
                         </div>
                       </div>
 
                       {/* Department */}
-                      <div className="relative">
-                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-1.5 block">Department</label>
-                        <div className="relative flex items-center">
-                          <BookOpen className="absolute left-4 text-slate-400" size={18} />
+                      <div className="bg-white rounded-3xl p-1.5 shadow-[0_4px_20px_rgb(0,0,0,0.03)] flex items-center gap-3 border border-slate-100/50 relative">
+                        <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-[#002D62]">
+                          <BookOpen size={20} strokeWidth={2.5} />
+                        </div>
+                        <div className="flex-1 pr-4 py-1">
+                          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Department / Major</label>
                           <select 
                             value={profileData.department}
                             onChange={(e) => setProfileData({...profileData, department: e.target.value})}
-                            className="w-full bg-slate-50/50 border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 text-[#002D62] font-bold outline-none focus:border-[#002D62] focus:bg-white appearance-none transition-all shadow-sm">
+                            className="w-full bg-transparent text-[#002D62] font-bold text-[15px] outline-none appearance-none">
                             <option value="General (See All)">General (See All)</option>
                             <option value="Computer Science">Computer Science</option>
                             <option value="Engineering">Engineering</option>
                             <option value="Business Admin">Business Admin</option>
                             <option value="Dentistry">Dentistry</option>
                           </select>
-                          <ChevronRight className="absolute right-4 text-slate-400 rotate-90 pointer-events-none" size={18} />
                         </div>
+                        <ChevronRight className="absolute right-6 text-slate-300 pointer-events-none rotate-90" size={18} />
                       </div>
 
                       {/* Student ID */}
-                      <div className="relative">
-                        <label className="text-[10px] font-bold text-[#DA291C] uppercase tracking-widest ml-1 mb-1.5 block">Student ID (Read Only)</label>
-                        <div className="relative flex items-center">
-                          <Shield className="absolute left-4 text-slate-400" size={18} />
+                      <div className="bg-slate-100/50 rounded-3xl p-1.5 flex items-center gap-3 border border-slate-200/50 opacity-80 cursor-not-allowed">
+                        <div className="w-12 h-12 rounded-2xl bg-slate-200/50 flex items-center justify-center text-slate-400">
+                          <Shield size={20} strokeWidth={2.5} />
+                        </div>
+                        <div className="flex-1 pr-4 py-1">
+                          <label className="text-[10px] font-bold text-[#DA291C] uppercase tracking-wider block mb-0.5">Student ID (Verified)</label>
                           <input type="text" 
                             defaultValue={profileData.id} 
                             disabled 
-                            className="w-full bg-slate-100 border border-slate-200 rounded-2xl pl-11 pr-4 py-3.5 text-slate-400 font-bold outline-none cursor-not-allowed" />
+                            className="w-full bg-transparent text-slate-500 font-bold text-[15px] outline-none cursor-not-allowed" />
                         </div>
+                        <CheckCheck className="absolute right-6 text-green-500" size={18} />
                       </div>
                       
                     </div>
                   </div>
 
-                  <div className="p-6 bg-white border-t border-slate-200 shadow-[0_-10px_20px_rgb(0,0,0,0.02)] pb-8">
-                    <button onClick={saveProfile} className="w-full bg-[#002D62] text-white font-bold text-lg py-4 rounded-xl shadow-md hover:bg-[#002D62]/90 transition-all active:scale-95">
+                  <div className="p-6 bg-white border-t border-slate-100 pb-10">
+                    <button onClick={saveProfile} className="w-full bg-[#002D62] text-white font-bold text-lg py-4 rounded-2xl shadow-[0_8px_25px_rgba(0,45,98,0.25)] hover:bg-[#002D62]/90 hover:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                      <Check size={20} strokeWidth={3} />
                       Save Changes
                     </button>
                   </div>
