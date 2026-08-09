@@ -799,8 +799,22 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
     { id: 'Meeting', icon: Users, label: 'Meeting' },
     { id: 'Theater', icon: Presentation, label: 'Theater' },
     { id: 'Lab', icon: Monitor, label: 'Lab' },
-    { id: 'Studio', icon: Camera, label: 'Studio' },
-  ];
+    { id: 'Studio', icon: Camera, label: 'Studio' }
+  ].filter(cat => {
+    if (cat.id === 'All' || cat.id === 'Study' || cat.id === 'Meeting' || cat.id === 'Theater') return true;
+    
+    if (profileData.department === 'General (See All)') return true;
+    
+    if (cat.id === 'Lab') {
+      return profileData.department === 'Computer Science' || profileData.department === 'Engineering';
+    }
+    
+    if (cat.id === 'Studio') {
+      return profileData.department === 'Business Admin';
+    }
+    
+    return true;
+  });
 
   // -------------------------------------------------------------
   // FULL SCREEN NOTIFICATIONS PAGE (BUE SIGNATURE THEME & RESTORE)
