@@ -127,6 +127,8 @@ export default function App() {
     avatar: getAsset('mohamed_ali.jpg')
   });
 
+  const [showMajorDropdown, setShowMajorDropdown] = useState(false);
+
   // Search & Filter State
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
@@ -3877,24 +3879,41 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                       </div>
 
                       {/* Department */}
-                      <div className="bg-white rounded-3xl p-1.5 shadow-[0_4px_20px_rgb(0,0,0,0.03)] flex items-center gap-3 border border-slate-100/50 relative">
+                      <div className="bg-white rounded-3xl p-1.5 shadow-[0_4px_20px_rgb(0,0,0,0.03)] flex items-center gap-3 border border-slate-100/50 relative cursor-pointer" onClick={() => setShowMajorDropdown(!showMajorDropdown)}>
                         <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-[#002D62]">
                           <BookOpen size={20} strokeWidth={2.5} />
                         </div>
                         <div className="flex-1 pr-4 py-1">
-                          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">Department / Major</label>
-                          <select 
-                            value={profileData.department}
-                            onChange={(e) => setProfileData({...profileData, department: e.target.value})}
-                            className="w-full bg-transparent text-[#002D62] font-bold text-[15px] outline-none appearance-none">
-                            <option value="General (See All)">General (See All)</option>
-                            <option value="Computer Science">Computer Science</option>
-                            <option value="Engineering">Engineering</option>
-                            <option value="Business Admin">Business Admin</option>
-                            <option value="Dentistry">Dentistry</option>
-                          </select>
+                          <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5 cursor-pointer">Department / Major</label>
+                          <div className="w-full bg-transparent text-[#002D62] font-bold text-[15px]">
+                            {profileData.department}
+                          </div>
                         </div>
-                        <ChevronRight className="absolute right-6 text-slate-300 pointer-events-none rotate-90" size={18} />
+                        <ChevronRight className={`absolute right-6 text-[#002D62] transition-transform duration-300 ${showMajorDropdown ? '-rotate-90' : 'rotate-90'}`} size={18} />
+                        
+                        {/* Custom Dropdown Menu */}
+                        {showMajorDropdown && (
+                          <div className="absolute top-[105%] left-0 w-full bg-white rounded-3xl shadow-[0_20px_60px_rgb(0,45,98,0.15)] border border-slate-100 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                            {['General (See All)', 'Computer Science', 'Engineering', 'Business Admin', 'Dentistry'].map((major, idx) => (
+                              <div 
+                                key={major}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setProfileData({...profileData, department: major});
+                                  setShowMajorDropdown(false);
+                                }}
+                                className={`px-6 py-4 flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer ${idx !== 0 ? 'border-t border-slate-100' : ''} ${profileData.department === major ? 'bg-slate-50/80' : ''}`}
+                              >
+                                <span className={`font-bold text-[15px] ${profileData.department === major ? 'text-[#DA291C]' : 'text-[#002D62]'}`}>
+                                  {major}
+                                </span>
+                                {profileData.department === major && (
+                                  <div className="w-2.5 h-2.5 rounded-full bg-[#DA291C] shadow-[0_0_8px_rgba(218,41,28,0.4)]"></div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
 
                       {/* Student ID */}
