@@ -118,11 +118,11 @@ export default function App() {
   const [newGroupNameInput, setNewGroupNameInput] = useState('');
   const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
 
-  const [profileData] = useState({
+  const [profileData, setProfileData] = useState({
     name: 'Mohamed Ali',
     email: 'mohamed.ali@bue.edu.eg',
     phone: '+20 123 456 7890',
-    department: 'Computer Science',
+    department: 'General (See All)',
     id: 'BUE-2024-192',
     avatar: getAsset('mohamed_ali.jpg')
   });
@@ -750,7 +750,31 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
     const matchesType = filterType === 'All' ? true : r.type.toLowerCase() === filterType.toLowerCase();
     const matchesAvailability = availableOnly ? r.available === true : true;
     const matchesCapacity = capacityRange <= 1 ? true : getRoomMaxCapacity(r.capacity) >= capacityRange;
-    return matchesSearch && matchesType && matchesAvailability && matchesCapacity;
+    
+    let matchesMajor = true;
+    if (profileData.department && profileData.department !== 'General (See All)') {
+       const isCS = profileData.department === 'Computer Science';
+       const isEng = profileData.department === 'Engineering';
+       const isBiz = profileData.department === 'Business Admin';
+       const isDent = profileData.department === 'Dentistry';
+
+       if (r.type === 'Lab') {
+          matchesMajor = isCS || isEng;
+       } else if (r.name.includes('Media Studio') || r.name.includes('Audio Booth')) {
+          matchesMajor = isBiz || isCS;
+       } else if (r.name.includes('Executive Boardroom')) {
+          matchesMajor = isBiz;
+       } else if (r.name.includes('AI Research') || r.name.includes('Computer')) {
+          matchesMajor = isCS;
+       } else if (r.name.includes('Hardware')) {
+          matchesMajor = isEng || isCS;
+       } else {
+          // General rooms like Library, Study Room, Theater are visible to all
+          matchesMajor = true;
+       }
+    }
+
+    return matchesSearch && matchesType && matchesAvailability && matchesCapacity && matchesMajor;
   });
 
   const filteredUsers = bueUsers.filter(u => {
@@ -3820,11 +3844,15 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                       </div>
                       <div>
                         <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1 mb-1 block">Department</label>
-                        <select className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-[#002D62] font-bold outline-none focus:border-[#002D62] appearance-none">
-                          <option>Computer Science</option>
-                          <option>Engineering</option>
-                          <option>Business Admin</option>
-                          <option>Dentistry</option>
+                        <select 
+                          value={profileData.department}
+                          onChange={(e) => setProfileData({...profileData, department: e.target.value})}
+                          className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-[#002D62] font-bold outline-none focus:border-[#002D62] appearance-none">
+                          <option value="General (See All)">General (See All)</option>
+                          <option value="Computer Science">Computer Science</option>
+                          <option value="Engineering">Engineering</option>
+                          <option value="Business Admin">Business Admin</option>
+                          <option value="Dentistry">Dentistry</option>
                         </select>
                       </div>
                       <div>
