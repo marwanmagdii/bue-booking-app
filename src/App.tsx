@@ -3876,6 +3876,8 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                             onChange={(e) => setProfileData({...profileData, phone: e.target.value})}
                             className="w-full bg-transparent text-[#002D62] font-bold text-[15px] outline-none placeholder-slate-300" />
                         </div>
+                      </div>
+
                       {/* Department */}
                       <div className="bg-white rounded-3xl p-1.5 shadow-[0_4px_20px_rgb(0,0,0,0.03)] flex items-center gap-3 border border-slate-100/50 relative cursor-pointer" onClick={() => setShowMajorDropdown(true)}>
                         <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-[#002D62]">
