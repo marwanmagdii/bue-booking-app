@@ -3876,10 +3876,8 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                             onChange={(e) => setProfileData({...profileData, phone: e.target.value})}
                             className="w-full bg-transparent text-[#002D62] font-bold text-[15px] outline-none placeholder-slate-300" />
                         </div>
-                      </div>
-
                       {/* Department */}
-                      <div className="bg-white rounded-3xl p-1.5 shadow-[0_4px_20px_rgb(0,0,0,0.03)] flex items-center gap-3 border border-slate-100/50 relative cursor-pointer" onClick={() => setShowMajorDropdown(!showMajorDropdown)}>
+                      <div className="bg-white rounded-3xl p-1.5 shadow-[0_4px_20px_rgb(0,0,0,0.03)] flex items-center gap-3 border border-slate-100/50 relative cursor-pointer" onClick={() => setShowMajorDropdown(true)}>
                         <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-[#002D62]">
                           <BookOpen size={20} strokeWidth={2.5} />
                         </div>
@@ -3889,31 +3887,7 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                             {profileData.department}
                           </div>
                         </div>
-                        <ChevronRight className={`absolute right-6 text-[#002D62] transition-transform duration-300 ${showMajorDropdown ? '-rotate-90' : 'rotate-90'}`} size={18} />
-                        
-                        {/* Custom Dropdown Menu */}
-                        {showMajorDropdown && (
-                          <div className="absolute top-[105%] left-0 w-full bg-white rounded-3xl shadow-[0_20px_60px_rgb(0,45,98,0.15)] border border-slate-100 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                            {['General (See All)', 'Computer Science', 'Engineering', 'Business Admin', 'Dentistry'].map((major, idx) => (
-                              <div 
-                                key={major}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setProfileData({...profileData, department: major});
-                                  setShowMajorDropdown(false);
-                                }}
-                                className={`px-6 py-4 flex items-center justify-between hover:bg-slate-50 transition-colors cursor-pointer ${idx !== 0 ? 'border-t border-slate-100' : ''} ${profileData.department === major ? 'bg-slate-50/80' : ''}`}
-                              >
-                                <span className={`font-bold text-[15px] ${profileData.department === major ? 'text-[#DA291C]' : 'text-[#002D62]'}`}>
-                                  {major}
-                                </span>
-                                {profileData.department === major && (
-                                  <div className="w-2.5 h-2.5 rounded-full bg-[#DA291C] shadow-[0_0_8px_rgba(218,41,28,0.4)]"></div>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        )}
+                        <ChevronRight className="absolute right-6 text-[#002D62] rotate-90" size={18} />
                       </div>
 
                       {/* Student ID */}
@@ -3940,6 +3914,39 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
                       Save Changes
                     </button>
                   </div>
+
+                  {/* Native Action Sheet Dropdown for Major */}
+                  {showMajorDropdown && (
+                    <div className="fixed inset-0 z-[100] flex flex-col justify-end animate-in fade-in duration-300">
+                      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowMajorDropdown(false)}></div>
+                      
+                      <div className="relative bg-white w-full max-w-[430px] mx-auto rounded-t-[2rem] shadow-2xl animate-in slide-in-from-bottom-full duration-300 ease-out flex flex-col">
+                        <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mt-4 mb-2"></div>
+                        <div className="p-6 pt-2 pb-10">
+                          <h3 className="font-extrabold text-[#002D62] text-lg mb-4 text-center">Select Department</h3>
+                          <div className="flex flex-col gap-2">
+                            {['General (See All)', 'Computer Science', 'Engineering', 'Business Admin', 'Dentistry'].map((major) => (
+                              <button 
+                                key={major}
+                                onClick={() => {
+                                  setProfileData({...profileData, department: major});
+                                  setShowMajorDropdown(false);
+                                }}
+                                className={`w-full text-left px-6 py-4 rounded-2xl flex items-center justify-between transition-all active:scale-[0.98] ${profileData.department === major ? 'bg-blue-50/80 border border-blue-100' : 'bg-slate-50 hover:bg-slate-100 border border-transparent'}`}
+                              >
+                                <span className={`font-bold text-[16px] ${profileData.department === major ? 'text-[#DA291C]' : 'text-[#002D62]'}`}>
+                                  {major}
+                                </span>
+                                {profileData.department === major && (
+                                  <div className="w-3 h-3 rounded-full bg-[#DA291C] shadow-[0_0_10px_rgba(218,41,28,0.3)]"></div>
+                                )}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
