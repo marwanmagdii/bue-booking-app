@@ -756,7 +756,6 @@ Note: Please arrive 5-10 minutes early. Contact IT Helpdesk at support@bue.edu.e
        const isCS = profileData.department === 'Computer Science';
        const isEng = profileData.department === 'Engineering';
        const isBiz = profileData.department === 'Business Admin';
-       const isDent = profileData.department === 'Dentistry';
 
        if (r.type === 'Lab') {
           matchesMajor = isCS || isEng;
